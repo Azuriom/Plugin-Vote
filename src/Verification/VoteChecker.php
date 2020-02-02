@@ -28,9 +28,6 @@ class VoteChecker
             'votes',
             '200');
 
-        $this->sites['serveursminecraft.org'] = $this->verifyByText(
-            'https://www.serveursminecraft.org/sm_api/peutVoter.php?id={id}&ip={ip}');
-
         $this->sites['serveurs-minecraft.org'] = $this->verifyByJson(
             'https://serveur-minecraft.fr/api-{id}_{ip}.json',
             'status',
@@ -40,6 +37,29 @@ class VoteChecker
           'https://www.liste-serveur.fr/api/hasVoted/{server_token}/{ip}',
           'hasVoted',
           'true');
+
+        $this->sites['liste-serveurs-minecraft.org'] = $this->verifyByValue(
+            'https://api.liste-serveurs-minecraft.org/vote/vote_verification.php?server_id={id}&ip={ip}}&duration=5',
+            '1'
+            );
+
+        $this->sites['serveursminecraft.org'] = $this->verifyByDifferentValue(
+            'https://www.serveursminecraft.org/sm_api/peutVoter.php?id={id}&ip={ip}',
+            'true'
+            );
+
+        $this->sites['serveur-prive.net'] = $this->verifyByJson(
+            'https://serveur-prive.net/api/vote/json/{id}/{ip}',
+            'status',
+            '1'
+            );
+
+        $this->sites['top-serveurs.net'] = $this->verifyByJson(
+            'https://api.top-serveurs.net/v1/votes/check-ip?server_token={server_token}&ip={ip}',
+            'code',
+            '200'
+            );
+
     }
 
     /**
@@ -92,6 +112,20 @@ class VoteChecker
     {
         return function ($ip, $userName) use ($url) {
             return $this->readUrl($url, $ip, $userName) !== null;
+        };
+    }
+
+    protected function verifyByValue(string $url, string $value)
+    {
+        return function ($ip, $userName) use ($url, $value) {
+            return $this->readUrl($url, $ip, $userName) == $value;
+        };
+    }
+
+    protected function verifyByDifferentValue(string $url, string $value)
+    {
+        return function ($ip, $userName) use ($url, $value) {
+            return $this->readUrl($url, $ip, $userName) != $value;
         };
     }
 
