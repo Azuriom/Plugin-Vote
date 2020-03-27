@@ -74,6 +74,10 @@ class VoteChecker
         $this->register(VoteVerifier::for('kiosque-serveur.net')
             ->setApiUrl('https://api.kiosque-serveur.net/v1/vote/{ip}/{server}')
             ->verifyByJson('vote', '1')); // TODO get key
+        
+         $this->register(VoteVerifier::for('liste-serveurs.fr')
+            ->setApiUrl('https://www.liste-serveurs.fr/api/checkVote/{server}/{ip}')
+            ->verifyByJson('success', 'true')); // TODO get key
     }
 
     public function hasVerificationForSite(string $domain)
