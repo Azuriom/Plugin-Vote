@@ -59,6 +59,10 @@ class VoteChecker
             ->setApiUrl('https://www.liste-serveurs.fr/api/checkVote/{server}/{ip}')
             ->retrieveKeyByRegex('/^https:\/\/www\.liste-serveurs\.fr\/[\w\d-]+\.(\d+)/', 2)
             ->verifyByJson('success', true));
+        
+        $this->register(VoteVerifier::for('liste-minecraft-serveurs.com')
+            ->setApiUrl('https://www.liste-minecraft-serveurs.com/Api/Worker/id_server/{server}/ip/{ip}')
+            ->verifyByJson('result', '202'));
 
         $this->register(VoteVerifier::for('liste-serveur.fr')
             ->setApiUrl('https://www.liste-serveur.fr/api/hasVoted/{server}/{ip}')
