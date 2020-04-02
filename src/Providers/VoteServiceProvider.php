@@ -90,6 +90,7 @@ class VoteServiceProvider extends BasePluginServiceProvider
                 'icon' => 'fas fa-thumbs-up',
                 'route' => 'vote.admin.*',
                 'items' => [
+                    'vote.admin.settings' => 'vote::admin.nav.settings',
                     'vote.admin.sites.index' => 'vote::admin.nav.sites',
                     'vote.admin.rewards.index' => 'vote::admin.nav.rewards',
                 ],
