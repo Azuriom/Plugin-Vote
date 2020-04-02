@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <h2>Top votes</h2>
+        <h2>{{ trans('vote::messages.sections.top') }}</h2>
 
         <table class="table">
             <thead>
@@ -78,26 +78,28 @@
             </tbody>
         </table>
 
-        <h2>Rewards</h2>
+        @if(display_rewards())
+            <h2>{{ trans('vote::messages.sections.rewards') }}</h2>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">{{ trans('messages.fields.name') }}</th>
-                <th scope="col">{{ trans('vote::messages.fields.chances') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            @foreach($rewards as $reward)
+            <table class="table">
+                <thead>
                 <tr>
-                    <th scope="row">{{ $reward->name }}</th>
-                    <td>{{ $reward->chances }} %</td>
+                    <th scope="col">{{ trans('messages.fields.name') }}</th>
+                    <th scope="col">{{ trans('vote::messages.fields.chances') }}</th>
                 </tr>
-            @endforeach
+                </thead>
+                <tbody>
 
-            </tbody>
-        </table>
+                @foreach($rewards as $reward)
+                    <tr>
+                        <th scope="row">{{ $reward->name }}</th>
+                        <td>{{ $reward->chances }} %</td>
+                    </tr>
+                @endforeach
+
+                </tbody>
+            </table>
+        @endif
 
     </div>
 @endsection

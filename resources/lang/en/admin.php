@@ -4,8 +4,16 @@ return [
     'nav' => [
         'title' => 'Vote',
 
+        'settings' => 'Settings',
         'sites' => 'Sites',
         'rewards' => 'Rewards',
+    ],
+
+    'settings' => [
+        'title' => 'Vote page settings',
+
+        'count' => 'Top Players Count',
+        'display-rewards' => 'Show rewards in vote page',
     ],
 
     'sites' => [

@@ -25,7 +25,7 @@ class VoteController extends Controller
             ->where('created_at', '>', now()->startOfMonth())
             ->groupBy('user_id')
             ->orderByDesc('count')
-            ->take(10)
+            ->take(setting('vote.top-players-count', 10))
             ->get();
 
         $users = User::findMany($votes->pluck('user_id'))->keyBy('id');

@@ -3,6 +3,11 @@
 return [
     'title' => 'Vote',
 
+    'sections' => [
+        'top' => 'Classement',
+        'rewards' => 'Récompenses',
+    ],
+
     'fields' => [
         'server' => 'Serveur',
         'chances' => 'Chances',

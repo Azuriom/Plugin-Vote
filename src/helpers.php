@@ -11,3 +11,10 @@
 | to prevent any side effect.
 |
 */
+
+if (! function_exists('display_rewards')) {
+    function display_rewards()
+    {
+        return setting('vote.display-rewards', true);
+    }
+}
