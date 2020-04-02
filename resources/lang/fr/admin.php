@@ -13,7 +13,7 @@ return [
         'title' => 'Paramètres de la page de vote',
 
         'count' => 'Nombre de joueurs dans le classement',
-        'display-rewards' => 'Afficher les récompenses sur la page de vote'
+        'display-rewards' => 'Afficher les récompenses sur la page de vote',
     ],
 
     'sites' => [

@@ -5,7 +5,7 @@ return [
 
     'sections' => [
         'top' => 'Classement',
-        'rewards' => 'Récompenses'
+        'rewards' => 'Récompenses',
     ],
 
     'fields' => [

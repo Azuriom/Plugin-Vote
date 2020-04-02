@@ -13,7 +13,7 @@ return [
         'title' => 'Vote page settings',
 
         'count' => 'Top Players Count',
-        'display-rewards' => 'Show rewards in vote page'
+        'display-rewards' => 'Show rewards in vote page',
     ],
 
     'sites' => [

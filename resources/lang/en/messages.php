@@ -5,7 +5,7 @@ return [
 
     'sections' => [
         'top' => 'Top votes',
-        'rewards' => 'Rewards'
+        'rewards' => 'Rewards',
     ],
 
     'fields' => [
