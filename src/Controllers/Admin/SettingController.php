@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUnhandledExceptionInspection */
+<?php
 
 
 namespace Azuriom\Plugin\Vote\Controllers\Admin;
