@@ -58,7 +58,7 @@
                     </thead>
                     <tbody>
         
-                    @foreach($votes as $id => $vote)
+                    @foreach($previous_votes as $id => $vote)
                         <tr>
                             <th scope="row">#{{ $id }}</th>
                             <td>{{ $vote['user']->name }}</td>
