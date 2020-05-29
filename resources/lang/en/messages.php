@@ -23,4 +23,6 @@ return [
     'vote-delay' => 'You already voted, you can vote again :time !',
     'site-no-rewards' => 'This site has no rewards.',
     'vote-success' => 'Your vote has been taken into account, you will receive your rewards soon!',
+    'last-month' => 'Last Month',
+    'this-month' => 'This Month',
 ];

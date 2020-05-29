@@ -10,6 +10,7 @@ use Azuriom\Plugin\Vote\Models\Vote;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class VoteController extends Controller
 {
@@ -39,10 +40,31 @@ class VoteController extends Controller
             ];
         });
 
+        $previous_votes = DB::table((new Vote())->getTable())
+            ->select(['user_id', DB::raw('COUNT(user_id) AS count')])
+            ->where('created_at', '>', (new Carbon('first day of last month'))->startOfDay())
+            ->where('created_at', '<', now()->startOfMonth())
+            ->groupBy('user_id')
+            ->orderByDesc('count')
+            ->take(setting('vote.top-players-count', 10))
+            ->get();
+
+        $previous_users = User::findMany($previous_votes->pluck('user_id'))->keyBy('id');
+
+        $previous_votes = $previous_votes->mapWithKeys(function ($vote, $position) use ($previous_users) {
+            return [
+                $position + 1 => [
+                    'user' => $previous_users->get($vote->user_id),
+                    'votes' => $vote->count,
+                ],
+            ];
+        });
+
         return view('vote::index', [
             'sites' => Site::enabled()->whereHas('rewards')->get(),
             'rewards' => Reward::orderByDesc('chances')->get(),
             'votes' => $votes,
+            'previous_votes' => $previous_votes,
         ]);
     }
 

@@ -40,26 +40,58 @@
 
         <h2>{{ trans('vote::messages.sections.top') }}</h2>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">{{ trans('messages.fields.name') }}</th>
-                <th scope="col">{{ trans('vote::messages.fields.votes') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            @foreach($votes as $id => $vote)
-                <tr>
-                    <th scope="row">#{{ $id }}</th>
-                    <td>{{ $vote['user']->name }}</td>
-                    <td>{{ $vote['votes'] }}</td>
-                </tr>
-            @endforeach
-
-            </tbody>
-        </table>
+        <nav>
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{ trans('vote::messages.last-month') }}</a>
+              <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">{{ trans('vote::messages.this-month') }}</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{{ trans('messages.fields.name') }}</th>
+                        <th scope="col">{{ trans('vote::messages.fields.votes') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+        
+                    @foreach($votes as $id => $vote)
+                        <tr>
+                            <th scope="row">#{{ $id }}</th>
+                            <td>{{ $vote['user']->name }}</td>
+                            <td>{{ $vote['votes'] }}</td>
+                        </tr>
+                    @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{{ trans('messages.fields.name') }}</th>
+                        <th scope="col">{{ trans('vote::messages.fields.votes') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+        
+                    @foreach($votes as $id => $vote)
+                        <tr>
+                            <th scope="row">#{{ $id }}</th>
+                            <td>{{ $vote['user']->name }}</td>
+                            <td>{{ $vote['votes'] }}</td>
+                        </tr>
+                    @endforeach
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         @if(display_rewards())
             <h2>{{ trans('vote::messages.sections.rewards') }}</h2>
