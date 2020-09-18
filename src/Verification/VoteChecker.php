@@ -116,6 +116,10 @@ class VoteChecker
             ->setApiUrl('https://api.liste-serveurs-minecraft.org/vote/vote_verification.php?server_id={server}&ip={ip}&duration=5')
             ->requireKey('server_id')
             ->verifyByValue('1'));
+        $this->register(VoteVerifier::for('topserveursminecraft.com')
+            ->setApiUrl('https://topserveursminecraft.com/api/server={server}&ip={ip}')
+            ->requireKey('server_id')
+            ->verifyByJson('voted', 1));
     }
 
     public function hasVerificationForSite(string $domain)
