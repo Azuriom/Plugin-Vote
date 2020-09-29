@@ -61,7 +61,7 @@ class VoteChecker
             ->setApiUrl('https://www.liste-serveurs.fr/api/checkVote/{server}/{ip}')
             ->retrieveKeyByRegex('/^liste-serveurs\.fr\/[\w\d-]+\.(\d+)/', 2)
             ->verifyByJson('success', true));
-        
+
         $this->register(VoteVerifier::for('serveur-top.fr')
             ->setApiUrl('https://serveur-top.fr/api/checkVote/{server}/{ip}')
             ->retrieveKeyByRegex('/^serveur-top\.fr\/[\w\d-]+\.(\d+)/', 2)
