@@ -31,7 +31,7 @@ class VoteChecker
 
         $this->register(VoteVerifier::for('serveur-minecraft.com')
             ->setApiUrl('https://serveur-minecraft.com/api/1/vote/{server}/{ip}/json')
-            ->requireKey('api_key')
+            ->retrieveKeyByRegex('/^serveur-minecraft\.com\/(\d+)/')
             ->verifyByJson('vote', '1'));
 
         $this->register(VoteVerifier::for('serveur-minecraft.fr')
