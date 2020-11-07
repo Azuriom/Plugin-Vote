@@ -29,6 +29,11 @@ class VoteChecker
             ->retrieveKeyByRegex('/^serveurs-minecraft\.org\/vote\.php\?id=(\d+)/')
             ->verifyByJson('votes', '1'));
 
+        $this->register(VoteVerifier::for('serveur-minecraft.com')
+            ->setApiUrl('https://serveur-minecraft.com/api/1/vote/{server}/{ip}/json')
+            ->requireKey('api_key')
+            ->verifyByJson('vote', '1'));
+
         $this->register(VoteVerifier::for('serveur-minecraft.fr')
             ->setApiUrl('https://serveur-minecraft.fr/api-{server}_{ip}.json')
             ->retrieveKeyByRegex('/^serveur-minecraft\.fr\/[\w\d-]+\.(\d+)/')
