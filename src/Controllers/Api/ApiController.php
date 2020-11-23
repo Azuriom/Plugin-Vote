@@ -2,10 +2,10 @@
 
 namespace Azuriom\Plugin\Vote\Controllers\Api;
 
-use Illuminate\Http\Request;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Vote\Models\Pingback;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
+use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
