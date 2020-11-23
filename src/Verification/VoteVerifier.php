@@ -3,13 +3,13 @@
 namespace Azuriom\Plugin\Vote\Verification;
 
 use Azuriom\Models\User;
+use Azuriom\Plugin\Vote\Models\Pingback;
 use Closure;
 use Exception;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use Azuriom\Plugin\Vote\Models\Pingback;
 
 class VoteVerifier
 {
@@ -140,18 +140,18 @@ class VoteVerifier
 
     public function verifyByPingback()
     {
-        $this->verificationMethod = function (){
+        $this->verificationMethod = function () {
             $user = auth()->user();
-            if($user->last_login_ip === '127.0.0.1') {
+            if ($user->last_login_ip === '127.0.0.1') {
                 $ping = Pingback::where(['domain', $this->siteDomain])->first();
             } else {
                 $ping = Pingback::where([
                     ['ip', $user->last_login_ip],
-                    ['domain', $this->siteDomain]
+                    ['domain', $this->siteDomain],
                 ])->first();
             }
-                
-            if($ping) {
+
+            if ($ping) {
                 $ping->delete();
                 return true;
             } else {
@@ -179,11 +179,11 @@ class VoteVerifier
         ], $this->apiUrl);
 
         try {
-            if($this->apiUrl) {
+            if ($this->apiUrl) {
                 $response = Http::get($url);
                 return $verificationMethod($response);
             }
-            
+
             return $verificationMethod();
         } catch (Exception $e) {
             return true;

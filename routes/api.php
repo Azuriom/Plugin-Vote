@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Azuriom\Plugin\Vote\Controllers\Api\ApiController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +14,6 @@ use Azuriom\Plugin\Vote\Controllers\Api\ApiController;
 |
 */
 
-Route::prefix('/pingback')->group(function(){
-    Route::post('gtop100',[ApiController::class, 'gtop100']);
+Route::prefix('/pingback')->group(function () {
+    Route::post('gtop100', [ApiController::class, 'gtop100']);
 });

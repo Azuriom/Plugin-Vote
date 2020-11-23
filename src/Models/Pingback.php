@@ -2,8 +2,8 @@
 
 namespace Azuriom\Plugin\Vote\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Azuriom\Models\Traits\HasTablePrefix;
+use Illuminate\Database\Eloquent\Model;
 
 class Pingback extends Model
 {
@@ -17,4 +17,5 @@ class Pingback extends Model
     protected $prefix = 'vote_';
 
     protected $fillable = ['domain', 'ip'];
+
 }
