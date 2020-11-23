@@ -153,8 +153,10 @@ class VoteVerifier
 
             if ($ping) {
                 $ping->delete();
+
                 return true;
             } else {
+
                 return false;
             }
         };
@@ -181,6 +183,7 @@ class VoteVerifier
         try {
             if ($this->apiUrl) {
                 $response = Http::get($url);
+
                 return $verificationMethod($response);
             }
 

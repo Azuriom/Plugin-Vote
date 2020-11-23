@@ -17,5 +17,4 @@ class Pingback extends Model
     protected $prefix = 'vote_';
 
     protected $fillable = ['domain', 'ip'];
-
 }
