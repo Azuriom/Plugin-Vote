@@ -14,6 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/pingback')->group(function () {
-    Route::post('gtop100', [ApiController::class, 'gtop100']);
-});
+Route::any('/pingback/{site}', [ApiController::class, 'pingback']);

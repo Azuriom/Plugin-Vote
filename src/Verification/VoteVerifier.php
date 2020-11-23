@@ -35,6 +35,12 @@ class VoteVerifier
     private $verificationMethod;
 
     /**
+     * The method to handle websites pingback
+     * @var callable|null
+     */
+    private $pingbackCallback;
+
+    /**
      * The method to retrieve the server id from the vote url.
      *
      * @var string|callable|null
@@ -161,6 +167,18 @@ class VoteVerifier
         };
 
         return $this;
+    }
+
+    public function setPingbackCallback(callable $callback)
+    {
+        $this->pingbackCallback = $callback;
+
+        return $this;
+    }
+
+    public function getPingbackCallback()
+    {
+        return $this->pingbackCallback;
     }
 
     public function verifyVote(string $voteUrl, User $user, string $ip = '', string $voteKey = null)

@@ -2,11 +2,13 @@
 
 namespace Azuriom\Plugin\Vote\Verification;
 
-use Azuriom\Models\User;
-use Azuriom\Plugin\Vote\Models\Site;
 use Carbon\Carbon;
+use Azuriom\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Azuriom\Plugin\Vote\Models\Site;
+use Azuriom\Plugin\Vote\Models\Pingback;
+use Illuminate\Http\Request;
 
 class VoteChecker
 {
@@ -135,6 +137,13 @@ class VoteChecker
         $this->register(VoteVerifier::for('gtop100.com')
             ->retrieveKeyByRegex('/(?<=\/sitedetails\/)(.*)(?=\?vote=1)/')
             ->verifyByPingback()
+            ->setPingbackCallback(function (Request $request) {
+                abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99']), 403);
+
+                if ($request->Successful == '0') {
+                    Pingback::create(['domain'=>'gtop100.com', 'ip'=> $request->VoterIP]);
+                }
+            })
         );
     }
 

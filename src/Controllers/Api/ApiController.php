@@ -2,22 +2,22 @@
 
 namespace Azuriom\Plugin\Vote\Controllers\Api;
 
+use Illuminate\Http\Request;
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Vote\Models\Pingback;
-use Illuminate\Http\Request;
+use Azuriom\Plugin\Vote\Verification\VoteChecker;
 
 class ApiController extends Controller
 {
     /**
      * https://gtop100.com/test/pingback.
      */
-    public function gtop100(Request $request)
+    public function pingback(Request $request, $site)
     {
-        abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99']), 403);
-
-        if ($request->Successful == '0') {
-            Pingback::create(['domain'=>'gtop100.com', 'ip'=> $request->VoterIP]);
-        }
+        $checker = app(VoteChecker::class);
+        $verifier = $checker->getVerificationForSite($site);
+        $callback = $verifier->getPingbackCallback();
+        $callback($request);
 
         return response()->noContent();
     }
