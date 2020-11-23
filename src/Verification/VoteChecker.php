@@ -5,9 +5,10 @@ namespace Azuriom\Plugin\Vote\Verification;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Vote\Models\Site;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class VoteChecker
 {
@@ -135,12 +136,11 @@ class VoteChecker
 
         $this->register(VoteVerifier::for('gtop100.com')
             ->retrieveKeyByRegex('/(?<=\/sitedetails\/)(.*)(?=\?vote=1)/')
-            ->verifyByPingback()
-            ->setPingbackCallback(function (Request $request) {
+            ->verifyByPingback(function (Request $request) {
                 abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99']), 403);
 
-                if ($request->Successful == '0') {
-                    cache()->put("gtop100.com-{$request->VoterIp}", true, now()->addMinutes(5));
+                if ($request->input('Successful') === '0') {
+                    Cache::put("vote.sites.gtop100.com.{$request->input('VoterIp')}", true, now()->addMinutes(5));
                 }
             })
         );

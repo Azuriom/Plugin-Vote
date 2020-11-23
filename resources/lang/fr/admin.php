@@ -36,6 +36,7 @@ return [
         'verifications' => [
             'enable' => 'Activer la vérification des votes',
 
+            'pingback' => 'URL de pingback: :url',
             'server_id' => 'ID du serveur',
             'token' => 'Token',
             'api_key' => 'Clé d\'API',

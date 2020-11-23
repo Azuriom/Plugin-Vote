@@ -36,6 +36,7 @@ return [
         'verifications' => [
             'enable' => 'Enable votes verification',
 
+            'pingback' => 'Pingback URL: :url',
             'server_id' => 'Server ID',
             'token' => 'Token',
             'api_key' => 'API key',

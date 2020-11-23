@@ -6,7 +6,9 @@ use Azuriom\Models\User;
 use Closure;
 use Exception;
 use Illuminate\Http\Client\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -34,7 +36,8 @@ class VoteVerifier
     private $verificationMethod;
 
     /**
-     * The method to handle websites pingback
+     * The method to handle websites pingback.
+     *
      * @var callable|null
      */
     private $pingbackCallback;
@@ -143,32 +146,22 @@ class VoteVerifier
         return $this;
     }
 
-    public function verifyByPingback()
+    public function verifyByPingback(callable $callback)
     {
-        $this->verificationMethod = function () {
-            $user = auth()->user();
-            if ($user->last_login_ip === '127.0.0.1') {
-                $ping = cache()->pull("{$this->siteDomain}-127.0.0.1");
-            } else {
-                $ping = cache()->pull("{$this->siteDomain}-{$user->last_login_ip}");
-            }
+        $this->pingbackCallback = $callback;
 
-            return $ping ?? false;
+        $this->verificationMethod = function (string $ip) {
+            $ping = Cache::pull("vote.sites.{$this->siteDomain}.{$ip}");
+
+            return $ping === true;
         };
 
         return $this;
     }
 
-    public function setPingbackCallback(callable $callback)
+    public function executePingbackCallback(Request $request)
     {
-        $this->pingbackCallback = $callback;
-
-        return $this;
-    }
-
-    public function getPingbackCallback()
-    {
-        return $this->pingbackCallback;
+        return ($this->pingbackCallback)($request);
     }
 
     public function verifyVote(string $voteUrl, User $user, string $ip = '', string $voteKey = null)
@@ -189,13 +182,13 @@ class VoteVerifier
         ], $this->apiUrl);
 
         try {
-            if ($this->apiUrl) {
-                $response = Http::get($url);
-
-                return $verificationMethod($response);
+            if ($this->apiUrl === null) {
+                return $verificationMethod($ip);
             }
 
-            return $verificationMethod();
+            $response = Http::get($url);
+
+            return $verificationMethod($response);
         } catch (Exception $e) {
             return true;
         }

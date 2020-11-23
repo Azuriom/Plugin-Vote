@@ -9,16 +9,11 @@ use Azuriom\Plugin\Vote\Verification\VoteChecker;
 
 class ApiController extends Controller
 {
-    /**
-     * https://gtop100.com/test/pingback.
-     */
-    public function pingback(Request $request, $site)
+    public function pingback(Request $request, string $site)
     {
         $checker = app(VoteChecker::class);
         $verifier = $checker->getVerificationForSite($site);
-        $callback = $verifier->getPingbackCallback();
-        $callback($request);
 
-        return response()->noContent();
+        return $verifier->executePingbackCallback($request) ?? response()->noContent();
     }
 }
