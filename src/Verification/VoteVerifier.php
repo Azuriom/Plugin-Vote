@@ -164,6 +164,11 @@ class VoteVerifier
         return ($this->pingbackCallback)($request);
     }
 
+    public function usePingback()
+    {
+        return $this->pingbackCallback !== null;
+    }
+
     public function verifyVote(string $voteUrl, User $user, string $ip = '', string $voteKey = null)
     {
         $retrieveKeyMethod = $this->retrieveKeyMethod;

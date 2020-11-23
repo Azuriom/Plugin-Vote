@@ -204,8 +204,10 @@ class VoteChecker
         return $host;
     }
 
-    public function hasPingback($domain)
+    public function hasPingback(string $domain)
     {
-        return in_array($domain, ['gtop100.com']);
+        $verifier = $this->getVerificationForSite($domain);
+
+        return $verifier !== null && $verifier->usePingback();
     }
 }

@@ -94,7 +94,7 @@ class SiteController extends Controller
 
             if ($checker->hasPingback($host)) {
                 $message .= ' '.trans('vote::admin.sites.verifications.pingback', [
-                    'url' => route('vote.api.sites.pingback', $host)
+                    'url' => route('vote.api.sites.pingback', $host),
                 ]);
             }
 
