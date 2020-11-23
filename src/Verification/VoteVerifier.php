@@ -148,9 +148,9 @@ class VoteVerifier
         $this->verificationMethod = function () {
             $user = auth()->user();
             if ($user->last_login_ip === '127.0.0.1') {
-                $ping = cache(["{$this->siteDomain}-127.0.0.1"]);;
+                $ping = cache()->pull("{$this->siteDomain}-127.0.0.1");
             } else {
-                $ping = cache(["{$this->siteDomain}-{$user->last_login_ip}"]);
+                $ping = cache()->pull("{$this->siteDomain}-{$user->last_login_ip}");
             }
 
             return $ping ?? false;
