@@ -16,7 +16,7 @@ class ApiController extends Controller
         abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99']), 403);
 
         if ($request->Successful == '0') {
-            Pingback::create(['domain'=>'gtop100', 'ip'=> $request->VoterIP]);
+            Pingback::create(['domain'=>'gtop100.com', 'ip'=> $request->VoterIP]);
         }
 
         return response()->noContent();
