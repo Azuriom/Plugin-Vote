@@ -9,6 +9,7 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Azuriom\Plugin\Vote\Models\Pingback;
 
 class VoteVerifier
 {
@@ -137,6 +138,29 @@ class VoteVerifier
         return $this;
     }
 
+    public function verifyByPingback()
+    {
+        $this->verificationMethod = function (){
+            $user = auth()->user();
+            if($user->last_login_ip === '127.0.0.1') {
+                $ping = Pingback::where(['domain', $this->siteDomain])->first();
+            } else {
+                $ping = Pingback::where([
+                    ['ip', $user->last_login_ip],
+                    ['domain', $this->siteDomain]
+                ])->first();
+            }
+                
+            if($ping) {
+                $ping->delete();
+                return true;
+            } else {
+                return false;
+            }
+        };
+        return $this;
+    }
+
     public function verifyVote(string $voteUrl, User $user, string $ip = '', string $voteKey = null)
     {
         $retrieveKeyMethod = $this->retrieveKeyMethod;
@@ -155,9 +179,12 @@ class VoteVerifier
         ], $this->apiUrl);
 
         try {
-            $response = Http::get($url);
-
-            return $verificationMethod($response);
+            if($this->apiUrl) {
+                $response = Http::get($url);
+                return $verificationMethod($response);
+            }
+            
+            return $verificationMethod();
         } catch (Exception $e) {
             return true;
         }

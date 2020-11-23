@@ -131,6 +131,11 @@ class VoteChecker
             ->setApiUrl('https://api.liste-serveurs-minecraft.org/vote/vote_verification.php?server_id={server}&ip={ip}&duration=5')
             ->requireKey('server_id')
             ->verifyByValue('1'));
+        
+        $this->register(VoteVerifier::for('gtop100.com')
+            ->retrieveKeyByRegex('/(?<=\/sitedetails\/)(.*)(?=\?vote=1)/')
+            ->verifyByPingback()
+        );
     }
 
     public function hasVerificationForSite(string $domain)
