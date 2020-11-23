@@ -88,11 +88,15 @@ class SiteController extends Controller
         }
 
         $verifier = $checker->getVerificationForSite($host);
+        $pingbackUrl = '';
+        if ($checker->hasPingback($host)) {
+            $pingbackUrl = " | pingback : ".url("/api/vote/pingback/$host");
+        }
 
         if (! $verifier->requireVerificationKey()) {
             return response()->json([
                 'domain' => $host,
-                'info' => trans('vote::admin.sites.auto-verification'),
+                'info' => trans('vote::admin.sites.auto-verification').$pingbackUrl,
                 'supported' => true,
                 'automatic' => true,
             ]);

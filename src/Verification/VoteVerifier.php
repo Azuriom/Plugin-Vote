@@ -3,7 +3,6 @@
 namespace Azuriom\Plugin\Vote\Verification;
 
 use Azuriom\Models\User;
-use Azuriom\Plugin\Vote\Models\Pingback;
 use Closure;
 use Exception;
 use Illuminate\Http\Client\Response;

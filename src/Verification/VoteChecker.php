@@ -2,12 +2,11 @@
 
 namespace Azuriom\Plugin\Vote\Verification;
 
-use Carbon\Carbon;
 use Azuriom\Models\User;
+use Azuriom\Plugin\Vote\Models\Site;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Azuriom\Plugin\Vote\Models\Site;
-use Azuriom\Plugin\Vote\Models\Pingback;
 use Illuminate\Http\Request;
 
 class VoteChecker
@@ -203,5 +202,10 @@ class VoteChecker
         }
 
         return $host;
+    }
+
+    public function hasPingback($domain)
+    {
+        return in_array($domain, ['gtop100.com']);
     }
 }
