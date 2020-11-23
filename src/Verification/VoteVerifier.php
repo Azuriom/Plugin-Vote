@@ -156,10 +156,10 @@ class VoteVerifier
 
                 return true;
             } else {
-
                 return false;
             }
         };
+
         return $this;
     }
 
