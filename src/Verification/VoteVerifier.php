@@ -149,21 +149,12 @@ class VoteVerifier
         $this->verificationMethod = function () {
             $user = auth()->user();
             if ($user->last_login_ip === '127.0.0.1') {
-                $ping = Pingback::where(['domain', $this->siteDomain])->first();
+                $ping = cache(["{$this->siteDomain}-127.0.0.1"]);;
             } else {
-                $ping = Pingback::where([
-                    ['ip', $user->last_login_ip],
-                    ['domain', $this->siteDomain],
-                ])->first();
+                $ping = cache(["{$this->siteDomain}-{$user->last_login_ip}"]);
             }
 
-            if ($ping) {
-                $ping->delete();
-
-                return true;
-            } else {
-                return false;
-            }
+            return $ping ?? false;
         };
 
         return $this;

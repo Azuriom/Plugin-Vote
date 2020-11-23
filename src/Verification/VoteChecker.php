@@ -141,7 +141,7 @@ class VoteChecker
                 abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99']), 403);
 
                 if ($request->Successful == '0') {
-                    Pingback::create(['domain'=>'gtop100.com', 'ip'=> $request->VoterIP]);
+                    cache(["gtop100.com-{$request->VoterIP}" => true], now()->addMinutes(5));
                 }
             })
         );
