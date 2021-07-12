@@ -155,7 +155,7 @@ class VoteChecker
                 abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99'], true), 403);
 
                 if ($request->input('Successful') === '0') {
-                    Cache::put("vote.sites.gtop100.com.{$request->input('VoterIp')}", true, now()->addMinutes(5));
+                    Cache::put("vote.sites.gtop100.com.{$request->input('VoterIP')}", true, now()->addMinutes(5));
                 }
             }));
     }
