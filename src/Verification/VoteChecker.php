@@ -21,7 +21,6 @@ class VoteChecker
 
     public function __construct()
     {
-
         $this->register(VoteVerifier::for('serveur-minecraft-vote.fr')
             ->setApiUrl('https://serveur-minecraft-vote.fr/api/v1/servers/{server}/vote/{ip}')
             ->retrieveKeyByRegex('/^serveur-minecraft-vote\.fr\/serveurs\/[\w\d-]+\.(\d+).*/')
@@ -233,5 +232,4 @@ class VoteChecker
     {
         return $this->sites;
     }
-
 }
