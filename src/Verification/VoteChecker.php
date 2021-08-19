@@ -223,4 +223,15 @@ class VoteChecker
 
         return $host;
     }
+
+    /**
+     * Returns the list of registered sites
+     *
+     * @return array
+     */
+    public function getSites(): array
+    {
+        return $this->sites;
+    }
+
 }

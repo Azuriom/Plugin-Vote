@@ -7,14 +7,19 @@ use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\Site;
 use Azuriom\Plugin\Vote\Requests\SiteRequest;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SiteController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -24,18 +29,22 @@ class SiteController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function create()
     {
-        return view('vote::admin.sites.create', ['rewards' => Reward::all()]);
+        $checker = app(VoteChecker::class);
+        return view('vote::admin.sites.create', [
+            'rewards' => Reward::all(),
+            'sites' => $checker->getSites(),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Azuriom\Plugin\Vote\Requests\SiteRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param SiteRequest $request
+     * @return Response
      */
     public function store(SiteRequest $request)
     {
@@ -52,14 +61,16 @@ class SiteController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\Site  $site
-     * @return \Illuminate\Http\Response
+     * @param Site $site
+     * @return Response
      */
     public function edit(Site $site)
     {
+        $checker = app(VoteChecker::class);
         return view('vote::admin.sites.edit', [
             'rewards' => Reward::all(),
             'site' => $site->load('rewards'),
+            'sites' => $checker->getSites(),
         ]);
     }
 
@@ -79,7 +90,7 @@ class SiteController extends Controller
             return response()->json(['message' => 'Invalid URL'], 422);
         }
 
-        if (! $checker->hasVerificationForSite($host)) {
+        if (!$checker->hasVerificationForSite($host)) {
             return response()->json([
                 'domain' => $host,
                 'info' => trans('vote::admin.sites.no-verification'),
@@ -89,8 +100,8 @@ class SiteController extends Controller
 
         $verifier = $checker->getVerificationForSite($host);
 
-        if (! $verifier->requireVerificationKey()) {
-            $message = trans('vote::admin.sites.auto-verification').' ';
+        if (!$verifier->requireVerificationKey()) {
+            $message = trans('vote::admin.sites.auto-verification') . ' ';
 
             if ($verifier->hasPingback()) {
                 $message .= trans('vote::admin.sites.verifications.pingback', [
@@ -111,16 +122,16 @@ class SiteController extends Controller
             'info' => trans('vote::admin.sites.key-verification'),
             'supported' => true,
             'automatic' => false,
-            'label' => trans('vote::admin.sites.verifications.'.$verifier->verificationTypeKey()),
+            'label' => trans('vote::admin.sites.verifications.' . $verifier->verificationTypeKey()),
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Azuriom\Plugin\Vote\Requests\SiteRequest  $request
-     * @param  \Azuriom\Plugin\Vote\Models\Site  $site
-     * @return \Illuminate\Http\Response
+     * @param SiteRequest $request
+     * @param Site $site
+     * @return Response
      */
     public function update(SiteRequest $request, Site $site)
     {
@@ -137,10 +148,10 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\Site  $site
-     * @return \Illuminate\Http\Response
+     * @param Site $site
+     * @return Response
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function destroy(Site $site)
     {

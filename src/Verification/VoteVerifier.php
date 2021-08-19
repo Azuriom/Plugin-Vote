@@ -19,7 +19,7 @@ class VoteVerifier
      *
      * @var string
      */
-    private $siteDomain;
+    public $siteDomain;
 
     /**
      * The api url of this site.

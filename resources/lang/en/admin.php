@@ -36,6 +36,8 @@ return [
         'auto-verification' => 'The votes on this site will be automatically verified.',
         'key-verification' => 'The votes on this website will be verified when the input below is filled.',
 
+        'websites' => 'List of sites supported by Azuriom',
+
         'verifications' => [
             'enable' => 'Enable votes verification',
 
