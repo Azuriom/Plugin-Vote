@@ -34,6 +34,7 @@ class SiteController extends Controller
     public function create()
     {
         $checker = app(VoteChecker::class);
+
         return view('vote::admin.sites.create', [
             'rewards' => Reward::all(),
             'sites' => $checker->getSites(),
@@ -67,6 +68,7 @@ class SiteController extends Controller
     public function edit(Site $site)
     {
         $checker = app(VoteChecker::class);
+
         return view('vote::admin.sites.edit', [
             'rewards' => Reward::all(),
             'site' => $site->load('rewards'),
@@ -90,7 +92,7 @@ class SiteController extends Controller
             return response()->json(['message' => 'Invalid URL'], 422);
         }
 
-        if (!$checker->hasVerificationForSite($host)) {
+        if (! $checker->hasVerificationForSite($host)) {
             return response()->json([
                 'domain' => $host,
                 'info' => trans('vote::admin.sites.no-verification'),
@@ -100,8 +102,8 @@ class SiteController extends Controller
 
         $verifier = $checker->getVerificationForSite($host);
 
-        if (!$verifier->requireVerificationKey()) {
-            $message = trans('vote::admin.sites.auto-verification') . ' ';
+        if (! $verifier->requireVerificationKey()) {
+            $message = trans('vote::admin.sites.auto-verification').' ';
 
             if ($verifier->hasPingback()) {
                 $message .= trans('vote::admin.sites.verifications.pingback', [
@@ -122,7 +124,7 @@ class SiteController extends Controller
             'info' => trans('vote::admin.sites.key-verification'),
             'supported' => true,
             'automatic' => false,
-            'label' => trans('vote::admin.sites.verifications.' . $verifier->verificationTypeKey()),
+            'label' => trans('vote::admin.sites.verifications.'.$verifier->verificationTypeKey()),
         ]);
     }
 

@@ -225,7 +225,7 @@ class VoteChecker
     }
 
     /**
-     * Returns the list of registered sites
+     * Returns the list of registered sites.
      *
      * @return array
      */
