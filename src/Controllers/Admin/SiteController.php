@@ -39,7 +39,7 @@ class SiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Azuriom\Plugin\Vote\Requests\SiteRequest  $request
+     * @param  \Azuriom\Plugin\Vote\Requests\SiteRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(SiteRequest $request)
