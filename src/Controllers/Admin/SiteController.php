@@ -7,19 +7,14 @@ use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\Site;
 use Azuriom\Plugin\Vote\Requests\SiteRequest;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
-use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class SiteController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -29,7 +24,7 @@ class SiteController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Application|Factory|View
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -44,8 +39,8 @@ class SiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param SiteRequest $request
-     * @return Response
+     * @param \Azuriom\Plugin\Vote\Requests\SiteRequest  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(SiteRequest $request)
     {
@@ -62,8 +57,8 @@ class SiteController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Site $site
-     * @return Response
+     * @param  \Azuriom\Plugin\Vote\Models\Site  $site
+     * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
     {
@@ -131,9 +126,9 @@ class SiteController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param SiteRequest $request
-     * @param Site $site
-     * @return Response
+     * @param  \Azuriom\Plugin\Vote\Requests\SiteRequest  $request
+     * @param  \Azuriom\Plugin\Vote\Models\Site  $site
+     * @return \Illuminate\Http\Response
      */
     public function update(SiteRequest $request, Site $site)
     {
@@ -150,10 +145,10 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Site $site
-     * @return Response
+     * @param  \Azuriom\Plugin\Vote\Models\Site  $site
+     * @return \Illuminate\Http\Response
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function destroy(Site $site)
     {
