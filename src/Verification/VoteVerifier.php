@@ -189,7 +189,9 @@ class VoteVerifier
 
             foreach ($ips as $ip) {
                 if ($this->apiUrl === null) {
-                    return $verificationMethod($ip);
+                    if ($verificationMethod($ip))
+                        return true;
+                    continue;
                 }
 
                 $url = str_replace([
