@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -87,14 +88,17 @@ class Site extends Model
 
     public function getNextVoteTime(User $user, Request $request)
     {
+        $voteResetAtFixedTime = Str::contains($this->url, 'gtop100.com');
+        $timeForVote = $voteResetAtFixedTime ? now()->timezone('Europe/London')->startOfDay() : now()->subMinutes($this->vote_delay);
+
         $lastVoteTime = $this->votes()
             ->where('user_id', $user->id)
-            ->where('created_at', '>', now()->subMinutes($this->vote_delay))
+            ->where('created_at', '>', $timeForVote)
             ->latest()
             ->value('created_at');
 
         if ($lastVoteTime !== null) {
-            return $lastVoteTime->addMinutes($this->vote_delay);
+            return $voteResetAtFixedTime ? now()->timezone('Europe/London')->endOfDay() : $lastVoteTime->addMinutes($this->vote_delay);
         }
 
         $nextVoteTimeForIp = Cache::get('votes.site.'.$this->id.'.'.$request->ip());
