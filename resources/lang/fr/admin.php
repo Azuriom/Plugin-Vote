@@ -28,7 +28,11 @@ return [
         'info' => 'Vous devez créer votre clé API sur cette page <a href="https://serveur-minecraft-vote.fr/members/developers/keys" target="_blank">https://serveur-minecraft-vote.fr/members/developers/keys</a>. Le webhook va ensuite se créer automatiquement.',
         'fields' => [
             'key' => 'Clé secrète'
-        ]
+        ],
+        'webhook' => [
+            'success' => 'Vous venez de créer le webhook sur Serveur Minecraft Vote.',
+            'error' => 'Une erreur est survenue lors de la création du webhook.',
+        ],
     ],
 
     'sites' => [

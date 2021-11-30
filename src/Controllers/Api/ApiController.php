@@ -15,4 +15,9 @@ class ApiController extends Controller
 
         return $verifier->executePingbackCallback($request) ?? response()->noContent();
     }
+
+    public function webhooks(Request $request, string $site){
+
+    }
+
 }

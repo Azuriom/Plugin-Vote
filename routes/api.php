@@ -14,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::any('/pingback/{site}', 'ApiController@pingback')->name('sites.pingback');
+Route::post('/webhooks/{site}', 'ApiController@webhooks')->name('sites.webhooks');
