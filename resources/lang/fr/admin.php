@@ -8,6 +8,7 @@ return [
         'sites' => 'Sites',
         'rewards' => 'Récompenses',
         'votes' => 'Votes',
+        'smv' => 'Serveur Minecraft Vote'
     ],
 
     'permission' => 'Gérer le plugin vote',
@@ -20,6 +21,10 @@ return [
         'ip-compatibility' => 'Activer la compatibilité IPv6',
         'ip-compatibility-info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
         'commands' => 'Commandes globales',
+    ],
+
+    'smv' => [
+        'title' => 'Paramètres - Serveur Minecraft Vote'
     ],
 
     'sites' => [

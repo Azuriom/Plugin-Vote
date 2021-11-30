@@ -22,4 +22,9 @@ Route::middleware('can:vote.admin')->group(function () {
     Route::resource('sites', 'SiteController')->except('show');
     Route::resource('rewards', 'RewardController')->except('show');
     Route::resource('votes', 'VoteController')->only('index');
+
+    Route::prefix('serveur/minecraft/vote')->name('smv.')->group(function (){
+        Route::get('/', 'ServeurMinecraftVoteController@index')->name('index');
+        Route::post('/store', 'ServeurMinecraftVoteController@store')->name('store');
+    });
 });
