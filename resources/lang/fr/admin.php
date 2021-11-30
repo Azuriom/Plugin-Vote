@@ -24,7 +24,11 @@ return [
     ],
 
     'smv' => [
-        'title' => 'Paramètres - Serveur Minecraft Vote'
+        'title' => 'Paramètres - Serveur Minecraft Vote',
+        'info' => 'Vous devez créer votre clé API sur cette page <a href="https://serveur-minecraft-vote.fr/members/developers/keys" target="_blank">https://serveur-minecraft-vote.fr/members/developers/keys</a>. Le webhook va ensuite se créer automatiquement.',
+        'fields' => [
+            'key' => 'Clé secrète'
+        ]
     ],
 
     'sites' => [
