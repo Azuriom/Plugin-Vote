@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Controllers\Api;
 
 use Azuriom\Http\Controllers\Controller;
+use Azuriom\Plugin\Vote\Sites\ServeurMinecraftVote;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,11 @@ class ApiController extends Controller
     }
 
     public function webhooks(Request $request, string $site){
-
+        if ($site === 'smv'){
+            $smv = new ServeurMinecraftVote();
+            return $smv->webhook($request);
+        }
+        return "Website not found";
     }
 
 }
