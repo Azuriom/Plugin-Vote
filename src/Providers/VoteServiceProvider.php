@@ -17,7 +17,7 @@ class VoteServiceProvider extends BasePluginServiceProvider
      */
     public function register()
     {
-        //
+        require_once __DIR__.'/../../vendor/autoload.php';
     }
 
     /**
