@@ -14,5 +14,9 @@
     "require": {
         "php": ">=7.2",
         "groupez/serveur-minecraft-vote-php": "^1.0.1"
+    },
+    "replace": {
+        "guzzlehttp/guzzle": "*",
+        "psr/log": "*"
     }
 }
