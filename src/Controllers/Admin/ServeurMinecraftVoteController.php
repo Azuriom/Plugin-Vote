@@ -49,11 +49,21 @@ class ServeurMinecraftVoteController extends Controller
         ]);
 
         $secretKey = $request['key'];
-        $smv = new ServeurMinecraftVote($secretKey);
-
-        $url = route('vote.api.sites.webhooks', ['site' => 'smv']);
         try {
-            $webhook = $smv->createWebhook($url, self::WEBHOOK_EVENTS, 'Azuriom');
+
+            $smv = new ServeurMinecraftVote($secretKey);
+
+            $url = route('vote.api.sites.webhooks', ['site' => 'smv']);
+            $webhooks = $smv->getWebhooks();
+
+            foreach ($webhooks as $webhook){
+                if ($webhook->endpoint == $url){
+                    return redirect()->route('vote.admin.smv.index')
+                        ->with('error', trans('vote::admin.smv.webhook.already'));
+                }
+            }
+
+            $webhook = $smv->createWebhook($url, self::WEBHOOK_EVENTS, setting('name', 'Azuriom'));
 
             $setting = [
                 self::SETTINGS_KEY => $secretKey,
@@ -62,10 +72,10 @@ class ServeurMinecraftVoteController extends Controller
             Setting::updateSettings($setting);
 
             return redirect()->route('vote.admin.smv.index')
-                ->with('success', trans('vote::admin.smv.webhook.error'));
+                ->with('success', trans('vote::admin.smv.webhook.success'));
         } catch (GuzzleException | WebhookCreateException $e) {
             return redirect()->route('vote.admin.smv.index')
-                ->with('danger', trans('vote::admin.smv.webhook.success'));
+                ->with('error', trans('vote::admin.smv.webhook.error'));
         }
     }
 
