@@ -13,7 +13,7 @@
     },
     "require": {
         "php": ">=7.2",
-        "groupez/serveur-minecraft-vote-php": "^1.0.1"
+        "groupez/serveur-minecraft-vote-php": ">=1.0.2"
     },
     "replace": {
         "guzzlehttp/guzzle": "*",
