@@ -4,7 +4,7 @@
     <label for="webhookSelect">{{ trans('vote::admin.smv.fields.webhook') }}</label>
     <select class="custom-select @error('webhook') is-invalid @enderror" id="webhookSelect" name="webhook" required>
         @foreach($webhooks as $webhook)
-            <option value="{{ $webhook }}" @if(($reward->$webhook ?? '') === $webhook) selected @endif>{{ $webhook }}</option>
+            <option value="{{ $webhook }}" @if(($reward->webhook ?? '') === $webhook) selected @endif>{{ $webhook }}</option>
         @endforeach
     </select>
     <small>{!! trans('vote::admin.smv.webhook.info') !!}</small>
