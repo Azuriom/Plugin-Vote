@@ -1,15 +1,15 @@
 @csrf
 
 <div class="form-group">
-    <label for="serverSelect">{{ trans('vote::admin.smv.fields.webhook') }}</label>
-    <select class="custom-select @error('server_id') is-invalid @enderror" id="serverSelect" name="server_id" required>
+    <label for="webhookSelect">{{ trans('vote::admin.smv.fields.webhook') }}</label>
+    <select class="custom-select @error('webhook') is-invalid @enderror" id="webhookSelect" name="webhook" required>
         @foreach($webhooks as $webhook)
             <option value="{{ $webhook }}" @if(($reward->$webhook ?? '') === $webhook) selected @endif>{{ $webhook }}</option>
         @endforeach
     </select>
     <small>{!! trans('vote::admin.smv.webhook.info') !!}</small>
 
-    @error('server_id')
+    @error('webhook')
     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
     @enderror
 </div>

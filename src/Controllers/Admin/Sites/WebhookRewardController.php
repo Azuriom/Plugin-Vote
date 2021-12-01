@@ -28,7 +28,7 @@ class WebhookRewardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param WebhookRewardRequest $request
+     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(WebhookRewardRequest $request)
@@ -42,45 +42,46 @@ class WebhookRewardController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\Reward  $reward
+     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
      * @return \Illuminate\Http\Response
      */
-    public function edit(Reward $reward)
+    public function edit(WebhookReward $reward)
     {
-        return view('vote::admin.rewards.edit', [
+        return view('vote::admin.rewards.webhooks.edit', [
             'reward' => $reward->load('server'),
             'servers' => Server::executable()->get(),
+            'webhooks' => ServeurMinecraftVoteController::WEBHOOK_EVENTS,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param RewardRequest $request
-     * @param  \Azuriom\Plugin\Vote\Models\Reward  $reward
+     * @param WebhookRewardRequest $request
+     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
      * @return \Illuminate\Http\Response
      */
-    public function update(RewardRequest $request, Reward $reward)
+    public function update(WebhookRewardRequest $request, WebhookReward $reward)
     {
         $reward->update($request->validated());
 
-        return redirect()->route('vote.admin.rewards.index')
+        return redirect()->route('vote.admin.smv.index')
             ->with('success', trans('vote::admin.rewards.status.updated'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\Reward  $reward
+     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
      * @return \Illuminate\Http\Response
      *
      * @throws \Exception
      */
-    public function destroy(Reward $reward)
+    public function destroy(WebhookReward $reward)
     {
         $reward->delete();
 
-        return redirect()->route('vote.admin.rewards.index')
+        return redirect()->route('vote.admin.smv.index')
             ->with('success', trans('vote::admin.rewards.status.deleted'));
     }
 }

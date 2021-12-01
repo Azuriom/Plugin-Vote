@@ -34,7 +34,7 @@ class ServeurMinecraftVoteController extends Controller
 
         return view('vote::admin.smv.index', [
             'key' => $key,
-            'rewards' => WebhookReward::with('servers')->get(),
+            'rewards' => WebhookReward::with('server')->get(),
         ]);
     }
 
