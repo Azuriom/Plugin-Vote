@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Sites;
 
 use Azuriom\Plugin\Vote\Controllers\Admin\Sites\ServeurMinecraftVoteController;
+use Azuriom\Plugin\Vote\Models\WebhookHistory;
 use Azuriom\Plugin\Vote\Models\WebhookReward;
 use Exception;
 use Illuminate\Http\Request;
@@ -33,17 +34,22 @@ class ServeurMinecraftVoteWebhook
 
         $data = json_decode($jsonData);
 
-        $reward = WebhookReward::getRandomReward($data->type);
+        $reward = WebhookReward::getRandomReward($data->type, $data->user->name);
 
-        if (empty($reward)){
+        if (empty($reward)) {
             return "No reward found for $data->type";
         }
 
         $reward->giveTo($data->user);
 
+        WebhookHistory::create([
+            'webhook_reward_id' => $reward->id,
+            'name' => $data->user->name,
+            'address' => $data->user->address,
+        ]);
+
         return "OK";
     }
-
 
 
 }

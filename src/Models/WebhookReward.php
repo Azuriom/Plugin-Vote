@@ -64,10 +64,11 @@ class WebhookReward extends Model
      * Return a reward
      *
      * @param string $type
+     * @param $user
      * @return WebhookReward|null
      * @throws Exception
      */
-    public static function getRandomReward(string $type): ?WebhookReward
+    public static function getRandomReward(string $type, $user): ?WebhookReward
     {
         $rewards = self::where('webhook', $type)->where('is_enabled', true)->get();
         $total = $rewards->sum('chances');
@@ -79,11 +80,18 @@ class WebhookReward extends Model
             $sum += $reward->chances;
 
             if ($sum >= $random) {
+
+                $historyCount = WebhookHistory::where('webhook_reward_id', $reward->id)->where('name', $user)->count();
+
+                if ($reward->limit !== 0 && $historyCount > $reward->limit){
+                    continue;
+                }
+
                 return $reward;
             }
         }
 
-        return $rewards->first();
+        return null;
     }
 
     public function server()
