@@ -30,22 +30,23 @@ class ServeurMinecraftVoteWebhook
 
         $header = $request->header('X-SMV-Signature');
         $jsonData = $request['data'];
+        $jsonData = is_array($jsonData) ? json_encode($jsonData) : $jsonData;
+
         $smv->verifyHeader($jsonData, $header, $key);
 
-        $data = json_decode($jsonData);
-
-        $reward = WebhookReward::getRandomReward($data->type, $data->user->name);
+        $type= $request['type'];
+        $data = $request['data'];
+        $reward = WebhookReward::getRandomReward($type, $data['user']['name']);
 
         if (empty($reward)) {
-            return "No reward found for $data->type";
+            return "No reward found for $type";
         }
 
-        $reward->giveTo($data->user);
+        $reward->giveTo($data['user']['name'] ?? '');
 
         WebhookHistory::create([
             'webhook_reward_id' => $reward->id,
-            'name' => $data->user->name,
-            'address' => $data->user->address,
+            'name' => $data['user']['name'],
         ]);
 
         return "OK";

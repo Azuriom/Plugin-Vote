@@ -83,7 +83,8 @@ class WebhookReward extends Model
 
                 $historyCount = WebhookHistory::where('webhook_reward_id', $reward->id)->where('name', $user)->count();
 
-                if ($reward->limit !== 0 && $historyCount > $reward->limit){
+                if ($reward->limit !== 0 && $historyCount >=
+                    $reward->limit){
                     continue;
                 }
 
@@ -99,12 +100,12 @@ class WebhookReward extends Model
         return $this->belongsTo(Server::class);
     }
 
-    public function giveTo($userJson)
+    public function giveTo($userName)
     {
 
         if ($this->money > 0) {
 
-            $user = User::where('name', $userJson->name)->first();
+            $user = User::where('name', $userName)->first();
 
             if (isset($user)) {
                 $user->addMoney($this->money);
@@ -120,7 +121,7 @@ class WebhookReward extends Model
         }, $commands);
 
         if ($this->server !== null && ! empty($commands)) {
-            $this->server->bridge()->executeCommands($commands, $userJson->name ?? '', $this->need_online);
+            $this->server->bridge()->executeCommands($commands, $userName, $this->need_online);
         }
     }
 

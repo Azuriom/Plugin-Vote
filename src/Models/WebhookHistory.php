@@ -24,7 +24,7 @@ class WebhookHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'webhook_reward_id', 'name', 'address',
+        'webhook_reward_id', 'name',
     ];
 
 }

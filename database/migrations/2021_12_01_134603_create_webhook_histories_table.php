@@ -17,7 +17,6 @@ class CreateWebhookHistoriesTable extends Migration
             $table->id();
             $table->unsignedInteger('webhook_reward_id');
             $table->string('name');
-            $table->string('address');
             $table->timestamps();
 
             $table->foreign('webhook_reward_id')->references('id')->on('vote_webhook_rewards')->onDelete('cascade');
