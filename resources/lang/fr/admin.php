@@ -29,7 +29,9 @@ return [
         'fields' => [
             'key' => 'Clé secrète',
             'webhook' => 'Webhook',
+            'limit' => 'Limite',
         ],
+        'limit' => 'Vous pouvez ajouter une limite de récompense par utilisateur. Pour ne pas avoir de limite vous devez mettre 0',
         'webhook' => [
             'success' => 'Vous venez de créer le webhook sur Serveur Minecraft Vote.',
             'error' => 'Une erreur est survenue lors de la création du webhook.',

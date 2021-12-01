@@ -24,6 +24,7 @@ class CreateWebhookRewardsTable extends Migration
             $table->text('commands')->nullable();
             $table->boolean('need_online')->default(false);
             $table->boolean('is_enabled')->default(true);
+            $table->integer('limit')->default(0);
             $table->timestamps();
         });
     }

@@ -25,7 +25,7 @@ class WebhookReward extends Model
      * @var array
      */
     protected $fillable = [
-        'site', 'webhook', 'name', 'server_id', 'chances', 'money', 'commands', 'need_online', 'is_enabled',
+        'site', 'webhook', 'name', 'server_id', 'chances', 'money', 'commands', 'need_online', 'is_enabled', 'limit'
     ];
 
     /**

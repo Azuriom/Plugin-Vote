@@ -55,7 +55,7 @@
     <label for="moneyInput">{{ trans('messages.fields.money') }}</label>
 
     <div class="input-group">
-        <input type="text" class="form-control @error('money') is-invalid @enderror" id="moneyInput" name="money" value="{{ old('money', $reward->money ?? '') }}">
+        <input type="text" class="form-control @error('money') is-invalid @enderror" id="moneyInput" name="money" value="{{ old('money', $reward->money ?? 0) }}">
         <div class="input-group-append">
             <div class="input-group-text">{{ money_name() }}</div>
         </div>
@@ -64,6 +64,19 @@
         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
         @enderror
     </div>
+</div>
+
+<div class="form-group">
+    <label for="limitInput">{{ trans('vote::admin.smv.fields.limit') }}</label>
+
+    <div class="input-group">
+        <input type="text" class="form-control @error('limit') is-invalid @enderror" id="limitInput" name="limit" value="{{ old('limit', $reward->limit ?? 0) }}">
+
+        @error('limit')
+        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+        @enderror
+    </div>
+    <small>{{ trans('vote::admin.smv.limit') }}</small>
 </div>
 
 <div class="form-group custom-control custom-switch">

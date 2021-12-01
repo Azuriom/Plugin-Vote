@@ -33,6 +33,7 @@ class WebhookRewardRequest extends FormRequest
             'server_id' => ['required', Rule::exists('servers', 'id')],
             'chances' => ['required', 'integer', 'between:1,100'],
             'money' => ['nullable', 'numeric', 'min:0'],
+            'limit' => ['nullable', 'numeric', 'min:0'],
             'need_online' => ['filled', 'boolean'],
             'commands' => ['sometimes', 'nullable', 'array'],
             'is_enabled' => ['filled', 'boolean'],
