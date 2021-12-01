@@ -46,6 +46,7 @@
                         <th scope="col">{{ trans('vote::admin.smv.fields.webhook') }}</th>
                         <th scope="col">{{ trans('vote::messages.fields.server') }}</th>
                         <th scope="col">{{ trans('vote::messages.fields.chances') }}</th>
+                        <th scope="col">{{ trans('vote::admin.smv.fields.limit') }}</th>
                         <th scope="col">{{ trans('messages.fields.enabled') }}</th>
                         <th scope="col">{{ trans('messages.fields.action') }}</th>
                     </tr>
@@ -58,6 +59,7 @@
                             <td>{{ $reward->webhook }}</td>
                             <td>{{ $reward->server->name ?? '?' }}</td>
                             <td>{{ $reward->chances }} %</td>
+                            <td>{{ $reward->limit === 0 ? 'Aucune limite' : $reward->limit }}</td>
                             <td>
                                 <span class="badge badge-{{ $reward->is_enabled ? 'success' : 'danger' }}">
                                     {{ trans_bool($reward->is_enabled) }}

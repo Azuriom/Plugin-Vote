@@ -2,7 +2,9 @@
 
 namespace Azuriom\Plugin\Vote\Sites;
 
-use Azuriom\Plugin\Vote\Controllers\Admin\ServeurMinecraftVoteController;
+use Azuriom\Plugin\Vote\Controllers\Admin\Sites\ServeurMinecraftVoteController;
+use Azuriom\Plugin\Vote\Models\WebhookReward;
+use Exception;
 use Illuminate\Http\Request;
 use ServeurMinecraftVote\Exceptions\SignatureVerificationException;
 use ServeurMinecraftVote\ServeurMinecraftVote;
@@ -12,6 +14,7 @@ class ServeurMinecraftVoteWebhook
 
     /**
      * @throws SignatureVerificationException
+     * @throws Exception
      */
     public function webhook(Request $request): string
     {
@@ -30,14 +33,17 @@ class ServeurMinecraftVoteWebhook
 
         $data = json_decode($jsonData);
 
-        switch ($data->type) {
-            case "user.follow":
+        $reward = WebhookReward::getRandomReward($data->type);
 
-                break;
-
+        if (empty($reward)){
+            return "No reward found for $data->type";
         }
+
+        $reward->giveTo($data->user);
 
         return "OK";
     }
+
+
 
 }
