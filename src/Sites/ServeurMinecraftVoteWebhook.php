@@ -25,12 +25,12 @@ class ServeurMinecraftVoteWebhook
         }
 
         $header = $request->header('X-SMV-Signature');
-        $data = json_encode($request->all());
-        $smv->verifyHeader($data, $header, $key);
+        $jsonData = $request['data'];
+        $smv->verifyHeader($jsonData, $header, $key);
 
-        $type = $request['type'];
+        $data = json_decode($jsonData);
 
-        switch ($type) {
+        switch ($data->type) {
             case "user.follow":
 
                 break;
