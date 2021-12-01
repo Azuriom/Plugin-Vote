@@ -27,13 +27,16 @@ return [
         'title' => 'Paramètres - Serveur Minecraft Vote',
         'info' => 'Vous devez créer votre clé API sur cette page <a href="https://serveur-minecraft-vote.fr/members/developers/keys" target="_blank">https://serveur-minecraft-vote.fr/members/developers/keys</a>. Le webhook va ensuite se créer automatiquement.',
         'fields' => [
-            'key' => 'Clé secrète'
+            'key' => 'Clé secrète',
+            'webhook' => 'Webhook',
         ],
         'webhook' => [
             'success' => 'Vous venez de créer le webhook sur Serveur Minecraft Vote.',
             'error' => 'Une erreur est survenue lors de la création du webhook.',
             'already' => 'Le webhook existe déjà, vous ne pouvez pas le recréer.',
+            'info' => 'Vous pouvez retrouver la liste des webhooks sur cette page <a href="https://docs.serveur-minecraft-vote.fr/webhook">https://docs.serveur-minecraft-vote.fr/webhook</a>',
         ],
+        'rewards' => 'Récompenses'
     ],
 
     'sites' => [
