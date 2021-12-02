@@ -6,7 +6,6 @@ use Azuriom\Http\Controllers\Controller;
 use Azuriom\Plugin\Vote\Controllers\Admin\Sites\ServeurMinecraftVoteController;
 use Azuriom\Plugin\Vote\Models\WebhookHistory;
 use Azuriom\Plugin\Vote\Models\WebhookReward;
-use Azuriom\Plugin\Vote\Sites\ServeurMinecraftVoteWebhook;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
 use Exception;
 use Illuminate\Http\Request;
@@ -66,7 +65,7 @@ class ApiController extends Controller
             if (empty($reward)) {
                 return "No reward found for $type";
             }
-            
+
             $reward->giveTo($data['user']['name'] ?? '');
 
             if ($reward->limit !== 0) {
