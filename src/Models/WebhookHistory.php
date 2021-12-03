@@ -6,6 +6,11 @@ use Azuriom\Models\Traits\HasTablePrefix;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $name
+ * @property int $webhook_reward_id
+ * @property WebhookReward $webhook
+ */
 class WebhookHistory extends Model
 {
     use HasTablePrefix;
@@ -26,5 +31,9 @@ class WebhookHistory extends Model
     protected $fillable = [
         'webhook_reward_id', 'name',
     ];
+
+    public function webhook(){
+        return $this->belongsTo(WebhookReward::class, 'webhook_reward_id');
+    }
 
 }

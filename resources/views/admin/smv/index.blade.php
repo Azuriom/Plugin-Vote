@@ -79,4 +79,36 @@
             </a>
         </div>
     </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header">
+            {{ trans('vote::admin.smv.logs') }}
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{{ trans('vote::admin.smv.fields.player') }}</th>
+                        <th scope="col">{{ trans('vote::admin.smv.fields.webhook') }}</th>
+                        <th scope="col">{{ trans('messages.fields.name') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($logs as $log)
+                            <tr>
+                                <th scope="row">{{ $log->id }}</th>
+                                <th scope="row">{{ $log->name }}</th>
+                                <th scope="row">{{ $log->webhook->webhook }}</th>
+                                <th scope="row">{{ $log->webhook->name }}</th>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            {{ $logs->withQueryString()->links() }}
+        </div>
+    </div>
+
 @endsection

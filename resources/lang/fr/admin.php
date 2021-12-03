@@ -30,6 +30,7 @@ return [
             'key' => 'Clé secrète',
             'webhook' => 'Webhook',
             'limit' => 'Limite',
+            'player' => 'Joueur',
         ],
         'limit' => 'Vous pouvez ajouter une limite de récompense par utilisateur. Pour ne pas avoir de limite vous devez mettre 0',
         'webhook' => [
@@ -38,7 +39,8 @@ return [
             'already' => 'Le webhook existe déjà, vous ne pouvez pas le recréer.',
             'info' => 'Vous pouvez retrouver la liste des webhooks sur cette page <a href="https://docs.serveur-minecraft-vote.fr/webhook">https://docs.serveur-minecraft-vote.fr/webhook</a>',
         ],
-        'rewards' => 'Récompenses'
+        'rewards' => 'Récompenses',
+        'logs' => 'Historique',
     ],
 
     'sites' => [

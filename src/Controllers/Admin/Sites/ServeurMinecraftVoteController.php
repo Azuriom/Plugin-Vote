@@ -4,6 +4,7 @@ namespace Azuriom\Plugin\Vote\Controllers\Admin\Sites;
 
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\Setting;
+use Azuriom\Plugin\Vote\Models\WebhookHistory;
 use Azuriom\Plugin\Vote\Models\WebhookReward;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\RedirectResponse;
@@ -35,6 +36,7 @@ class ServeurMinecraftVoteController extends Controller
         return view('vote::admin.smv.index', [
             'key' => $key,
             'rewards' => WebhookReward::with('server')->get(),
+            'logs' => WebhookHistory::with('webhook')->latest()->paginate(),
         ]);
     }
 
