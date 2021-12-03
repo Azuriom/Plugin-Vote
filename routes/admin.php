@@ -23,7 +23,7 @@ Route::middleware('can:vote.admin')->group(function () {
     Route::resource('rewards', 'WebhookRewardController')->except('show');
     Route::resource('votes', 'VoteController')->only('index');
 
-    Route::prefix('serveur/minecraft/vote')->name('smv.')->group(function (){
+    Route::prefix('serveur/minecraft/vote')->name('smv.')->group(function () {
         Route::get('/', 'Sites\ServeurMinecraftVoteController@index')->name('index');
         Route::post('/store', 'Sites\ServeurMinecraftVoteController@store')->name('store');
         Route::resource('rewards', 'Sites\WebhookRewardController')->except(['show', 'index']);

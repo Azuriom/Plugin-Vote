@@ -23,8 +23,8 @@ class ApiController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param string $site
+     * @param Request  $request
+     * @param string  $site
      * @return string
      *
      * @throws Exception

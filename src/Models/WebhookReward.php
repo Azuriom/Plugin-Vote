@@ -47,7 +47,7 @@ class WebhookReward extends Model
      * @var array
      */
     protected $fillable = [
-        'site', 'webhook', 'name', 'server_id', 'chances', 'money', 'commands', 'need_online', 'is_enabled', 'limit'
+        'site', 'webhook', 'name', 'server_id', 'chances', 'money', 'commands', 'need_online', 'is_enabled', 'limit',
     ];
 
     /**
@@ -63,7 +63,7 @@ class WebhookReward extends Model
     /**
      * Return a reward.
      *
-     * @param string $type
+     * @param string  $type
      * @param $user
      * @return WebhookReward|null
      *
@@ -118,7 +118,7 @@ class WebhookReward extends Model
             return str_replace('{reward}', $this->name, $el);
         }, $commands);
 
-        if ($this->server !== null && !empty($commands)) {
+        if ($this->server !== null && ! empty($commands)) {
             $this->server->bridge()->executeCommands($commands, $userName, $this->need_online);
         }
     }

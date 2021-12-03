@@ -16,8 +16,8 @@ use ServeurMinecraftVote\ServeurMinecraftVote;
 
 class ServeurMinecraftVoteController extends Controller
 {
-    const SETTINGS_KEY = "vote::smv.key";
-    const SETTINGS_WEBHOOK = "vote::smv.webhook";
+    const SETTINGS_KEY = 'vote::smv.key';
+    const SETTINGS_WEBHOOK = 'vote::smv.webhook';
 
     const WEBHOOK_EVENTS = [
         'user.follow',
@@ -40,7 +40,7 @@ class ServeurMinecraftVoteController extends Controller
     }
 
     /**
-     * Create Webhook
+     * Create Webhook.
      *
      * @throws ValidationException
      */
@@ -75,7 +75,7 @@ class ServeurMinecraftVoteController extends Controller
 
             return redirect()->route('vote.admin.smv.index')
                 ->with('success', trans('vote::admin.smv.webhook.success'));
-        } catch (GuzzleException | WebhookCreateException $e) {
+        } catch (GuzzleException|WebhookCreateException $e) {
             return redirect()->route('vote.admin.smv.index')
                 ->with('error', trans('vote::admin.smv.webhook.error'));
         }
