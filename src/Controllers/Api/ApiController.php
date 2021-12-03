@@ -40,7 +40,6 @@ class ApiController extends Controller
 
         try {
 
-
             $smv = new ServeurMinecraftVote();
 
             $key = setting(ServeurMinecraftVoteController::SETTINGS_WEBHOOK);
@@ -53,17 +52,17 @@ class ApiController extends Controller
             }
 
             $header = $request->header('X-SMV-Signature');
-            $jsonData = $request['data'];
-            $jsonData = is_array($jsonData) ? json_encode($jsonData) : $jsonData;
-
-            //   $smv->verifyHeader($jsonData, $header, $key);
+            $smv->verifyHeader($request->getContent(), $header, $key);
 
             $type = $request['type'];
             $data = $request['data'];
             $reward = WebhookReward::getRandomReward($type, $data['user']['name'] ?? '');
 
             if (empty($reward)) {
-                return "No reward found for $type";
+                return json_encode([
+                    'status' => 'error',
+                    'message' => "No reward found for $type",
+                ]);
             }
 
             $reward->giveTo($data['user']['name'] ?? '');
