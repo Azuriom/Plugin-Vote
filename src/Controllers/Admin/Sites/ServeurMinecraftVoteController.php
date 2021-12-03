@@ -16,7 +16,6 @@ use ServeurMinecraftVote\ServeurMinecraftVote;
 
 class ServeurMinecraftVoteController extends Controller
 {
-
     const SETTINGS_KEY = "vote::smv.key";
     const SETTINGS_WEBHOOK = "vote::smv.webhook";
 
@@ -29,8 +28,8 @@ class ServeurMinecraftVoteController extends Controller
         'train.vote',
     ];
 
-    public function index(){
-
+    public function index()
+    {
         $key = Str::limit(setting(self::SETTINGS_KEY), 20);
 
         return view('vote::admin.smv.index', [
@@ -47,9 +46,8 @@ class ServeurMinecraftVoteController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
         $this->validate($request, [
-           'key' => ['required', 'min:30', 'starts_with:smv_sk_'],
+            'key' => ['required', 'min:30', 'starts_with:smv_sk_'],
         ]);
 
         $secretKey = $request['key'];
@@ -60,8 +58,8 @@ class ServeurMinecraftVoteController extends Controller
             $url = route('vote.api.sites.webhooks', ['site' => 'smv']);
             $webhooks = $smv->getWebhooks();
 
-            foreach ($webhooks as $webhook){
-                if ($webhook->endpoint == $url){
+            foreach ($webhooks as $webhook) {
+                if ($webhook->endpoint == $url) {
                     return redirect()->route('vote.admin.smv.index')
                         ->with('error', trans('vote::admin.smv.webhook.already'));
                 }

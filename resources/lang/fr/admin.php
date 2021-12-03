@@ -8,7 +8,7 @@ return [
         'sites' => 'Sites',
         'rewards' => 'Récompenses',
         'votes' => 'Votes',
-        'smv' => 'Serveur Minecraft Vote'
+        'smv' => 'Serveur Minecraft Vote',
     ],
 
     'permission' => 'Gérer le plugin vote',

@@ -26,11 +26,11 @@ class ApiController extends Controller
      * @param Request $request
      * @param string $site
      * @return string
+     *
      * @throws Exception
      */
     public function webhooks(Request $request, string $site)
     {
-
         if ($site !== 'smv') {
             return json_encode([
                 'status' => 'error',
@@ -39,7 +39,6 @@ class ApiController extends Controller
         }
 
         try {
-
             $smv = new ServeurMinecraftVote();
 
             $key = setting(ServeurMinecraftVoteController::SETTINGS_WEBHOOK);

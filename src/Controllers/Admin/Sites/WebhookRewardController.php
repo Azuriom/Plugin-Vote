@@ -4,18 +4,18 @@ namespace Azuriom\Plugin\Vote\Controllers\Admin\Sites;
 
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\Server;
-use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\WebhookReward;
-use Azuriom\Plugin\Vote\Requests\RewardRequest;
 use Azuriom\Plugin\Vote\Requests\WebhookRewardRequest;
+use Exception;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 
 class WebhookRewardController extends Controller
 {
-
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -28,8 +28,8 @@ class WebhookRewardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
-     * @return \Illuminate\Http\RedirectResponse
+     * @param WebhookReward $reward
+     * @return RedirectResponse
      */
     public function store(WebhookRewardRequest $request)
     {
@@ -42,8 +42,8 @@ class WebhookRewardController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
-     * @return \Illuminate\Http\Response
+     * @param WebhookReward $reward
+     * @return Response
      */
     public function edit(WebhookReward $reward)
     {
@@ -58,8 +58,8 @@ class WebhookRewardController extends Controller
      * Update the specified resource in storage.
      *
      * @param WebhookRewardRequest $request
-     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
-     * @return \Illuminate\Http\Response
+     * @param WebhookReward $reward
+     * @return Response
      */
     public function update(WebhookRewardRequest $request, WebhookReward $reward)
     {
@@ -72,10 +72,10 @@ class WebhookRewardController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Azuriom\Plugin\Vote\Models\WebhookReward  $reward
-     * @return \Illuminate\Http\Response
+     * @param WebhookReward $reward
+     * @return Response
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function destroy(WebhookReward $reward)
     {

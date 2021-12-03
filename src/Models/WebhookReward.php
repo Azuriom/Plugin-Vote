@@ -61,11 +61,12 @@ class WebhookReward extends Model
     ];
 
     /**
-     * Return a reward
+     * Return a reward.
      *
      * @param string $type
      * @param $user
      * @return WebhookReward|null
+     *
      * @throws Exception
      */
     public static function getRandomReward(string $type, $user): ?WebhookReward
@@ -84,7 +85,7 @@ class WebhookReward extends Model
                 $historyCount = WebhookHistory::where('webhook_reward_id', $reward->id)->where('name', $user)->count();
 
                 if ($reward->limit !== 0 && $historyCount >=
-                    $reward->limit){
+                    $reward->limit) {
                     continue;
                 }
 
@@ -102,16 +103,13 @@ class WebhookReward extends Model
 
     public function giveTo($userName)
     {
-
         if ($this->money > 0) {
-
             $user = User::where('name', $userName)->first();
 
             if (isset($user)) {
                 $user->addMoney($this->money);
                 $user->save();
             }
-
         }
 
         $commands = $this->commands ?? [];
@@ -120,9 +118,8 @@ class WebhookReward extends Model
             return str_replace('{reward}', $this->name, $el);
         }, $commands);
 
-        if ($this->server !== null && ! empty($commands)) {
+        if ($this->server !== null && !empty($commands)) {
             $this->server->bridge()->executeCommands($commands, $userName, $this->need_online);
         }
     }
-
 }
