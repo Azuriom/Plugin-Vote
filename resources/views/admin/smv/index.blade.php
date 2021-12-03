@@ -74,6 +74,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info"></i> {!! trans('vote::admin.smv.rewards_info') !!}
+            </div>
             <a class="btn btn-primary" href="{{ route('vote.admin.smv.rewards.create') }}">
                 <i class="fas fa-plus"></i> {{ trans('messages.actions.add') }}
             </a>
