@@ -20,7 +20,7 @@ Route::middleware('can:vote.admin')->group(function () {
     Route::get('sites/verification', 'SiteController@verificationForUrl')->name('sites.verification');
 
     Route::resource('sites', 'SiteController')->except('show');
-    Route::resource('rewards', 'WebhookRewardController')->except('show');
+    Route::resource('rewards', 'RewardController')->except('show');
     Route::resource('votes', 'VoteController')->only('index');
 
     Route::prefix('serveur/minecraft/vote')->name('smv.')->group(function () {
