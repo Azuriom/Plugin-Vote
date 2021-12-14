@@ -81,7 +81,6 @@ class WebhookReward extends Model
             $sum += $reward->chances;
 
             if ($sum >= $random) {
-
                 $historyCount = WebhookHistory::where('webhook_reward_id', $reward->id)->where('name', $user)->count();
 
                 if ($reward->limit !== 0 && $historyCount >=
