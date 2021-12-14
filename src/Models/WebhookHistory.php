@@ -36,5 +36,4 @@ class WebhookHistory extends Model
     {
         return $this->belongsTo(WebhookReward::class, 'webhook_reward_id');
     }
-
 }

@@ -52,7 +52,6 @@ class ServeurMinecraftVoteController extends Controller
 
         $secretKey = $request['key'];
         try {
-
             $smv = new ServeurMinecraftVote($secretKey);
 
             $url = route('vote.api.sites.webhooks', ['site' => 'smv']);
@@ -80,5 +79,4 @@ class ServeurMinecraftVoteController extends Controller
                 ->with('error', trans('vote::admin.smv.webhook.error'));
         }
     }
-
 }

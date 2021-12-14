@@ -28,7 +28,7 @@ class WebhookRewardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param WebhookReward  $reward
+     * @param  WebhookReward  $reward
      * @return RedirectResponse
      */
     public function store(WebhookRewardRequest $request)
@@ -42,7 +42,7 @@ class WebhookRewardController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param WebhookReward  $reward
+     * @param  WebhookReward  $reward
      * @return Response
      */
     public function edit(WebhookReward $reward)
@@ -57,8 +57,8 @@ class WebhookRewardController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param WebhookRewardRequest  $request
-     * @param WebhookReward  $reward
+     * @param  WebhookRewardRequest  $request
+     * @param  WebhookReward  $reward
      * @return Response
      */
     public function update(WebhookRewardRequest $request, WebhookReward $reward)
@@ -72,7 +72,7 @@ class WebhookRewardController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param WebhookReward  $reward
+     * @param  WebhookReward  $reward
      * @return Response
      *
      * @throws Exception

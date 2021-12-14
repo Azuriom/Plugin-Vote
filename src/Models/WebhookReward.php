@@ -63,7 +63,7 @@ class WebhookReward extends Model
     /**
      * Return a reward.
      *
-     * @param string  $type
+     * @param  string  $type
      * @param $user
      * @return WebhookReward|null
      *
