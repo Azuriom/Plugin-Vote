@@ -17,6 +17,7 @@
     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
     @enderror
 
+    <small class="form-text">{!! trans('vote::admin.sites.variable') !!}</small>
     <small id="verificationStatusLabel" class="form-text text-info d-none"></small>
 </div>
 

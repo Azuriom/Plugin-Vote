@@ -38,6 +38,8 @@ return [
 
         'list' => 'Sites on which votes can be verified',
 
+        'variable' => "You can add the variable VAR_PLAYER to display the nickname of the player in the URL. You can make a URL that ends with ?pseudo=VAR_PLAYER. Here is an example of a URL that will be replaced: <a href='https://serveur-minecraft-vote.fr/serveurs/onoria.1/vote?pseudo=VAR_PLAYER' target='_blank'>https://serveur-minecraft-vote.fr/serveurs/onoria.1/vote?pseudo=VAR_PLAYER</a>",
+
         'verifications' => [
             'enable' => 'Enable votes verification',
 
