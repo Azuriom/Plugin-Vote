@@ -88,17 +88,22 @@ class Site extends Model
 
     public function getNextVoteTime(User $user, Request $request)
     {
+        // GTop100 votes resets at midnight GMT+1
         $voteResetAtFixedTime = Str::contains($this->url, 'gtop100.com');
-        $timeForVote = $voteResetAtFixedTime ? now()->timezone('Europe/London')->startOfDay() : now()->subMinutes($this->vote_delay);
+        $voteTime = $voteResetAtFixedTime
+            ? now()->timezone('Europe/London')->startOfDay()
+            : now()->subMinutes($this->vote_delay);
 
         $lastVoteTime = $this->votes()
             ->where('user_id', $user->id)
-            ->where('created_at', '>', $timeForVote)
+            ->where('created_at', '>', $voteTime)
             ->latest()
             ->value('created_at');
 
         if ($lastVoteTime !== null) {
-            return $voteResetAtFixedTime ? now()->timezone('Europe/London')->endOfDay() : $lastVoteTime->addMinutes($this->vote_delay);
+            return $voteResetAtFixedTime
+                ? now()->timezone('Europe/London')->endOfDay()
+                : $lastVoteTime->addMinutes($this->vote_delay);
         }
 
         $nextVoteTimeForIp = Cache::get('votes.site.'.$this->id.'.'.$request->ip());
