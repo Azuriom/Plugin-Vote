@@ -31,7 +31,7 @@ class SiteController extends Controller
         $checker = app(VoteChecker::class);
 
         return view('vote::admin.sites.create', [
-            'rewards' => Reward::all(),
+            'rewards' => Reward::whereDoesntHave('webhook')->get(),
             'sites' => $checker->getSites(),
         ]);
     }
