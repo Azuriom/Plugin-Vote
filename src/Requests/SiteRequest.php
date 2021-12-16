@@ -23,7 +23,7 @@ class SiteRequest extends FormRequest
     {
         $data = parent::validationData();
         $data['url'] = str_replace('{player}', 'VAR_PLAYER', $data['url']);
-        
+
         return $data;
     }
 
