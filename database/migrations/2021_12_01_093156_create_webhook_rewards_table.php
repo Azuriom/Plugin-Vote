@@ -18,14 +18,10 @@ class CreateWebhookRewardsTable extends Migration
             $table->string('name');
             $table->string('webhook');
             $table->string('site')->default('smv');
-            $table->unsignedInteger('server_id');
-            $table->unsignedInteger('chances');
-            $table->unsignedDecimal('money')->default(0);
-            $table->text('commands')->nullable();
-            $table->boolean('need_online')->default(false);
-            $table->boolean('is_enabled')->default(true);
-            $table->integer('limit')->default(0);
+            $table->unsignedInteger('vote_reward_id');
             $table->timestamps();
+
+            $table->foreign('vote_reward_id')->references('id')->on('vote_rewards')->onDelete('cascade');
         });
     }
 
