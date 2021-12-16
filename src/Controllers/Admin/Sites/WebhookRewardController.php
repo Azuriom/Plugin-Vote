@@ -36,9 +36,9 @@ class WebhookRewardController extends Controller
     {
         $reward = Reward::create($request->validated());
         WebhookReward::create([
-           'vote_reward_id' => $reward->id,
-           'webhook' => $request['webhook'],
-           'limit' => $request['limit'],
+            'vote_reward_id' => $reward->id,
+            'webhook' => $request['webhook'],
+            'limit' => $request['limit'],
         ]);
 
         return redirect()->route('vote.admin.smv.index')

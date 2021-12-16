@@ -4,7 +4,6 @@ namespace Azuriom\Plugin\Vote\Models;
 
 use Azuriom\Models\Server;
 use Azuriom\Models\Traits\HasTablePrefix;
-use Azuriom\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,7 +44,7 @@ class WebhookReward extends Model
     ];
 
     /**
-     * Return reward model
+     * Return reward model.
      *
      * @return BelongsTo
      */
@@ -69,7 +68,7 @@ class WebhookReward extends Model
             ->join('vote_rewards', 'vote_rewards.id', '=', 'vote_reward_id')
             ->where('vote_webhook_rewards.webhook', $type)->where('vote_rewards.is_enabled', true)->get();
 
-        $total = $rewards->map(function ($value){
+        $total = $rewards->map(function ($value) {
             return $value->reward;
         })->sum('chances');
 

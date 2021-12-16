@@ -101,7 +101,7 @@ class Reward extends Model
             return str_replace('{reward}', $this->name, $el);
         }, $commands);
 
-        if ($this->server !== null && !empty($commands)) {
+        if ($this->server !== null && ! empty($commands)) {
             $this->server->bridge()->executeCommands($commands, $username, $this->need_online);
         }
     }
@@ -109,7 +109,7 @@ class Reward extends Model
     /**
      * Scope a query to only include enabled vote rewards.
      *
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
     public function scopeEnabled(Builder $query)
