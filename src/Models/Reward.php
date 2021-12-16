@@ -82,7 +82,6 @@ class Reward extends Model
     public function giveTo($username, User $user = null)
     {
         if ($this->money > 0 && isset($username)) {
-
             $user = $user ?? User::where('name', $username)->first();
 
             if (isset($user)) {
