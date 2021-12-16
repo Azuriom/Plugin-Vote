@@ -30,7 +30,7 @@ class ServeurMinecraftVoteController extends Controller
 
     public function index()
     {
-        $key = Str::limit(setting(self::SETTINGS_KEY), 20);
+        $key = Str::limit(setting(self::SETTINGS_KEY, ''), 20);
 
         return view('vote::admin.smv.index', [
             'key' => $key,

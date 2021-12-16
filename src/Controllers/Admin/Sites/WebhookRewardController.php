@@ -4,6 +4,7 @@ namespace Azuriom\Plugin\Vote\Controllers\Admin\Sites;
 
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\Server;
+use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\WebhookReward;
 use Azuriom\Plugin\Vote\Requests\WebhookRewardRequest;
 use Exception;
@@ -33,7 +34,12 @@ class WebhookRewardController extends Controller
      */
     public function store(WebhookRewardRequest $request)
     {
-        WebhookReward::create($request->validated());
+        $reward = Reward::create($request->validated());
+        WebhookReward::create([
+           'vote_reward_id' => $reward->id,
+           'webhook' => $request['webhook'],
+           'limit' => $request['limit'],
+        ]);
 
         return redirect()->route('vote.admin.smv.index')
             ->with('success', trans('vote::admin.rewards.status.created'));

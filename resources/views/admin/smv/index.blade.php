@@ -55,14 +55,14 @@
                     @foreach($rewards as $reward)
                         <tr>
                             <th scope="row">{{ $reward->id }}</th>
-                            <td>{{ $reward->name }}</td>
+                            <td>{{ $reward->reward->name }}</td>
                             <td>{{ $reward->webhook }}</td>
-                            <td>{{ $reward->server->name ?? '?' }}</td>
-                            <td>{{ $reward->chances }} %</td>
+                            <td>{{ $reward->reward->server->name ?? '?' }}</td>
+                            <td>{{ $reward->reward->chances }} %</td>
                             <td>{{ $reward->limit === 0 ? 'Aucune limite' : $reward->limit }}</td>
                             <td>
-                                <span class="badge badge-{{ $reward->is_enabled ? 'success' : 'danger' }}">
-                                    {{ trans_bool($reward->is_enabled) }}
+                                <span class="badge badge-{{ $reward->reward->is_enabled ? 'success' : 'danger' }}">
+                                    {{ trans_bool($reward->reward->is_enabled) }}
                                 </span>
                             </td>
                             <td>

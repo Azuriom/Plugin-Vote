@@ -15,10 +15,10 @@ class CreateWebhookRewardsTable extends Migration
     {
         Schema::create('vote_webhook_rewards', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->unsignedInteger('vote_reward_id');
             $table->string('webhook');
             $table->string('site')->default('smv');
-            $table->unsignedInteger('vote_reward_id');
+            $table->integer('limit')->default(0);
             $table->timestamps();
 
             $table->foreign('vote_reward_id')->references('id')->on('vote_rewards')->onDelete('cascade');

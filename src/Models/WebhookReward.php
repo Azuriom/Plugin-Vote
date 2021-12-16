@@ -10,22 +10,16 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
- * @property string $name
  * @property string $webhook
  * @property string $site
- * @property int $server_id
- * @property int $chances
  * @property int $limit
- * @property int|null $money
- * @property bool $need_online
- * @property array $commands
- * @property bool $is_enabled
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property Server|null $server
+ * @property Reward $reward
  *
  * @method static Builder enabled()
  */
@@ -47,18 +41,18 @@ class WebhookReward extends Model
      * @var array
      */
     protected $fillable = [
-        'site', 'webhook', 'name', 'server_id', 'chances', 'money', 'commands', 'need_online', 'is_enabled', 'limit',
+        'site', 'webhook', 'limit', 'vote_reward_id',
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Return reward model
      *
-     * @var array
+     * @return BelongsTo
      */
-    protected $casts = [
-        'commands' => 'array',
-        'is_enabled' => 'boolean',
-    ];
+    public function reward(): BelongsTo
+    {
+        return $this->belongsTo(Reward::class, 'vote_reward_id');
+    }
 
     /**
      * Return a reward.
@@ -71,8 +65,11 @@ class WebhookReward extends Model
      */
     public static function getRandomReward(string $type, $user): ?WebhookReward
     {
-        $rewards = self::where('webhook', $type)->where('is_enabled', true)->get();
-        $total = $rewards->sum('chances');
+        $rewards = self::select('vote_webhook_rewards')
+            ->join('vote_rewards', 'vote_rewards.id', '=', 'vote_reward_id')
+            ->where('vote_rewards.webhook', $type)->where('vote_rewards.is_enabled', true)->get();
+
+        $total = $rewards->sum('rewards.chances');
         $random = random_int(0, $total);
 
         $sum = 0;
@@ -102,23 +99,23 @@ class WebhookReward extends Model
 
     public function giveTo($userName)
     {
-        if ($this->money > 0) {
+        if ($this->reward->money > 0) {
             $user = User::where('name', $userName)->first();
 
             if (isset($user)) {
-                $user->addMoney($this->money);
+                $user->addMoney($this->reward->money);
                 $user->save();
             }
         }
 
-        $commands = $this->commands ?? [];
+        $commands = $this->reward->commands ?? [];
 
         $commands = array_map(function ($el) {
-            return str_replace('{reward}', $this->name, $el);
+            return str_replace('{reward}', $this->reward->name, $el);
         }, $commands);
 
-        if ($this->server !== null && ! empty($commands)) {
-            $this->server->bridge()->executeCommands($commands, $userName, $this->need_online);
+        if ($this->reward->server !== null && ! empty($commands)) {
+            $this->reward->server->bridge()->executeCommands($commands, $userName, $this->reward->need_online);
         }
     }
 }
