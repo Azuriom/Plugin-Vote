@@ -11,7 +11,7 @@
 
 <div class="form-group">
     <label for="urlInput">{{ trans('messages.fields.url') }}</label>
-    <input type="url" class="form-control @error('url') is-invalid @enderror" id="urlInput" name="url" value="{{ old('url', $site->url ?? '') }}" required>
+    <input type="url" class="form-control @error('url') is-invalid @enderror" id="urlInput" name="url" value="{{ old('url', str_replace('VAR_PLAYER', '{player}', $site->url ?? '')) }}" required>
 
     @error('url')
     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>

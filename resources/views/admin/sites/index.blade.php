@@ -22,7 +22,7 @@
                         <tr>
                             <th scope="row">{{ $site->id }}</th>
                             <td>{{ $site->name }}</td>
-                            <td>{{ $site->url }}</td>
+                            <td>{{ str_replace('VAR_PLAYER', '{player}', $site->url) }}</td>
                             <td>
                                 <span class="badge badge-{{ $site->is_enabled ? 'success' : 'danger' }}">
                                     {{ trans_bool($site->is_enabled) }}

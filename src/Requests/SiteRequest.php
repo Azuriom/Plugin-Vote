@@ -19,6 +19,13 @@ class SiteRequest extends FormRequest
         'is_enabled',
     ];
 
+    public function validationData()
+    {
+        $data = parent::validationData();
+        $data['url'] = str_replace('{player}', 'VAR_PLAYER', $data['url']);
+        return $data;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
