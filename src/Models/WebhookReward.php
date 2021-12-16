@@ -65,17 +65,20 @@ class WebhookReward extends Model
      */
     public static function getRandomReward(string $type, $user): ?WebhookReward
     {
-        $rewards = self::select('vote_webhook_rewards')
+        $rewards = self::select('vote_webhook_rewards.*')
             ->join('vote_rewards', 'vote_rewards.id', '=', 'vote_reward_id')
-            ->where('vote_rewards.webhook', $type)->where('vote_rewards.is_enabled', true)->get();
+            ->where('vote_webhook_rewards.webhook', $type)->where('vote_rewards.is_enabled', true)->get();
 
-        $total = $rewards->sum('rewards.chances');
+        $total = $rewards->map(function ($value){
+            return $value->reward;
+        })->sum('chances');
+
         $random = random_int(0, $total);
 
         $sum = 0;
 
         foreach ($rewards as $reward) {
-            $sum += $reward->chances;
+            $sum += $reward->reward->chances;
 
             if ($sum >= $random) {
                 $historyCount = WebhookHistory::where('webhook_reward_id', $reward->id)->where('name', $user)->count();
@@ -95,27 +98,5 @@ class WebhookReward extends Model
     public function server()
     {
         return $this->belongsTo(Server::class);
-    }
-
-    public function giveTo($userName)
-    {
-        if ($this->reward->money > 0) {
-            $user = User::where('name', $userName)->first();
-
-            if (isset($user)) {
-                $user->addMoney($this->reward->money);
-                $user->save();
-            }
-        }
-
-        $commands = $this->reward->commands ?? [];
-
-        $commands = array_map(function ($el) {
-            return str_replace('{reward}', $this->reward->name, $el);
-        }, $commands);
-
-        if ($this->reward->server !== null && ! empty($commands)) {
-            $this->reward->server->bridge()->executeCommands($commands, $userName, $this->reward->need_online);
-        }
     }
 }

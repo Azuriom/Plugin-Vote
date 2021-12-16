@@ -105,7 +105,7 @@ class VoteController extends Controller
                 'reward_id' => $reward->id,
             ]);
 
-            $reward->giveTo($user);
+            $reward->giveTo($user->name, $user);
         }
 
         return response()->json(['message' => trans('vote::messages.vote-success')]);

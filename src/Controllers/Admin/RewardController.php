@@ -17,7 +17,7 @@ class RewardController extends Controller
     public function index()
     {
         return view('vote::admin.rewards.index', [
-            'rewards' => Reward::with('server')->get(),
+            'rewards' => Reward::with('server')->whereDoesntHave('webhook')->get(),
         ]);
     }
 

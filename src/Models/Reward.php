@@ -6,8 +6,10 @@ use Azuriom\Models\Server;
 use Azuriom\Models\Traits\HasTablePrefix;
 use Azuriom\Models\Traits\Loggable;
 use Azuriom\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -18,12 +20,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $need_online
  * @property array $commands
  * @property bool $is_enabled
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Azuriom\Models\Server|null $server
- * @property \Illuminate\Support\Collection|\Azuriom\Plugin\Vote\Models\Vote[] $votes
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Server|null $server
+ * @property Collection|Vote[] $votes
+ * @property Collection|WebhookReward[] $webhook
  *
- * @method static \Illuminate\Database\Eloquent\Builder enabled()
+ * @method static Builder enabled()
  */
 class Reward extends Model
 {
@@ -71,11 +74,21 @@ class Reward extends Model
         return $this->belongsTo(Server::class);
     }
 
-    public function giveTo(User $user)
+    public function webhook()
     {
-        if ($this->money > 0) {
-            $user->addMoney($this->money);
-            $user->save();
+        return $this->hasOne(WebhookReward::class, 'vote_reward_id');
+    }
+
+    public function giveTo($username, User $user = null)
+    {
+        if ($this->money > 0 && isset($username)) {
+
+            $user = $user ?? User::where('name', $username)->first();
+
+            if (isset($user)) {
+                $user->addMoney($this->money);
+                $user->save();
+            }
         }
 
         $commands = $this->commands ?? [];
@@ -88,16 +101,16 @@ class Reward extends Model
             return str_replace('{reward}', $this->name, $el);
         }, $commands);
 
-        if ($this->server !== null && ! empty($commands)) {
-            $this->server->bridge()->executeCommands($commands, $user->name, $this->need_online);
+        if ($this->server !== null && !empty($commands)) {
+            $this->server->bridge()->executeCommands($commands, $username, $this->need_online);
         }
     }
 
     /**
      * Scope a query to only include enabled vote rewards.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeEnabled(Builder $query)
     {

@@ -69,6 +69,7 @@ class WebhookRewardController extends Controller
      */
     public function update(WebhookRewardRequest $request, WebhookReward $reward)
     {
+        $reward->reward->update($request->validated());
         $reward->update($request->validated());
 
         return redirect()->route('vote.admin.smv.index')

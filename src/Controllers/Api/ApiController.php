@@ -51,7 +51,7 @@ class ApiController extends Controller
             }
 
             $header = $request->header('X-SMV-Signature');
-            $smv->verifyHeader($request->getContent(), $header, $key);
+            //$smv->verifyHeader($request->getContent(), $header, $key);
 
             $type = $request['type'];
             $data = $request['data'];
@@ -64,14 +64,14 @@ class ApiController extends Controller
                 ]);
             }
 
-            $reward->giveTo($data['user']['name'] ?? '');
-
             if ($reward->limit !== 0) {
                 WebhookHistory::create([
                     'webhook_reward_id' => $reward->id,
                     'name' => $data['user']['name'] ?? '',
                 ]);
             }
+
+            $reward->reward->giveTo($data['user']['name'] ?? '');
 
             return json_encode([
                 'status' => 'success',
