@@ -38,7 +38,7 @@ return [
 
         'list' => 'Sites sur lesquels les votes peuvent être vérifiés',
 
-        'variable' => "Vous pouvez ajouter la variable VAR_PLAYER pour afficher le pseudo du joueur dans l'URL. Vous pouvez faire ainsi une url qui se termine par ?pseudo=VAR_PLAYER. Voici un exemple d'URL qui va être remplacé: <a href='https://serveur-minecraft-vote.fr/serveurs/onoria.1/vote?pseudo=VAR_PLAYER' target='_blank'>https://serveur-minecraft-vote.fr/serveurs/onoria.1/vote?pseudo=VAR_PLAYER</a>",
+        'variable' => "Vous pouvez ajouter la variable {player} pour afficher le pseudo du joueur dans l'URL. Vous pouvez faire ainsi une url qui se termine par ?pseudo={player}. Voici un exemple d'URL qui va être remplacé: <a href='https://serveur-minecraft-vote.fr/serveurs/onoria.1/vote?pseudo={player}' target='_blank'>https://serveur-minecraft-vote.fr/serveurs/onoria.1/vote?pseudo={player}</a>",
 
         'verifications' => [
             'enable' => 'Activer la vérification des votes',
