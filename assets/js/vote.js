@@ -33,8 +33,8 @@ document.querySelectorAll('[data-site-url]').forEach(function (el) {
             user: username,
         }).then(function () {
             let url = el.getAttribute('href');
-            if (url.includes('VAR_PLAYER')){
-                url = url.replace('VAR_PLAYER', username);
+            if (url.includes('{player}')){
+                url = url.replace('{player}', username);
             }
             window.open(url, '_blank');
 
