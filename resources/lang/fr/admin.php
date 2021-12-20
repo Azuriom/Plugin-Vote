@@ -38,7 +38,7 @@ return [
 
         'list' => 'Sites sur lesquels les votes peuvent être vérifiés',
 
-        'variable' => 'Vous pouvez utiliser <code>{player}</code> qui sera remplacée par le pseudo du joueur.',
+        'variable' => 'Vous pouvez utiliser <code>{player}</code> qui sera remplacé par le pseudo du joueur.',
 
         'verifications' => [
             'enable' => 'Activer la vérification des votes',

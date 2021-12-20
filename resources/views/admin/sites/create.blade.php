@@ -3,11 +3,6 @@
 @section('title', trans('vote::admin.sites.title-create'))
 
 @section('content')
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div>{{$error}}</div>
-        @endforeach
-    @endif
     <div class="card shadow mb-4">
         <div class="card-body">
             <form action="{{ route('vote.admin.sites.store') }}" method="POST">
