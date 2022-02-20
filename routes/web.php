@@ -1,5 +1,6 @@
 <?php
 
+use Azuriom\Plugin\Vote\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'VoteController@index')->name('home');
-Route::get('/user/{user}', 'VoteController@verifyUser')->name('verify-user');
-Route::post('/server/{site}', 'VoteController@canVote')->name('vote');
-Route::post('/server/{site}/done', 'VoteController@done')->name('done');
+Route::get('/', [VoteController::class, 'index'])->name('home');
+Route::get('/user/{user}', [VoteController::class, 'verifyUser'])->name('verify-user');
+Route::post('/server/{site}', [VoteController::class, 'canVote'])->name('vote');
+Route::post('/server/{site}/done', [VoteController::class, 'done'])->name('done');

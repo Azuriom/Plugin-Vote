@@ -1,6 +1,6 @@
 @extends('admin.layouts.admin')
 
-@section('title', trans('vote::admin.sites.title-create'))
+@section('title', trans('vote::admin.sites.create'))
 
 @section('content')
     <div class="card shadow mb-4">
@@ -8,7 +8,9 @@
             <form action="{{ route('vote.admin.sites.store') }}" method="POST">
                 @include('vote::admin.sites._form')
 
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> {{ trans('messages.actions.save') }}</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ trans('messages.actions.save') }}
+                </button>
             </form>
         </div>
     </div>

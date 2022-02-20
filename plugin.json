@@ -2,11 +2,12 @@
     "id": "vote",
     "name": "Vote",
     "description": "A vote plugin to reward players when they vote.",
-    "version": "0.1.22",
+    "version": "1.0.0",
     "url": "https://market.azuriom.com/resources/2",
     "authors": [
         "Azuriom"
     ],
+    "azuriom_api": "1.0.0",
     "providers": [
         "\\Azuriom\\Plugin\\Vote\\Providers\\VoteServiceProvider",
         "\\Azuriom\\Plugin\\Vote\\Providers\\RouteServiceProvider"

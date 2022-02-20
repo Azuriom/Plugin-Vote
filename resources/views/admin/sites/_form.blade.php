@@ -1,7 +1,7 @@
 @csrf
 
-<div class="form-group">
-    <label for="nameInput">{{ trans('messages.fields.name') }}</label>
+<div class="mb-3">
+    <label class="form-label" for="nameInput">{{ trans('messages.fields.name') }}</label>
     <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameInput" name="name" value="{{ old('name', $site->name ?? '') }}" required>
 
     @error('name')
@@ -9,8 +9,8 @@
     @enderror
 </div>
 
-<div class="form-group">
-    <label for="urlInput">{{ trans('messages.fields.url') }}</label>
+<div class="mb-3">
+    <label class="form-label" for="urlInput">{{ trans('messages.fields.url') }}</label>
     <input type="url" class="form-control @error('url') is-invalid @enderror" id="urlInput" name="url" value="{{ old('url', $site->url ?? '') }}" required>
 
     @error('url')
@@ -23,12 +23,12 @@
 
 <div class="d-none" id="verificationGroup">
 
-    <div class="form-group custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="verificationSwitch" name="has_verification" @if($site->has_verification ?? true) checked @endif>
-        <label class="custom-control-label" for="verificationSwitch">{{ trans('vote::admin.sites.verifications.enable') }}</label>
+    <div class="mb-3 form-check form-switch">
+        <input type="checkbox" class="form-contro-input" id="verificationSwitch" name="has_verification" @checked($site->has_verification ?? true)>
+        <label class="form-check-label" for="verificationSwitch">{{ trans('vote::admin.sites.verifications.enable') }}</label>
     </div>
 
-    <div class="form-group d-none" id="keyGroup">
+    <div class="mb-3 d-none" id="keyGroup">
         <label id="keyLabel" for="keyInput">Verification</label>
         <input type="text" min="0" class="form-control @error('verification_key') is-invalid @enderror" id="keyInput" name="verification_key" value="{{ old('verification_key', $site->verification_key ?? '') }}">
 
@@ -39,14 +39,12 @@
 
 </div>
 
-<div class="form-group">
-    <label for="delayInput">{{ trans('vote::admin.sites.delay') }}</label>
+<div class="mb-3">
+    <label class="form-label" for="delayInput">{{ trans('vote::admin.sites.delay') }}</label>
 
-    <div class="input-group">
+    <div class="input-group @error('vote_delay') has-validation @enderror">
         <input type="number" min="0" class="form-control @error('vote_delay') is-invalid @enderror" id="delayInput" name="vote_delay" value="{{ old('vote_delay', $site->vote_delay ?? '') }}" required>
-        <div class="input-group-append">
-            <span class="input-group-text">{{ trans('vote::admin.sites.minutes') }}</span>
-        </div>
+        <span class="input-group-text">{{ trans('vote::admin.sites.minutes') }}</span>
 
         @error('vote_delay')
         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -54,15 +52,15 @@
     </div>
 </div>
 
-<div class="form-group">
-    <label>{{ trans('vote::messages.fields.rewards') }}</label>
+<div class="mb-3">
+    <label class="form-label">{{ trans('vote::messages.fields.rewards') }}</label>
 
     <div class="card">
         <div class="card-body">
             @forelse($rewards as $reward)
-                <div class="form-group custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="rewards{{ $reward->id }}" name="rewards[]" value="{{ $reward->id }}" @if(isset($site) && $site->rewards->contains($reward)) checked @endif>
-                    <label class="custom-control-label" for="rewards{{ $reward->id }}">{{ $reward->name }}</label>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="rewards{{ $reward->id }}" name="rewards[]" value="{{ $reward->id }}" @if(isset($site) && $site->rewards->contains($reward)) checked @endif>
+                    <label class="form-check-label" for="rewards{{ $reward->id }}">{{ $reward->name }}</label>
                 </div>
             @empty
                 <a href="{{ route('vote.admin.rewards.create') }}" class="btn btn-success btn-sm" target="_blank" rel="noopener noreferrer"><i class="fas fa-plus"></i> {{ trans('messages.actions.add') }}
@@ -76,9 +74,9 @@
     @enderror
 </div>
 
-<div class="form-group custom-control custom-switch">
-    <input type="checkbox" class="custom-control-input" id="enableSwitch" name="is_enabled" @if($site->is_enabled ?? true) checked @endif>
-    <label class="custom-control-label" for="enableSwitch">{{ trans('vote::admin.sites.enable') }}</label>
+<div class="mb-3 form-check form-switch">
+    <input type="checkbox" class="form-check-input" id="enableSwitch" name="is_enabled" @checked($site->is_enabled ?? true)>
+    <label class="form-check-label" for="enableSwitch">{{ trans('vote::admin.sites.enable') }}</label>
 </div>
 
 @push('footer-scripts')

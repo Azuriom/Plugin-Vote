@@ -17,7 +17,7 @@ class VoteChecker
      *
      * @var array
      */
-    private $sites = [];
+    private array $sites = [];
 
     public function __construct()
     {

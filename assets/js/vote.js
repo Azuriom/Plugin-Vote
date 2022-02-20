@@ -12,11 +12,11 @@ function toggleStep(step) {
 }
 
 function clearVoteAlert() {
-    document.getElementById('vote-alert').innerHTML = '';
+    document.getElementById('status-message').innerHTML = '';
 }
 
 function displayVoteAlert(message, level) {
-    document.getElementById('vote-alert').innerHTML = '<div class="alert alert-' + level + '" role="alert">' + message + '</div>';
+    document.getElementById('status-message').innerHTML = '<div class="alert alert-' + level + '" role="alert">' + message + '</div>';
 }
 
 document.querySelectorAll('[data-site-url]').forEach(function (el) {
@@ -27,7 +27,7 @@ document.querySelectorAll('[data-site-url]').forEach(function (el) {
             return;
         }
 
-        document.getElementById('vote-spinner').classList.remove('d-none');
+        document.getElementById('vote-card').classList.add('voting');
 
         axios.post(el.dataset['siteUrl'], {
             user: username,
@@ -44,7 +44,7 @@ document.querySelectorAll('[data-site-url]').forEach(function (el) {
         }).catch(function (error) {
             displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
 
-            document.getElementById('vote-spinner').classList.add('d-none');
+            document.getElementById('vote-card').classList.remove('voting');
         });
     });
 });

@@ -6,6 +6,7 @@ use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\Server;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Requests\RewardRequest;
+use Illuminate\Support\Arr;
 
 class RewardController extends Controller
 {
@@ -44,7 +45,7 @@ class RewardController extends Controller
         Reward::create($request->validated());
 
         return redirect()->route('vote.admin.rewards.index')
-            ->with('success', trans('vote::admin.rewards.status.created'));
+            ->with('success', trans('messages.status.success'));
     }
 
     /**
@@ -73,7 +74,7 @@ class RewardController extends Controller
         $reward->update($request->validated());
 
         return redirect()->route('vote.admin.rewards.index')
-            ->with('success', trans('vote::admin.rewards.status.updated'));
+            ->with('success', trans('messages.status.success'));
     }
 
     /**
@@ -89,6 +90,6 @@ class RewardController extends Controller
         $reward->delete();
 
         return redirect()->route('vote.admin.rewards.index')
-            ->with('success', trans('vote::admin.rewards.status.deleted'));
+            ->with('success', trans('messages.status.success'));
     }
 }

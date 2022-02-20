@@ -3,7 +3,6 @@
 return [
     'nav' => [
         'title' => 'Vote',
-
         'settings' => 'Paramètres',
         'sites' => 'Sites',
         'rewards' => 'Récompenses',
@@ -17,31 +16,29 @@ return [
 
         'count' => 'Nombre de joueurs dans le classement',
         'display-rewards' => 'Afficher les récompenses sur la page de vote',
-        'ip-compatibility' => 'Activer la compatibilité IPv6',
-        'ip-compatibility-info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
+        'ip_compatibility' => 'Activer la compatibilité IPv6',
+        'ip_compatibility_info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
         'commands' => 'Commandes globales',
     ],
 
     'sites' => [
         'title' => 'Sites',
-        'title-edit' => 'Modifier le site :site',
-        'title-create' => 'Créer un site',
+        'edit' => 'Modifier le site :site',
+        'create' => 'Créer un site',
 
         'enable' => 'Activer le site',
-
         'delay' => 'Délai entre chaque vote',
         'minutes' => 'minutes',
 
-        'no-verification' => 'Les votes sur ce site ne seront pas vérifiés.',
-        'auto-verification' => 'Les votes sur ce site seront automatiquement vérifiés.',
-        'key-verification' => 'Les votes sur ce site seront vérifiés quand le champ ci-dessous est rempli.',
-
         'list' => 'Sites sur lesquels les votes peuvent être vérifiés',
-
         'variable' => 'Vous pouvez utiliser <code>{player}</code> qui sera remplacé par le pseudo du joueur.',
 
         'verifications' => [
             'enable' => 'Activer la vérification des votes',
+
+            'disabled' => 'Les votes sur ce site ne seront pas vérifiés.',
+            'auto' => 'Les votes sur ce site seront automatiquement vérifiés.',
+            'input' => 'Les votes sur ce site seront vérifiés quand le champ ci-dessous est rempli.',
 
             'pingback' => 'URL de pingback: :url',
             'secret' => 'Clé secrete',
@@ -49,38 +46,24 @@ return [
             'token' => 'Token',
             'api_key' => 'Clé d\'API',
         ],
-
-        'status' => [
-            'created' => 'Le site a été ajouté.',
-            'updated' => 'Le site a été mis à jour.',
-            'deleted' => 'Le site a été supprimé.',
-        ],
     ],
 
     'rewards' => [
         'title' => 'Récompenses',
-        'title-edit' => 'Modifier la récompense :reward',
-        'title-create' => 'Créer une récompense',
+        'edit' => 'Modifier la récompense :reward',
+        'create' => 'Créer une récompense',
 
-        'need-online' => 'Exécuter les commandes lorsque l\'utilisateur est en ligne sur le serveur (uniquement disponible avec AzLink)',
+        'require_online' => 'Exécuter les commandes lorsque l\'utilisateur est en ligne sur le serveur (uniquement disponible avec AzLink)',
         'enable' => 'Activer la récompense',
 
-        'commands-info' => 'Vous pouvez utiliser <code>{player}</code> pour utiliser le nom du joueur et <code>{reward}</code> pour utiliser le nom de la récompense. La commande ne doit pas contenir de <code>/</code> au début.',
-
-        'status' => [
-            'created' => 'La récompense a été créée.',
-            'updated' => 'La récompense a été mise à jour.',
-            'deleted' => 'La récompense a été supprimée.',
-        ],
+        'commands' => 'Vous pouvez utiliser <code>{player}</code> pour utiliser le nom du joueur et <code>{reward}</code> pour utiliser le nom de la récompense. La commande ne doit pas contenir de <code>/</code> au début.',
     ],
 
     'votes' => [
         'title' => 'Votes',
 
         'empty' => 'Pas de votes ce mois-ci.',
-
         'votes' => 'Nombre de votes',
-
         'month' => 'Nombre de votes ce mois-ci',
         'week' => 'Nombre de votes cette semaine',
         'day' => 'Nombre de votes aujourd\'hui',

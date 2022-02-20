@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVoteSitesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateVoteSitesTable extends Migration
      */
     public function up()
     {
-        Schema::create('vote_sites', function (Blueprint $table) {
+        Schema::create('vote_votes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('url');
-            $table->unsignedInteger('vote_delay');
-            $table->boolean('is_enabled')->default(true);
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('site_id');
+            $table->unsignedInteger('reward_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
@@ -30,6 +31,6 @@ class CreateVoteSitesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vote_sites');
+        Schema::dropIfExists('vote_votes');
     }
-}
+};

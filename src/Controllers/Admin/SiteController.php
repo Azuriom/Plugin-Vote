@@ -49,7 +49,7 @@ class SiteController extends Controller
         $site->rewards()->sync($request->input('rewards', []));
 
         return redirect()->route('vote.admin.sites.index')
-            ->with('success', trans('vote::admin.sites.status.created'));
+            ->with('success', trans('messages.status.success'));
     }
 
     /**
@@ -88,7 +88,7 @@ class SiteController extends Controller
         if (! $checker->hasVerificationForSite($host)) {
             return response()->json([
                 'domain' => $host,
-                'info' => trans('vote::admin.sites.no-verification'),
+                'info' => trans('vote::admin.sites.verifications.disabled'),
                 'supported' => false,
             ]);
         }
@@ -96,7 +96,7 @@ class SiteController extends Controller
         $verifier = $checker->getVerificationForSite($host);
 
         if (! $verifier->requireVerificationKey()) {
-            $message = trans('vote::admin.sites.auto-verification').' ';
+            $message = trans('vote::admin.sites.verifications.auto').' ';
 
             if ($verifier->hasPingback()) {
                 $message .= trans('vote::admin.sites.verifications.pingback', [
@@ -114,7 +114,7 @@ class SiteController extends Controller
 
         return response()->json([
             'domain' => $host,
-            'info' => trans('vote::admin.sites.key-verification'),
+            'info' => trans('vote::admin.sites.verifications.key'),
             'supported' => true,
             'automatic' => false,
             'label' => trans('vote::admin.sites.verifications.'.$verifier->verificationTypeKey()),
@@ -135,7 +135,7 @@ class SiteController extends Controller
         $site->rewards()->sync($request->input('rewards', []));
 
         return redirect()->route('vote.admin.sites.index')
-            ->with('success', trans('vote::admin.sites.status.updated'));
+            ->with('success', trans('messages.status.success'));
     }
 
     /**
@@ -151,6 +151,6 @@ class SiteController extends Controller
         $site->delete();
 
         return redirect()->route('vote.admin.sites.index')
-            ->with('success', trans('vote::admin.sites.status.deleted'));
+            ->with('success', trans('messages.status.success'));
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVoteRewardsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -44,4 +44,4 @@ class CreateVoteRewardsTable extends Migration
         Schema::dropIfExists('vote_rewards');
         Schema::dropIfExists('vote_reward_site');
     }
-}
+};

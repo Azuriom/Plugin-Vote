@@ -26,7 +26,7 @@
                             <td>{{ $reward->server->name ?? '?' }}</td>
                             <td>{{ $reward->chances }} %</td>
                             <td>
-                                <span class="badge badge-{{ $reward->is_enabled ? 'success' : 'danger' }}">
+                                <span class="badge bg-{{ $reward->is_enabled ? 'success' : 'danger' }}">
                                     {{ trans_bool($reward->is_enabled) }}
                                 </span>
                             </td>

@@ -6,7 +6,7 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -24,7 +24,7 @@
                             <td>{{ $site->name }}</td>
                             <td>{{ $site->url }}</td>
                             <td>
-                                <span class="badge badge-{{ $site->is_enabled ? 'success' : 'danger' }}">
+                                <span class="badge bg-{{ $site->is_enabled ? 'success' : 'danger' }}">
                                     {{ trans_bool($site->is_enabled) }}
                                 </span>
                             </td>

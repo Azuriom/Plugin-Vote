@@ -1,5 +1,6 @@
 <?php
 
+use Azuriom\Plugin\Vote\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::any('/pingback/{site}', 'ApiController@pingback')->name('sites.pingback');
+Route::any('/pingback/{site}', [ApiController::class, 'pingback'])->name('sites.pingback');

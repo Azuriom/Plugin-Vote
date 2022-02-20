@@ -63,7 +63,7 @@ class SiteRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function validated()
+    public function validated($key = null, $default = null)
     {
         $validated = $this->validator->validated();
         $url = Arr::get($validated, 'url');

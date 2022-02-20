@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Verification;
 
 use Azuriom\Models\User;
+use Closure;
 use Exception;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
@@ -15,38 +16,28 @@ class VoteVerifier
 {
     /**
      * The domain (without www) of this site.
-     *
-     * @var string
      */
-    public $siteDomain;
+    public string $siteDomain;
 
     /**
      * The api url of this site.
-     *
-     * @var string
      */
-    private $apiUrl;
+    private ?string $apiUrl;
 
     /**
      * The method to verify is a user voted on this site.
-     *
-     * @var string|callable
      */
-    private $verificationMethod;
+    private Closure|string|null $verificationMethod;
 
     /**
      * The method to handle websites pingback.
-     *
-     * @var callable|null
      */
-    private $pingbackCallback;
+    private Closure|null $pingbackCallback;
 
     /**
      * The method to retrieve the server id from the vote url.
-     *
-     * @var string|callable|null
      */
-    private $retrieveKeyMethod;
+    private Closure|string|null $retrieveKeyMethod;
 
     private function __construct(string $siteDomain)
     {
@@ -96,7 +87,7 @@ class VoteVerifier
         return $this;
     }
 
-    public function retrieveKeyByDynamically(callable $method)
+    public function retrieveKeyByDynamically(Closure $method)
     {
         $this->retrieveKeyMethod = $method;
 
@@ -145,7 +136,7 @@ class VoteVerifier
         return $this;
     }
 
-    public function verifyByPingback(callable $callback)
+    public function verifyByPingback(Closure $callback)
     {
         $this->pingbackCallback = $callback;
 
@@ -182,7 +173,7 @@ class VoteVerifier
         try {
             $ips = $this->getRequestIps($requestIp);
 
-            if ($ips === null || empty($ips)) {
+            if (empty($ips)) {
                 $ips = [$requestIp];
             }
 
@@ -208,7 +199,7 @@ class VoteVerifier
             }
 
             return false;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return true;
         }
     }
@@ -230,13 +221,13 @@ class VoteVerifier
 
     protected function getRequestIps(string $requestIp)
     {
-        if (! setting('vote.ipv4-v6-compatibility')) {
+        if (! setting('vote.ipv4-v6-compatibility', true)) {
             return null;
         }
 
         try {
             return Http::get('https://ipv6-adapter.com/api/v1/fetch?ip='.$requestIp)->json('ips');
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
     }

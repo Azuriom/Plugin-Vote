@@ -9,30 +9,30 @@
             <form action="{{ route('vote.admin.settings') }}" method="POST">
                 @csrf
 
-                <div class="form-group">
-                    <label for="topPlayersCount">{{ trans('vote::admin.settings.count') }}</label>
+                <div class="mb-3">
+                    <label class="form-label" for="topPlayersCount">{{ trans('vote::admin.settings.count') }}</label>
                     <input type="number" class="form-control" id="topPlayersCount" name="top-players-count" min="5" max="100" value="{{ $topPlayersCount }}" required="required">
                 </div>
 
-                <div class="form-group">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="displayRewards" name="display-rewards" @if(display_rewards()) checked @endif>
-                        <label class="custom-control-label" for="displayRewards">{{ trans('vote::admin.settings.display-rewards') }}</label>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="displayRewards" name="display-rewards" @checked(display_rewards())>
+                        <label class="form-check-label" for="displayRewards">{{ trans('vote::admin.settings.display-rewards') }}</label>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="ipCompatibility" name="ip-compatibility" @if($ipCompatibility) checked @endif aria-describedby="ipCompatibilityLabel">
-                        <label class="custom-control-label" for="ipCompatibility">{{ trans('vote::admin.settings.ip-compatibility') }}</label>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="ipCompatibility" name="ip_compatibility" @if($ipCompatibility) checked @endif aria-describedby="ipCompatibilityLabel">
+                        <label class="form-check-label" for="ipCompatibility">{{ trans('vote::admin.settings.ip_compatibility') }}</label>
                     </div>
-                    <small id="ipCompatibilityLabel" class="form-text">{{ trans('vote::admin.settings.ip-compatibility-info') }}</small>
+                    <small id="ipCompatibilityLabel" class="form-text">{{ trans('vote::admin.settings.ip_compatibility_info') }}</small>
                 </div>
 
-                <div class="form-group">
-                    <label>{{ trans('vote::admin.settings.commands') }}</label>
+                <div class="mb-3">
+                    <label class="form-label">{{ trans('vote::admin.settings.commands') }}</label>
 
-                    @include('vote::admin.elements.commands', ['commands' => $commands])
+                    @include('admin.elements.list-input', ['name' => 'commands', 'values' => $commands])
                 </div>
 
                 <button type="submit" class="btn btn-primary">

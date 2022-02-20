@@ -3,93 +3,107 @@
 @section('title', trans('vote::messages.title'))
 
 @section('content')
-    <div class="container content">
+    <h1>{{ trans('vote::messages.sections.vote') }}</h1>
 
-        <h2>{{ trans('vote::messages.sections.vote') }}</h2>
+    <div class="card mb-4">
+        <div class="card-body text-center position-relative" id="vote-card">
+            <div class="spinner-parent h-100">
+                <div class="spinner-border text-white" role="status"></div>
+            </div>
 
-        <div id="vote-alert"></div>
-
-        <div class="vote vote-now text-center position-relative mb-4 px-3 py-5 border rounded">
             <div class="@auth d-none @endauth" data-vote-step="1">
-                <form id="voteNameForm">
-                    <div class="form-group">
-                        <input type="text" id="stepNameInput" name="name" class="form-control" @auth value="{{ auth()->user()->name }}" @endauth placeholder="{{ trans('messages.fields.name') }}" required>
-                    </div>
+                <form class="row justify-content-center" id="voteNameForm">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="mb-3">
+                            <input type="text" id="stepNameInput" name="name" class="form-control" @auth value="{{ auth()->user()->name }}" @endauth placeholder="{{ trans('messages.fields.name') }}" required>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        {{ trans('messages.actions.continue') }}
-                        <span class="d-none spinner-border spinner-border-sm load-spinner" role="status"></span>
-                    </button>
+                        <button type="submit" class="btn btn-primary">
+                            {{ trans('messages.actions.continue') }}
+                            <span class="d-none spinner-border spinner-border-sm load-spinner" role="status"></span>
+                        </button>
+                    </div>
                 </form>
             </div>
 
             <div class="@guest d-none @endguest h-100" data-vote-step="2">
-                <div id="vote-spinner" class="d-none h-100">
-                    <div class="spinner-border text-white" role="status"></div>
-                </div>
-
                 @forelse($sites as $site)
                     <a class="btn btn-primary" href="{{ $site->url }}" target="_blank" rel="noopener noreferrer" data-site-url="{{ route('vote.vote', $site) }}">{{ $site->name }}</a>
                 @empty
-                    <div class="alert alert-warning" role="alert">{{ trans('vote::messages.no-site') }}</div>
+                    <div class="alert alert-warning" role="alert">
+                        {{ trans('vote::messages.errors.site') }}
+                    </div>
                 @endforelse
             </div>
+
             <div class="d-none" data-vote-step="3">
                 <p id="vote-result"></p>
             </div>
         </div>
+    </div>
 
-        <h2>{{ trans('vote::messages.sections.top') }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">
+                {{ trans('vote::messages.sections.top') }}
+            </h2>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">{{ trans('messages.fields.name') }}</th>
-                <th scope="col">{{ trans('vote::messages.fields.votes') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            @foreach($votes as $id => $vote)
+            <table class="table mb-0">
+                <thead class="table-dark">
                 <tr>
-                    <th scope="row">#{{ $id }}</th>
-                    <td>{{ $vote['user']->name }}</td>
-                    <td>{{ $vote['votes'] }}</td>
-                </tr>
-            @endforeach
-
-            </tbody>
-        </table>
-
-        @if(display_rewards())
-            <h2>{{ trans('vote::messages.sections.rewards') }}</h2>
-
-            <table class="table">
-                <thead>
-                <tr>
+                    <th scope="col">#</th>
                     <th scope="col">{{ trans('messages.fields.name') }}</th>
-                    <th scope="col">{{ trans('vote::messages.fields.chances') }}</th>
+                    <th scope="col">{{ trans('vote::messages.fields.votes') }}</th>
                 </tr>
                 </thead>
                 <tbody>
 
-                @foreach($rewards as $reward)
+                @foreach($votes as $id => $vote)
                     <tr>
-                        <th scope="row">{{ $reward->name }}</th>
-                        <td>{{ $reward->chances }} %</td>
+                        <th scope="row">#{{ $id }}</th>
+                        <td>{{ $vote['user']->name }}</td>
+                        <td>{{ $vote['votes'] }}</td>
                     </tr>
                 @endforeach
 
                 </tbody>
             </table>
-        @endif
-
+        </div>
     </div>
+
+    @if(display_rewards())
+        <div class="card mt-4">
+            <div class="card-body">
+                <h2 class="card-title">
+                    {{ trans('vote::messages.sections.rewards') }}
+                </h2>
+
+                <table class="table mb-0">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">{{ trans('messages.fields.name') }}</th>
+                        <th scope="col">{{ trans('vote::messages.fields.chances') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    @foreach($rewards as $reward)
+                        <tr>
+                            <th scope="row">{{ $reward->name }}</th>
+                            <td>{{ $reward->chances }} %</td>
+                        </tr>
+                    @endforeach
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endif
+
 @endsection
 
 @push('scripts')
-    @if(setting('vote.ipv4-v6-compatibility'))
+    @if($ipv6compatibility)
         <script src="https://ipv6-adapter.com/api/v1/api.js" async defer></script>
     @endif
 
@@ -102,7 +116,11 @@
 
 @push('styles')
     <style>
-        #vote-spinner {
+        #vote-card .spinner-parent {
+            display: none;
+        }
+
+        #vote-card.voting .spinner-parent {
             position: absolute;
             display: flex;
             align-items: center;

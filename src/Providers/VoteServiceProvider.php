@@ -68,16 +68,16 @@ class VoteServiceProvider extends BasePluginServiceProvider
     {
         return [
             'vote' => [
-                'name' => 'vote::admin.nav.title',
+                'name' => trans('vote::admin.nav.title'),
                 'type' => 'dropdown',
                 'icon' => 'fas fa-thumbs-up',
                 'route' => 'vote.admin.*',
                 'permission' => 'vote.admin',
                 'items' => [
-                    'vote.admin.settings' => 'vote::admin.nav.settings',
-                    'vote.admin.sites.index' => 'vote::admin.nav.sites',
-                    'vote.admin.rewards.index' => 'vote::admin.nav.rewards',
-                    'vote.admin.votes.index' => 'vote::admin.nav.votes',
+                    'vote.admin.settings' => trans('vote::admin.nav.settings'),
+                    'vote.admin.sites.index' => trans('vote::admin.nav.sites'),
+                    'vote.admin.rewards.index' => trans('vote::admin.nav.rewards'),
+                    'vote.admin.votes.index' => trans('vote::admin.nav.votes'),
                 ],
             ],
         ];

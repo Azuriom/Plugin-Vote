@@ -26,6 +26,7 @@ class VoteController extends Controller
             'sites' => Site::enabled()->get(),
             'rewards' => Reward::orderByDesc('chances')->get(),
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
+            'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
         ]);
     }
 
@@ -33,7 +34,7 @@ class VoteController extends Controller
     {
         if (! User::where('name', $name)->exists()) {
             return response()->json([
-                'message' => trans('vote::messages.unknown-user'),
+                'message' => trans('vote::messages.errors.user'),
             ], 422);
         }
 
@@ -54,7 +55,7 @@ class VoteController extends Controller
 
         if ($site->rewards->isEmpty()) {
             return response()->json([
-                'message' => trans('vote::messages.site-no-rewards'),
+                'message' => trans('vote::messages.errors.rewards'),
             ], 422);
         }
 
@@ -75,7 +76,7 @@ class VoteController extends Controller
 
         if ($site->rewards->isEmpty()) {
             return response()->json([
-                'message' => trans('vote::messages.site-no-rewards'),
+                'message' => trans('vote::messages.errors.rewards'),
             ], 422);
         }
 
@@ -108,7 +109,7 @@ class VoteController extends Controller
             $reward->giveTo($user);
         }
 
-        return response()->json(['message' => trans('vote::messages.vote-success')]);
+        return response()->json(['message' => trans('vote::messages.success')]);
     }
 
     private function formatTimeMessage(Carbon $nextVoteTime)
@@ -120,7 +121,7 @@ class VoteController extends Controller
         ]);
 
         return response()->json([
-            'message' => trans('vote::messages.vote-delay', ['time' => $time]),
+            'message' => trans('vote::messages.errors.delay', ['time' => $time]),
         ], 422);
     }
 }
