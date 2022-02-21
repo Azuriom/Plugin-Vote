@@ -93,9 +93,9 @@ function refreshVote(url) {
 
             displayVoteAlert(response.data.message, 'success');
 
-            document.getElementById('vote-spinner').classList.add('d-none');
+            document.getElementById('vote-card').classList.remove('voting');
         }).catch(function (error) {
-            document.getElementById('vote-spinner').classList.add('d-none');
+            document.getElementById('vote-card').classList.remove('voting');
 
             displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
         });

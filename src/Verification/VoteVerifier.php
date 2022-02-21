@@ -22,22 +22,22 @@ class VoteVerifier
     /**
      * The api url of this site.
      */
-    private ?string $apiUrl;
+    private ?string $apiUrl = null;
 
     /**
      * The method to verify is a user voted on this site.
      */
-    private Closure|string|null $verificationMethod;
+    private Closure|string|null $verificationMethod = null;
 
     /**
      * The method to handle websites pingback.
      */
-    private Closure|null $pingbackCallback;
+    private Closure|null $pingbackCallback = null;
 
     /**
      * The method to retrieve the server id from the vote url.
      */
-    private Closure|string|null $retrieveKeyMethod;
+    private Closure|string|null $retrieveKeyMethod = null;
 
     private function __construct(string $siteDomain)
     {

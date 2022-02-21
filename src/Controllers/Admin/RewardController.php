@@ -6,7 +6,6 @@ use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\Server;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Requests\RewardRequest;
-use Illuminate\Support\Arr;
 
 class RewardController extends Controller
 {
