@@ -34,6 +34,7 @@ return [
         'variable' => 'Vous pouvez utiliser <code>{player}</code> qui sera remplacé par le pseudo du joueur.',
 
         'verifications' => [
+            'title' => 'Vérification',
             'enable' => 'Activer la vérification des votes',
 
             'disabled' => 'Les votes sur ce site ne seront pas vérifiés.',

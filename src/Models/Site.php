@@ -86,8 +86,12 @@ class Site extends Model
         return $this->rewards->first();
     }
 
-    public function getNextVoteTime(User $user, Request $request)
+    public function getNextVoteTime(User $user, Request|string $ip)
     {
+        if ($ip instanceof Request) {
+            $ip = $ip->ip();
+        }
+
         // GTop100 votes resets at midnight GMT+1
         $voteResetAtFixedTime = Str::contains($this->url, 'gtop100.com');
         $voteTime = $voteResetAtFixedTime
@@ -106,7 +110,7 @@ class Site extends Model
                 : $lastVoteTime->addMinutes($this->vote_delay);
         }
 
-        $nextVoteTimeForIp = Cache::get('votes.site.'.$this->id.'.'.$request->ip());
+        $nextVoteTimeForIp = Cache::get('votes.site.'.$this->id.'.'.$ip);
 
         if ($nextVoteTimeForIp === null || $nextVoteTimeForIp->isPast()) {
             return null;

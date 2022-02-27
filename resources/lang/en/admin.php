@@ -34,6 +34,7 @@ return [
         'variable' => 'You can use <code>{player}</code> to use the player name.',
 
         'verifications' => [
+            'title' => 'Verification',
             'enable' => 'Enable votes verification',
 
             'disabled' => 'The votes on this website will not be verified.',

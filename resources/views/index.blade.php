@@ -12,10 +12,12 @@
             </div>
 
             <div class="@auth d-none @endauth" data-vote-step="1">
-                <form class="row justify-content-center" id="voteNameForm">
+                <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
                     <div class="col-md-6 col-lg-4">
                         <div class="mb-3">
-                            <input type="text" id="stepNameInput" name="name" class="form-control" @auth value="{{ auth()->user()->name }}" @endauth placeholder="{{ trans('messages.fields.name') }}" required>
+                            <input type="text" id="stepNameInput" name="name" class="form-control"
+                                   @auth value="{{ auth()->user()->name }}" @endauth
+                                   placeholder="{{ trans('messages.fields.name') }}" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary">
@@ -28,8 +30,11 @@
 
             <div class="@guest d-none @endguest h-100" data-vote-step="2">
                 @forelse($sites as $site)
-                    <a class="btn btn-primary" href="{{ $site->url }}" target="_blank" rel="noopener noreferrer" data-site-url="{{ route('vote.vote', $site) }}">
-                        {{ $site->name }}
+                    <a class="btn btn-primary" href="{{ $site->url }}" target="_blank" rel="noopener noreferrer"
+                       data-vote-id="{{ $site->id }}"
+                       data-vote-url="{{ route('vote.vote', $site) }}"
+                       @auth data-vote-time="{{ $site->getNextVoteTime($user, $request)?->valueOf() }}" @endauth>
+                        <span class="badge bg-secondary text-white vote-timer"></span> {{ $site->name }}
                     </a>
                 @empty
                     <div class="alert alert-warning" role="alert">
@@ -63,8 +68,8 @@
                 @foreach($votes as $id => $vote)
                     <tr>
                         <th scope="row">#{{ $id }}</th>
-                        <td>{{ $vote['user']->name }}</td>
-                        <td>{{ $vote['votes'] }}</td>
+                        <td>{{ $vote->user->name }}</td>
+                        <td>{{ $vote->votes }}</td>
                     </tr>
                 @endforeach
 
@@ -110,10 +115,11 @@
     @endif
 
     <script src="{{ plugin_asset('vote', 'js/vote.js') }}" defer></script>
-    <script>
-        const voteRoute = '{{ route('vote.verify-user', '') }}';
-        let username @auth = '{{ auth()->user()->name }}' @endauth;
-    </script>
+    @auth
+        <script>
+            window.username  = '{{ auth()->user()->name }}';
+        </script>
+    @endauth
 @endpush
 
 @push('styles')

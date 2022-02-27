@@ -65,7 +65,7 @@ class Vote extends Model
 
         return $votes->mapWithKeys(function ($vote, $position) use ($users) {
             return [
-                $position + 1 => [
+                $position + 1 => (object) [
                     'user' => $users->get($vote->user_id),
                     'votes' => $vote->count,
                 ],

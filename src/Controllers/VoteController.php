@@ -20,46 +20,45 @@ class VoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         return view('vote::index', [
-            'sites' => Site::enabled()->get(),
+            'user' => $request->user(),
+            'request' => $request,
+            'sites' => Site::enabled()->with('rewards')->get(),
             'rewards' => Reward::orderByDesc('chances')->get(),
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
         ]);
     }
 
-    public function verifyUser(string $name)
+    public function verifyUser(Request $request, string $name)
     {
-        if (! User::where('name', $name)->exists()) {
+        $user = User::firstWhere('name', $name);
+
+        if ($user === null) {
             return response()->json([
                 'message' => trans('vote::messages.errors.user'),
             ], 422);
         }
 
-        return response()->noContent();
+        $sites = Site::enabled()
+            ->with('rewards')
+            ->get()
+            ->mapWithKeys(function (Site $site) use ($user, $request) {
+                return [
+                    $site->id => $site->getNextVoteTime($user, $request->ip())?->valueOf(),
+                ];
+            });
+
+        return response()->json([
+            'sites' => $sites,
+        ]);
     }
 
-    public function canVote(Request $request, Site $site)
+    public function vote()
     {
-        $user = $request->user() ?? User::firstWhere('name', $request->input('user'));
-
-        abort_if($user === null, 401);
-
-        $nextVoteTime = $site->getNextVoteTime($user, $request);
-
-        if ($nextVoteTime !== null) {
-            return $this->formatTimeMessage($nextVoteTime);
-        }
-
-        if ($site->rewards->isEmpty()) {
-            return response()->json([
-                'message' => trans('vote::messages.errors.rewards'),
-            ], 422);
-        }
-
-        return response()->noContent();
+        return response()->noContent(404);
     }
 
     public function done(Request $request, Site $site)
@@ -68,15 +67,11 @@ class VoteController extends Controller
 
         abort_if($user === null, 401);
 
-        $nextVoteTime = $site->getNextVoteTime($user, $request);
+        $nextVoteTime = $site->getNextVoteTime($user, $request->ip());
 
         if ($nextVoteTime !== null) {
-            return $this->formatTimeMessage($nextVoteTime);
-        }
-
-        if ($site->rewards->isEmpty()) {
             return response()->json([
-                'message' => trans('vote::messages.errors.rewards'),
+                'message' => $this->formatTimeMessage($nextVoteTime),
             ], 422);
         }
 
@@ -89,10 +84,12 @@ class VoteController extends Controller
         }
 
         // Check again because sometimes API can be really slow...
-        $nextVoteTime = $site->getNextVoteTime($user, $request);
+        $nextVoteTime = $site->getNextVoteTime($user, $request->ip());
 
         if ($nextVoteTime !== null) {
-            return $this->formatTimeMessage($nextVoteTime);
+            return response()->json([
+                'message' => $this->formatTimeMessage($nextVoteTime),
+            ], 422);
         }
 
         $next = now()->addMinutes($site->vote_delay);
@@ -120,8 +117,6 @@ class VoteController extends Controller
             'syntax' => CarbonInterface::DIFF_ABSOLUTE,
         ]);
 
-        return response()->json([
-            'message' => trans('vote::messages.errors.delay', ['time' => $time]),
-        ], 422);
+        return trans('vote::messages.errors.delay', ['time' => $time]);
     }
 }

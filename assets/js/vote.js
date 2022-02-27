@@ -3,9 +3,9 @@ function toggleStep(step) {
         el.classList.add('d-none');
     });
 
-    const currentEl = document.querySelector('[data-vote-step="' + step + '"]');
-    if (currentEl) {
-        currentEl.classList.remove('d-none');
+    const current = document.querySelector('[data-vote-step="' + step + '"]');
+    if (current) {
+        current.classList.remove('d-none');
     }
 
     clearVoteAlert();
@@ -19,35 +19,58 @@ function displayVoteAlert(message, level) {
     document.getElementById('status-message').innerHTML = '<div class="alert alert-' + level + '" role="alert">' + message + '</div>';
 }
 
-document.querySelectorAll('[data-site-url]').forEach(function (el) {
-    el.addEventListener('click', function (ev) {
-        ev.preventDefault();
+function getTimeDifference(date) {
+    const difference = date - new Date().getTime();
+    const hours = Math.floor(difference / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        if (el.classList.contains('disabled')) {
-            return;
-        }
+    return (hours < 10 ? '0' : '') + hours
+        + ':' + (minutes < 10 ? '0' : '') + minutes
+        + ':' + (seconds < 10 ? '0' : '') + seconds;
+}
 
-        document.getElementById('vote-card').classList.add('voting');
+function updateVoteLink(link) {
+    const nextVoteTime = link.dataset['voteTime'];
 
-        axios.post(el.dataset['siteUrl'], {
-            user: username,
-        }).then(function () {
-            let url = el.getAttribute('href');
-            if (url.includes('{player}')){
-                url = url.replace('{player}', username);
-            }
-            window.open(url, '_blank');
+    if (!nextVoteTime) {
+        return;
+    }
 
+    if (nextVoteTime > Date.now()) {
+        link.querySelector('.vote-timer').innerHTML = getTimeDifference(nextVoteTime);
+    } else {
+        link.classList.remove('disabled');
+        link.querySelector('.vote-timer').innerHTML = '';
+        link.removeAttribute('data-vote-time');
+    }
+}
+
+function initVote() {
+    document.querySelectorAll('[data-vote-url]').forEach(function (el) {
+        const voteTime = el.dataset['voteTime'];
+
+        if (voteTime && voteTime > Date.now()) {
             el.classList.add('disabled');
 
-            refreshVote(el.dataset['siteUrl']);
-        }).catch(function (error) {
-            displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+            setInterval(function () {
+                updateVoteLink(el)
+            }, 1000);
+        }
 
-            document.getElementById('vote-card').classList.remove('voting');
+        el.addEventListener('click', function (ev) {
+            if ((voteTime && voteTime > Date.now()) || el.classList.contains('disabled')) {
+                ev.preventDefault();
+                return;
+            }
+
+            el.classList.add('disabled');
+            document.getElementById('vote-card').classList.add('voting');
+
+            refreshVote(el.dataset['voteUrl']);
         });
     });
-});
+}
 
 const voteNameForm = document.getElementById('voteNameForm');
 
@@ -64,13 +87,26 @@ if (voteNameForm) {
 
         clearVoteAlert();
 
-        axios.get(voteRoute + '/' + tempUsername)
-            .then(function () {
+        axios.get(voteNameForm.action + '/' + tempUsername)
+            .then(function (response) {
                 toggleStep(2);
 
-                username = tempUsername;
+                const sites = response.data.sites;
+                window.username = tempUsername;
+
+                for (let id in sites) {
+                    const el = document.querySelector('[data-vote-id="' + id + '"]');
+
+                    if (el && sites[id]) {
+                        el.setAttribute('data-vote-time', sites[id]);
+                    }
+                }
+
+                initVote();
             })
             .catch(function (error) {
+                console.log(error);
+
                 displayVoteAlert(error.response.data.message, 'danger');
             })
             .finally(function () {
@@ -84,7 +120,7 @@ if (voteNameForm) {
 function refreshVote(url) {
     setTimeout(function () {
         axios.post(url + '/done', {
-            user: username,
+            user: window.username,
         }).then(function (response) {
             if (response.data.status === 'pending') {
                 refreshVote(url);
@@ -100,4 +136,8 @@ function refreshVote(url) {
             displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
         });
     }, 5000);
+}
+
+if (window.username) {
+    initVote();
 }

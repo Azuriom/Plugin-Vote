@@ -21,7 +21,6 @@ return [
         'user' => 'This user don\'t exists !',
         'site' => 'No voting site is available currently.',
         'delay' => 'You already voted, you can vote again in :time !',
-        'rewards' => 'This site has no rewards.',
     ],
 
     'success' => 'Your vote has been taken into account, you will receive your rewards soon!',

@@ -84,7 +84,7 @@ class Reward extends Model
         }
 
         if (empty($commands)) {
-           return;
+            return;
         }
 
         $commands = array_map(function (string $command) {

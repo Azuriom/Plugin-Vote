@@ -31,6 +31,7 @@ class SiteRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:50'],
             'url' => ['required', 'string', 'url', 'max:150'],
+            'rewards' => ['required', 'array'],
             'verification_key' => ['nullable', 'max:100'],
             'vote_delay' => ['required', 'integer', 'min:0'],
             'has_verification' => ['filled', 'boolean'],
@@ -62,6 +63,8 @@ class SiteRequest extends FormRequest
      * @return array
      *
      * @throws \Illuminate\Validation\ValidationException
+     * @param  mixed|null  $key
+     * @param  mixed|null  $default
      */
     public function validated($key = null, $default = null)
     {
