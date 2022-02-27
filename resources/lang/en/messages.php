@@ -10,7 +10,7 @@ return [
     ],
 
     'fields' => [
-        'server' => 'Server',
+        'servers' => 'Servers',
         'chances' => 'Chances',
         'rewards' => 'Rewards',
         'commands' => 'Commands',

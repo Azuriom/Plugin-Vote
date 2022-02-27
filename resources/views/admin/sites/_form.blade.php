@@ -24,7 +24,7 @@
 <div class="d-none" id="verificationGroup">
 
     <div class="mb-3 form-check form-switch">
-        <input type="checkbox" class="form-contro-input" id="verificationSwitch" name="has_verification" @checked($site->has_verification ?? true)>
+        <input type="checkbox" class="form-check-input" id="verificationSwitch" name="has_verification" @checked($site->has_verification ?? true)>
         <label class="form-check-label" for="verificationSwitch">{{ trans('vote::admin.sites.verifications.enable') }}</label>
     </div>
 

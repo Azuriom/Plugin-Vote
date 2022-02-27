@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $name
- * @property int $server_id
  * @property int $chances
  * @property int|null $money
  * @property bool $need_online
@@ -22,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $updated_at
  * @property \Azuriom\Models\Server|null $server
  * @property \Illuminate\Support\Collection|\Azuriom\Plugin\Vote\Models\Vote[] $votes
+ * @property \Illuminate\Support\Collection|\Azuriom\Models\Server[] $servers
  *
  * @method static \Illuminate\Database\Eloquent\Builder enabled()
  */
@@ -43,7 +43,7 @@ class Reward extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'server_id', 'chances', 'money', 'commands', 'need_online', 'is_enabled',
+        'name', 'chances', 'money', 'commands', 'need_online', 'is_enabled',
     ];
 
     /**
@@ -66,16 +66,15 @@ class Reward extends Model
         return $this->hasMany(Vote::class);
     }
 
-    public function server()
+    public function servers()
     {
-        return $this->belongsTo(Server::class);
+        return $this->belongsToMany(Server::class, 'vote_reward_server');
     }
 
     public function giveTo(User $user)
     {
         if ($this->money > 0) {
             $user->addMoney($this->money);
-            $user->save();
         }
 
         $commands = $this->commands ?? [];
@@ -84,12 +83,16 @@ class Reward extends Model
             $commands = array_merge($commands, json_decode($globalCommands));
         }
 
-        $commands = array_map(function ($el) {
-            return str_replace('{reward}', $this->name, $el);
+        if (empty($commands)) {
+           return;
+        }
+
+        $commands = array_map(function (string $command) {
+            return str_replace('{reward}', $this->name, $command);
         }, $commands);
 
-        if ($this->server !== null && ! empty($commands)) {
-            $this->server->bridge()->executeCommands($commands, $user->name, $this->need_online);
+        foreach ($this->servers as $server) {
+            $server->bridge()->executeCommands($commands, $user->name, $this->need_online);
         }
     }
 

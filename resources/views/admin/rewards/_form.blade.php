@@ -1,5 +1,7 @@
 @csrf
 
+@include('vote::admin.elements.select')
+
 <div class="mb-3">
     <label class="form-label" for="nameInput">{{ trans('messages.fields.name') }}</label>
     <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameInput" name="name" value="{{ old('name', $reward->name ?? '') }}" required>
@@ -10,14 +12,17 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label" for="serverSelect">{{ trans('vote::messages.fields.server') }}</label>
-    <select class="form-select @error('server_id') is-invalid @enderror" id="serverSelect" name="server_id" required>
+    <label class="form-label" for="serversSelect">{{ trans('vote::messages.fields.servers') }}</label>
+
+    <select class="form-select @error('servers') is-invalid @enderror" id="serversSelect" name="servers[]" multiple>
         @foreach($servers as $server)
-            <option value="{{ $server->id }}" @selected(($reward->server_id ?? 0) === $server->id)>{{ $server->name }}</option>
+            <option value="{{ $server->id }}" @selected(isset($reward) && $reward->servers->contains($server) ?? false)>
+                {{ $server->name }}
+            </option>
         @endforeach
     </select>
 
-    @error('server_id')
+    @error('servers')
     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
     @enderror
 </div>
