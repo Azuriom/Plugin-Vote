@@ -68,7 +68,7 @@
 
         @empty($rewards)
             <a href="{{ route('vote.admin.rewards.create') }}" class="btn btn-success btn-sm" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-plus"></i> {{ trans('messages.actions.add') }}
+                <i class="bi bi-plus-lg"></i> {{ trans('messages.actions.add') }}
             </a>
         @endif
 

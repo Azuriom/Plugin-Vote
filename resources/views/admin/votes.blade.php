@@ -17,7 +17,7 @@
 
                         <div class="col-auto">
                             <div class="stat text-primary">
-                                <i class="fas fa-vote-yea"></i>
+                                <i class="bi bi-path-check"></i>
                             </div>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
 
                         <div class="col-auto">
                             <div class="stat text-primary">
-                                <i class="fas fa-vote-yea"></i>
+                                <i class="bi bi-path-check"></i>
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
 
                         <div class="col-auto">
                             <div class="stat text-primary">
-                                <i class="fas fa-vote-yea"></i>
+                                <i class="bi bi-path-check"></i>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
 
                         <div class="col-auto">
                             <div class="stat text-primary">
-                                <i class="fas fa-vote-yea"></i>
+                                <i class="bi bi-path-check"></i>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                             </table>
                         @else
                             <div class="alert alert-info text-center" role="alert">
-                                <i class="fas fa-info-circle"></i> {{ trans('vote::admin.votes.empty') }}
+                                <i class="bi bi-info-circle"></i> {{ trans('vote::admin.votes.empty') }}
                             </div>
                         @endif
                     </div>

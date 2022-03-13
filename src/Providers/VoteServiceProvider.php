@@ -70,7 +70,7 @@ class VoteServiceProvider extends BasePluginServiceProvider
             'vote' => [
                 'name' => trans('vote::admin.nav.title'),
                 'type' => 'dropdown',
-                'icon' => 'fas fa-thumbs-up',
+                'icon' => 'bi bi-hand-thumbs-up',
                 'route' => 'vote.admin.*',
                 'permission' => 'vote.admin',
                 'items' => [
