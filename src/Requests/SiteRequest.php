@@ -59,12 +59,11 @@ class SiteRequest extends FormRequest
 
     /**
      * Get the validated data from the request.
-     *
+     * @param  mixed|null  $key
+     * @param  mixed|null  $default
      * @return array
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @param  mixed|null  $key
-     * @param  mixed|null  $default
      */
     public function validated($key = null, $default = null)
     {
