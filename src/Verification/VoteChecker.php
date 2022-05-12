@@ -23,7 +23,8 @@ class VoteChecker
     {
         $this->register(VoteVerifier::for('topserv.fr')
             ->setApiUrl('https://topserv.fr/api/vote/check-ip?ip={ip}&serverId={server}')
-            ->verifyByValue(true));
+            ->requireKey('server_id')
+            ->verifyByJson('hasVoted', true));
 
         $this->register(VoteVerifier::for('serveur-minecraft-vote.fr')
             ->setApiUrl('https://serveur-minecraft-vote.fr/api/v1/servers/{server}/vote/{ip}')
