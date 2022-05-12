@@ -21,11 +21,6 @@ class VoteChecker
 
     public function __construct()
     {
-        $this->register(VoteVerifier::for('topserv.fr')
-            ->setApiUrl('https://topserv.fr/api/vote/check-ip?ip={ip}&serverId={server}')
-            ->requireKey('server_id')
-            ->verifyByJson('hasVoted', true));
-
         $this->register(VoteVerifier::for('serveur-minecraft-vote.fr')
             ->setApiUrl('https://serveur-minecraft-vote.fr/api/v1/servers/{server}/vote/{ip}')
             ->retrieveKeyByRegex('/^serveur-minecraft-vote\.fr\/serveurs\/[\w\d-]+\.(\d+).*/')
@@ -98,6 +93,11 @@ class VoteChecker
             ->setApiUrl('https://topserveursminecraft.com/api/server={server}&ip={ip}')
             ->retrieveKeyByRegex('/^topserveursminecraft\.com\/[\w\d]+\.(\d+)/')
             ->verifyByJson('voted', 1));
+
+        $this->register(VoteVerifier::for('topserv.fr')
+            ->setApiUrl('https://topserv.fr/api/vote/check-ip?ip={ip}&serverId={server}')
+            ->retrieveKeyByRegex('/^topserv\.fr\/[\w-]+\/server\/(\d+)/')
+            ->verifyByJson('hasVoted', true));
 
         $this->register(VoteVerifier::for('liste-serveur.fr')
             ->setApiUrl('https://www.liste-serveur.fr/api/hasVoted/{server}/{ip}')
