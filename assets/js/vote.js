@@ -58,10 +58,9 @@ function initVote() {
             }, 1000);
         }
 
-        let listener = function (ev) {
-
-            let middle_click_code = 1;
-            if (ev.type === "auxclick" && ev.button !== middle_click_code) {
+        const clickListener = function (ev) {
+            const middleClickCode = 1;
+            if (ev.type === 'auxclick' && ev.button !== middleClickCode) {
                 return;
             }
 
@@ -76,8 +75,8 @@ function initVote() {
             refreshVote(el.dataset['voteUrl']);
         };
 
-        el.addEventListener('click', listener);
-        el.addEventListener('auxclick', listener);
+        el.addEventListener('click', clickListener);
+        el.addEventListener('auxclick', clickListener);
     });
 }
 
