@@ -2,6 +2,32 @@
 
 @include('vote::admin.elements.select')
 
+<div class="mb-3" v-scope="{ icon: '{{ $reward->image ?? '' }}' }">
+    <label class="form-label" for="imageSelect">{{ trans('messages.fields.image') }}</label>
+    <div class="input-group mb-3">
+        <a class="btn btn-outline-success" href="{{ route('admin.images.create') }}" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-upload"></i>
+        </a>
+        <select class="form-select @error('image') is-invalid @enderror" id="imageSelect" v-model="icon" name="image">
+            <option value="" @selected(isset($reward) ? !$reward->image : false)>
+                {{ trans('messages.none') }}
+            </option>
+
+            @foreach($images as $image)
+                <option value="{{ $image->file }}" @selected($image->file === (isset($reward) ? !$reward->image : ""))>
+                    {{ $image->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <img v-if="icon" :src="icon ? '{{ image_url() }}/' + icon : '#'" class="img-fluid rounded img-preview-sm" alt="Image">
+
+    @error('image')
+    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+    @enderror
+</div>
+
 <div class="mb-3">
     <label class="form-label" for="nameInput">{{ trans('messages.fields.name') }}</label>
     <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameInput" name="name" value="{{ old('name', $reward->name ?? '') }}" required>

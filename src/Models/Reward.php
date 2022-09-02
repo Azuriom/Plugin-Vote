@@ -2,12 +2,13 @@
 
 namespace Azuriom\Plugin\Vote\Models;
 
-use Azuriom\Models\Server;
-use Azuriom\Models\Traits\HasTablePrefix;
-use Azuriom\Models\Traits\Loggable;
 use Azuriom\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use Azuriom\Models\Server;
+use Illuminate\Support\HtmlString;
+use Azuriom\Models\Traits\Loggable;
 use Illuminate\Database\Eloquent\Model;
+use Azuriom\Models\Traits\HasTablePrefix;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @property int $id
@@ -42,7 +43,7 @@ class Reward extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'chances', 'money', 'commands', 'need_online', 'is_enabled',
+        'name', 'image', 'chances', 'money', 'commands', 'need_online', 'is_enabled',
     ];
 
     /**
@@ -54,6 +55,23 @@ class Reward extends Model
         'commands' => 'array',
         'is_enabled' => 'boolean',
     ];
+
+    public function imageUrl()
+    {
+        return $this->image !== null ? image_url($this->image) : "";
+    }
+
+    public function getNameAttribute(string $value)
+    {
+        $image = $this->image !== null ? '<img src="'.$this->imageUrl().'" width="30px" /> ' : '';
+
+        return new HtmlString($image.e($value));
+    }
+
+    public function rawName()
+    {
+        return $this->getRawOriginal('name');
+    }
 
     public function sites()
     {
