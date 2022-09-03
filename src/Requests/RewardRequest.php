@@ -27,8 +27,8 @@ class RewardRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => ['nullable', 'exists:images,file'],
             'name' => ['required', 'string', 'max:50'],
+            'image' => ['nullable', 'image'],
             'servers.*' => ['required', 'exists:servers,id'],
             'chances' => ['required', 'numeric', 'between:0,100'],
             'money' => ['nullable', 'numeric', 'min:0'],

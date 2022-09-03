@@ -4,6 +4,7 @@ namespace Azuriom\Plugin\Vote\Models;
 
 use Azuriom\Models\User;
 use Azuriom\Models\Server;
+use Azuriom\Models\Traits\HasImage;
 use Illuminate\Support\HtmlString;
 use Azuriom\Models\Traits\Loggable;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @property int $id
  * @property string $name
- * @property int $chances
+ * @property string $image
+ * @property double $chances
  * @property int|null $money
  * @property bool $need_online
  * @property array $commands
@@ -27,6 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Reward extends Model
 {
+    use HasImage;
     use HasTablePrefix;
     use Loggable;
 
@@ -55,23 +58,6 @@ class Reward extends Model
         'commands' => 'array',
         'is_enabled' => 'boolean',
     ];
-
-    public function imageUrl()
-    {
-        return $this->image !== null ? image_url($this->image) : "";
-    }
-
-    public function getNameAttribute(string $value)
-    {
-        $image = $this->image !== null ? '<img src="'.$this->imageUrl().'" width="30px" /> ' : '';
-
-        return new HtmlString($image.e($value));
-    }
-
-    public function rawName()
-    {
-        return $this->getRawOriginal('name');
-    }
 
     public function sites()
     {

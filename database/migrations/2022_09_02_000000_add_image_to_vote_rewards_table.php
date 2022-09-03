@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('vote_rewards', function (Blueprint $table) {
-            $table->text('image')->nullable();
+            $table->string('image')->nullable()->after('name');
         });
     }
 

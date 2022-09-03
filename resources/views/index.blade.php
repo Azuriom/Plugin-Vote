@@ -96,7 +96,12 @@
 
                     @foreach($rewards as $reward)
                         <tr>
-                            <th scope="row">{{ $reward->name }}</th>
+                            <th scope="row">
+                                @if($reward->image)
+                                    <img src="{{ $reward->imageUrl() }}" alt="{{ $reward->name }}" width="45">
+                                @endif
+                                {{ $reward->name }}
+                            </th>
                             <td>{{ $reward->chances }} %</td>
                         </tr>
                     @endforeach

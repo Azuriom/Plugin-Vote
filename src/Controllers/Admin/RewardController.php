@@ -3,7 +3,6 @@
 namespace Azuriom\Plugin\Vote\Controllers\Admin;
 
 use Azuriom\Http\Controllers\Controller;
-use Azuriom\Models\Image;
 use Azuriom\Models\Server;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Requests\RewardRequest;
@@ -30,7 +29,6 @@ class RewardController extends Controller
     public function create()
     {
         return view('vote::admin.rewards.create', [
-            'images' => Image::all(),
             'servers' => Server::executable()->get(),
         ]);
     }
@@ -47,6 +45,10 @@ class RewardController extends Controller
 
         $reward->servers()->sync($request->input('servers', []));
 
+        if ($request->hasFile('image')) {
+            $reward->storeImage($request->file('image'), true);
+        }
+
         return redirect()->route('vote.admin.rewards.index')
             ->with('success', trans('messages.status.success'));
     }
@@ -60,7 +62,6 @@ class RewardController extends Controller
     public function edit(Reward $reward)
     {
         return view('vote::admin.rewards.edit', [
-            'images' => Image::all(),
             'reward' => $reward->load('servers'),
             'servers' => Server::executable()->get(),
         ]);
@@ -78,6 +79,10 @@ class RewardController extends Controller
         $reward->update($request->validated());
 
         $reward->servers()->sync($request->input('servers', []));
+
+        if ($request->hasFile('image')) {
+            $reward->storeImage($request->file('image'), true);
+        }
 
         return redirect()->route('vote.admin.rewards.index')
             ->with('success', trans('messages.status.success'));

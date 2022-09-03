@@ -22,10 +22,10 @@
                     @foreach($rewards as $reward)
                         <tr>
                             <th scope="row">{{ $reward->id }}</th>
-                            <td>{{ $reward->rawName() }}</td>
+                            <td>{{ $reward->name }}</td>
                             <td>
                                 @if($reward->image)
-                                    <img src="{{ $reward->imageUrl() }}" class="img-small rounded" alt="">
+                                    <img src="{{ $reward->imageUrl() }}" class="img-small rounded" alt="{{ $reward->name }}">
                                 @else
                                     {{ trans('messages.none') }}
                                 @endif

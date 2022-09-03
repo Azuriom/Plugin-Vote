@@ -5,7 +5,7 @@
 @section('content')
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form action="{{ route('vote.admin.rewards.store') }}" method="POST">
+            <form action="{{ route('vote.admin.rewards.store') }}" method="POST" enctype="multipart/form-data">
                 @include('vote::admin.rewards._form')
 
                 <button type="submit" class="btn btn-primary">
