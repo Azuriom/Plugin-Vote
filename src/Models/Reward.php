@@ -2,20 +2,19 @@
 
 namespace Azuriom\Plugin\Vote\Models;
 
-use Azuriom\Models\User;
 use Azuriom\Models\Server;
 use Azuriom\Models\Traits\HasImage;
-use Illuminate\Support\HtmlString;
-use Azuriom\Models\Traits\Loggable;
-use Illuminate\Database\Eloquent\Model;
 use Azuriom\Models\Traits\HasTablePrefix;
+use Azuriom\Models\Traits\Loggable;
+use Azuriom\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $image
- * @property double $chances
+ * @property float $chances
  * @property int|null $money
  * @property bool $need_online
  * @property array $commands
