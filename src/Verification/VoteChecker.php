@@ -148,7 +148,7 @@ class VoteChecker
             ->setApiUrl('https://topminecraft.io/api/vote/{server}/{ip}')
             ->requireKey('api_key')
             ->verifyByJson('status', 'success'));
- 
+
         $this->register(VoteVerifier::for('serveur-prive.net')
             ->setApiUrl('https://serveur-prive.net/api/vote/json/{server}/{ip}')
             ->requireKey('api_key')
