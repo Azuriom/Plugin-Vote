@@ -189,13 +189,20 @@ class VoteChecker
             ->verifyByValue('1'));
 
         $this->register(VoteVerifier::for('gtop100.com')
-            ->retrieveKeyByRegex('/^gtop100\.com\/topsites\/[\w-]+\/sitedetails\/[\w-]+\-(\d+)/')
+            ->requireKey('api_key')
             ->verifyByPingback(function (Request $request) {
-                abort_if(! in_array($request->ip(), ['198.148.82.98', '198.148.82.99'], true), 403);
-
-                if ($request->input('Successful') === '0') {
-                    Cache::put("vote.sites.gtop100.com.{$request->input('VoterIP')}", true, now()->addMinutes(5));
+                $pinkbackKey = $request->input('pingbackkey');
+                if (empty($pinkbackKey)) {
+                    return response()->noContent(403);
                 }
+
+                if ($request->input('Successful') === '0' && \Azuriom\Plugin\Vote\Models\Site::where('verification_key', $pinkbackKey)->exists()) {
+                    Cache::put("vote.sites.gtop100.com.{$request->input('VoterIP')}", true, now()->addMinutes(5));
+
+                    return response()->noContent();
+                }
+
+                return response()->noContent(403);
             }));
     }
 
