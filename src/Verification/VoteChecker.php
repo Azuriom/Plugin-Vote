@@ -191,12 +191,12 @@ class VoteChecker
         $this->register(VoteVerifier::for('gtop100.com')
             ->requireKey('api_key')
             ->verifyByPingback(function (Request $request) {
-                $pinkbackKey = $request->input('pingbackkey');
-                if (empty($pinkbackKey)) {
-                    return response()->noContent(403);
-                }
+                $key = $request->input('pingbackkey');
 
-                if ($request->input('Successful') === '0' && \Azuriom\Plugin\Vote\Models\Site::where('verification_key', $pinkbackKey)->exists()) {
+                abort_if($key === null, 401);
+                abort_if(! Site::where('verification_key', $key)->exists(), 403);
+
+                if ($request->input('Successful') === '0') {
                     Cache::put("vote.sites.gtop100.com.{$request->input('VoterIP')}", true, now()->addMinutes(5));
 
                     return response()->noContent();
