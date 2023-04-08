@@ -22,6 +22,11 @@ class VoteChecker
 
     public function __construct()
     {
+        $this->register(VoteVerifier::for('serveurliste.com')
+            ->setApiUrl('https://serveurliste.com/api/vote?ip_address={ip}&api_token={server}')
+            ->requireKey('api_key')
+            ->verifyByJson('data.voted', true));
+
         $this->register(VoteVerifier::for('serveur-minecraft-vote.fr')
             ->setApiUrl('https://serveur-minecraft-vote.fr/api/v1/servers/{server}/vote/{ip}')
             ->retrieveKeyByRegex('/^serveur-minecraft-vote\.fr\/serveurs\/[\w-]+\.(\d+).*/')
