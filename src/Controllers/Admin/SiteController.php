@@ -104,9 +104,10 @@ class SiteController extends Controller
             ]);
         }
 
-        $message = trans('vote::admin.sites.verifications.input').' ';
+        $message = trans('vote::admin.sites.verifications.input');
+
         if ($verifier->hasPingback()) {
-            $message .= trans('vote::admin.sites.verifications.pingback', [
+            $message .= ' '.trans('vote::admin.sites.verifications.pingback', [
                 'url' => route('vote.api.sites.pingback', $host),
             ]);
         }
