@@ -2,7 +2,7 @@
     "id": "vote",
     "name": "Vote",
     "description": "A vote plugin to reward players when they vote.",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "url": "https://market.azuriom.com/resources/2",
     "authors": [
         "Azuriom"
