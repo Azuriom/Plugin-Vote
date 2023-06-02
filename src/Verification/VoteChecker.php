@@ -183,6 +183,11 @@ class VoteChecker
             ->requireKey('token')
             ->verifyByJson('code', 200));
 
+        $this->register(VoteVerifier::for('top-games.net')
+            ->setApiUrl('https://api.top-games.net/v1/votes/check-ip?server_token={server}&ip={ip}')
+            ->requireKey('token')
+            ->verifyByJson('code', 200));
+
         $this->register(VoteVerifier::for('minecraft-top.com')
             ->setApiUrl('https://api.minecraft-top.com/v1/vote/{ip}/{server}')
             ->requireKey('token')
