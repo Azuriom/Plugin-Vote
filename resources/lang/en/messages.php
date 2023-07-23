@@ -20,9 +20,9 @@ return [
     ],
 
     'errors' => [
-        'user' => 'This user don\'t exists !',
+        'user' => 'This user don\'t exists!',
         'site' => 'No voting site is available currently.',
-        'delay' => 'You already voted, you can vote again in :time !',
+        'delay' => 'You already voted, you can vote again in :time!',
     ],
 
     'success' => 'Your vote has been taken into account, you will soon receive the reward « :reward »!',

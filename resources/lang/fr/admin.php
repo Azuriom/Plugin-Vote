@@ -28,7 +28,7 @@ return [
 
         'enable' => 'Activer le site',
         'delay' => 'Délai entre chaque vote',
-        'minutes' => 'minutes',
+        'minutes' => 'Minutes',
 
         'list' => 'Sites sur lesquels les votes peuvent être vérifiés',
         'variable' => 'Vous pouvez utiliser <code>{player}</code> qui sera remplacé par le pseudo du joueur.',
