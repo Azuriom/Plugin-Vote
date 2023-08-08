@@ -168,9 +168,9 @@ class VoteChecker
             ->verifyByJson('status', 'success'));
 
         $this->register(VoteVerifier::for('serveur-prive.net')
-            ->setApiUrl('https://serveur-prive.net/api/vote/json/{server}/{ip}')
+            ->setApiUrl('https://serveur-prive.net/api/v1/servers/{server}/votes/{ip}')
             ->requireKey('api_key')
-            ->verifyByJson('status', '1'));
+            ->verifyByJson('success', true));
 
         $this->register(VoteVerifier::for('top-serveurs.net')
             ->setApiUrl('https://api.top-serveurs.net/v1/votes/check-ip?server_token={server}&ip={ip}')
