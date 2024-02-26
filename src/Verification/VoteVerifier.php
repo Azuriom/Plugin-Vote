@@ -210,7 +210,13 @@ class VoteVerifier
                     $key, $userIp, $user->game_id, $user->name,
                 ], $this->apiUrl);
 
-                $res = with(Http::asJson(), $this->transformRequest)->get($url);
+                $request = Http::asJson();
+
+                if ($this->transformRequest !== null) {
+                    $request = ($this->transformRequest)($request, $user, $site);
+                }
+
+                $res = $request->get($url);
 
                 if ($verificationMethod($res, $user)) {
                     return true;

@@ -172,7 +172,7 @@ class VoteChecker
 
         $this->register(VoteVerifier::for('playbase.pro')
             ->setApiUrl('https://playbase.pro/api/vote/{server}/{ip}')
-            ->requireKey('api_key')
+            ->retrieveKeyByRegex('/\/(\d+)-/')
             ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
                 return $request->withToken($site->verification_key);
             })
