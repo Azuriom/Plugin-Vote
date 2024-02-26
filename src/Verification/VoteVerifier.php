@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Verification;
 
 use Azuriom\Models\User;
+use Azuriom\Plugin\Vote\Models\Site;
 use Closure;
 use Exception;
 use Illuminate\Http\Client\Response;
@@ -38,6 +39,11 @@ class VoteVerifier
      * The method to retrieve the server id from the vote url.
      */
     private Closure|string|null $retrieveKeyMethod = null;
+
+    /**
+     * The method to transform the pending request.
+     */
+    private ?Closure $transformRequest = null;
 
     private function __construct(string $siteDomain)
     {
@@ -81,16 +87,16 @@ class VoteVerifier
         return $this;
     }
 
-    public function retrieveKeyByDynamically(Closure $method): self
+    public function requireKey(string $type): self
     {
-        $this->retrieveKeyMethod = $method;
+        $this->retrieveKeyMethod = $type;
 
         return $this;
     }
 
-    public function requireKey(string $type): self
+    public function transformRequest(Closure $callback): self
     {
-        $this->retrieveKeyMethod = $type;
+        $this->transformRequest = $callback;
 
         return $this;
     }
@@ -141,10 +147,12 @@ class VoteVerifier
     {
         $this->pingbackCallback = $callback;
 
-        $this->verificationMethod = function (string $ip) {
-            $ping = Cache::pull("vote.sites.{$this->siteDomain}.{$ip}");
+        $this->verificationMethod = function (User $user, Site $site, array $ips) {
+            $cacheKey = "vote.sites.{$this->siteDomain}.";
 
-            return $ping === true;
+            $ip = Arr::first($ips, fn (string $ip) => Cache::pull($cacheKey.$ip));
+
+            return $ip !== null || Cache::pull($cacheKey.$user->id);
         };
 
         return $this;
@@ -152,7 +160,18 @@ class VoteVerifier
 
     public function executePingbackCallback(Request $request)
     {
-        return ($this->pingbackCallback)($request);
+        $sites = Site::where('url', 'LIKE', '%'.$this->siteDomain.'/%')->get();
+
+        $result = $sites->map(fn (Site $site) => ($this->pingbackCallback)($request, $site))
+            ->first(fn ($result) => $result !== null);
+
+        if ($result === null) {
+            return response()->noContent(400);
+        }
+
+        Cache::put("vote.sites.{$this->siteDomain}.".$result, true, now()->addMinutes(5));
+
+        return response()->noContent();
     }
 
     public function hasPingback(): bool
@@ -160,12 +179,14 @@ class VoteVerifier
         return $this->pingbackCallback !== null;
     }
 
-    public function verifyVote(string $voteUrl, User $user, string $ip = '', string $voteKey = null): bool
+    public function verifyVote(Site $site, User $user, string $ip = ''): bool
     {
         $retrieveKeyMethod = $this->retrieveKeyMethod;
         $verificationMethod = $this->verificationMethod;
 
-        $key = $this->requireVerificationKey() ? $voteKey : $retrieveKeyMethod($voteUrl);
+        $key = $this->requireVerificationKey()
+            ? $site->verification_key
+            : $retrieveKeyMethod($site->url);
 
         if ($key === null) {
             return true;
@@ -178,24 +199,20 @@ class VoteVerifier
                 $ips = [$ip];
             }
 
+            if ($this->apiUrl === null) {
+                return $verificationMethod($user, $site, $ips);
+            }
+
             foreach ($ips as $userIp) {
-                if ($this->apiUrl === null) {
-                    if ($verificationMethod($userIp)) {
-                        return true;
-                    }
-
-                    continue;
-                }
-
                 $url = str_replace([
                     '{server}', '{ip}', '{id}', '{name}',
                 ], [
                     $key, $userIp, $user->game_id, $user->name,
                 ], $this->apiUrl);
 
-                $response = Http::get($url);
+                $res = with(Http::asJson(), $this->transformRequest)->get($url);
 
-                if ($verificationMethod($response, $user)) {
+                if ($verificationMethod($res, $user)) {
                     return true;
                 }
             }

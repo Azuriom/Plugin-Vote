@@ -20,9 +20,11 @@ class VoteController extends Controller
      */
     public function index(Request $request)
     {
+        $user = $request->user();
         $queryName = ($gameId = $request->input('uid')) !== null
             ? User::where('game_id', $gameId)->value('name')
             : $request->input('user', '');
+        $votesCount = $user !== null ? $this->getVotesCount($user) : -1;
 
         return view('vote::index', [
             'name' => $queryName,
@@ -31,6 +33,7 @@ class VoteController extends Controller
             'sites' => Site::enabled()->with('rewards')->get(),
             'rewards' => Reward::orderByDesc('chances')->get(),
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
+            'userVotes' => $votesCount,
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
             'displayRewards' => (bool) setting('vote.display-rewards', true),
         ]);
@@ -57,6 +60,7 @@ class VoteController extends Controller
 
         return response()->json([
             'sites' => $sites,
+            'votes' => $this->getVotesCount($user),
         ]);
     }
 
@@ -126,5 +130,12 @@ class VoteController extends Controller
         ]);
 
         return trans('vote::messages.errors.delay', ['time' => $time]);
+    }
+
+    private function getVotesCount(User $user)
+    {
+        return Vote::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->count();
     }
 }

@@ -5,10 +5,11 @@ namespace Azuriom\Plugin\Vote\Verification;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Vote\Models\Site;
 use Carbon\Carbon;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class VoteChecker
@@ -22,6 +23,11 @@ class VoteChecker
 
     public function __construct()
     {
+        $this->register(VoteVerifier::for('serveurliste.com')
+            ->setApiUrl('https://serveurliste.com/api/vote?ip_address={ip}&api_token={server}')
+            ->requireKey('api_key')
+            ->verifyByJson('data.voted', true));
+
         $this->register(VoteVerifier::for('serveur-minecraft-vote.fr')
             ->setApiUrl('https://serveur-minecraft-vote.fr/api/v1/servers/{server}/vote/{ip}')
             ->retrieveKeyByRegex('/^serveur-minecraft-vote\.fr\/serveurs\/[\w-]+\.(\d+).*/')
@@ -41,11 +47,6 @@ class VoteChecker
             ->setApiUrl('https://serveurs-mc.net/api/hasVote/{server}/{ip}/10')
             ->retrieveKeyByRegex('/^serveurs-mc\.net\/serveur\/(\d+)/')
             ->verifyByJson('hasVote', true));
-
-        $this->register(VoteVerifier::for('serveur-minecraft.com')
-            ->setApiUrl('https://serveur-minecraft.com/api/1/vote/{server}/{ip}/json')
-            ->retrieveKeyByRegex('/^serveur-minecraft\.com\/(\d+)/')
-            ->verifyByJson('vote', '1'));
 
         $this->register(VoteVerifier::for('serveur-minecraft.fr')
             ->setApiUrl('https://serveur-minecraft.fr/api-{server}_{ip}.json')
@@ -70,11 +71,6 @@ class VoteChecker
                 return Carbon::parse($lastVoteTime)->addMinutes(5)->isAfter($now) ? $lastVoteTime : false;
             }));
 
-        $this->register(VoteVerifier::for('serveur-multigames.net')
-            ->setApiUrl('https://serveur-multigames.net/api/{server}?ip={ip}')
-            ->retrieveKeyByRegex('/^serveur-multigames\.net\/\w+\/([\w-]+)/')
-            ->verifyByValue('true'));
-
         $this->register(VoteVerifier::for('liste-serveurs.fr')
             ->setApiUrl('https://www.liste-serveurs.fr/api/checkVote/{server}/{ip}')
             ->retrieveKeyByRegex('/^liste-serveurs\.fr\/[\w-]+\.(\d+)/')
@@ -89,31 +85,6 @@ class VoteChecker
             ->setApiUrl('https://www.liste-minecraft-serveurs.com/Api/Worker/id_server/{server}/ip/{ip}')
             ->retrieveKeyByRegex('/^liste-minecraft-serveurs\.com\/Serveur\/(\d+)/')
             ->verifyByJson('result', 202));
-
-        $this->register(VoteVerifier::for('topserveursminecraft.com')
-            ->setApiUrl('https://topserveursminecraft.com/api/server={server}&ip={ip}')
-            ->retrieveKeyByRegex('/^topserveursminecraft\.com\/[\w]+\.(\d+)/')
-            ->verifyByJson('voted', 1));
-
-        $this->register(VoteVerifier::for('topserv.fr')
-            ->setApiUrl('https://topserv.fr/api/vote/check-ip?ip={ip}&serverId={server}')
-            ->retrieveKeyByRegex('/^topserv\.fr\/[\w-]+\/server\/(\d+)/')
-            ->verifyByJson('hasVoted', true));
-
-        $this->register(VoteVerifier::for('yserveur.fr')
-            ->setApiUrl('https://yserveur.fr/api/vote/{server}/{ip}')
-            ->retrieveKeyByRegex('/^yserveur\.fr\/serveur\/(\d+)')
-            ->verifyByJson('vote', true));
-
-        $this->register(VoteVerifier::for('liste-serveur.fr')
-            ->setApiUrl('https://www.liste-serveur.fr/api/hasVoted/{server}/{ip}')
-            ->requireKey('secret')
-            ->verifyByJson('hasVoted', true));
-
-        $this->register(VoteVerifier::for('serveurliste.com')
-            ->setApiUrl('https://serveurliste.com/api/vote?ip_address={ip}&api_token={server}')
-            ->requireKey('api_key')
-            ->verifyByJson('data.voted', true));
 
         $this->register(VoteVerifier::for('minecraft-italia.net')
             ->setApiUrl('https://minecraft-italia.net/lista/api/vote/server?serverId={server}')
@@ -182,31 +153,82 @@ class VoteChecker
             ->requireKey('token')
             ->verifyByJson('code', 200));
 
-        $this->register(VoteVerifier::for('minecraft-top.com')
-            ->setApiUrl('https://api.minecraft-top.com/v1/vote/{ip}/{server}')
-            ->requireKey('token')
-            ->verifyByJson('vote', 1));
-
         $this->register(VoteVerifier::for('liste-serveurs-minecraft.org')
             ->setApiUrl('https://api.liste-serveurs-minecraft.org/vote/vote_verification.php?server_id={server}&ip={ip}&duration=5')
             ->requireKey('server_id')
             ->verifyByValue('1'));
 
-        $this->register(VoteVerifier::for('gtop100.com')
+        $this->register(VoteVerifier::for('minecraft-server.net')
             ->requireKey('api_key')
-            ->verifyByPingback(function (Request $request) {
-                $key = $request->input('pingbackkey');
+            ->verifyByCallback(function (User $user, Site $site) {
+                $response = Http::post('https://minecraft-server.net/api/', [
+                    'action' => 'checkVote',
+                    'key' => $site->verification_key,
+                    'player' => $user->name,
+                ]);
 
-                abort_if($key === null, 401);
-                abort_if(! Site::where('verification_key', $key)->exists(), 403);
+                return $response->body() === '1';
+            }));
 
-                if ($request->input('Successful') === '0') {
-                    Cache::put("vote.sites.gtop100.com.{$request->input('VoterIP')}", true, now()->addMinutes(5));
+        $this->register(VoteVerifier::for('playbase.pro')
+            ->setApiUrl('https://playbase.pro/api/vote/{server}/{ip}')
+            ->requireKey('api_key')
+            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
+                return $request->withToken($site->verification_key);
+            })
+            ->verifyByJson('date', true));
 
-                    return response()->noContent();
+        $this->register(VoteVerifier::for('mctop.su')
+            ->requireKey('secret')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $name = $request->input('nickname');
+                $token = $request->input('token');
+
+                if ($token !== md5($name.$site->verification_key)) {
+                    return null;
                 }
 
-                return response()->noContent(403);
+                return User::where('name', $name)->value('id');
+            }));
+
+        $this->register(VoteVerifier::for('topcraft.club')
+            ->requireKey('secret')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $name = $request->input('username');
+                $timestamp = $request->input('timestamp');
+                $signature = $request->input('signature');
+
+                if ($signature !== sha1($name.$timestamp.$site->verification_key)) {
+                    return null;
+                }
+
+                return User::where('name', $name)->value('id');
+            }));
+
+        $this->register(VoteVerifier::for('minecraftrating.ru')
+            ->requireKey('secret')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $name = $request->input('username');
+                $timestamp = $request->input('timestamp');
+                $signature = $request->input('signature');
+
+                if ($signature !== sha1($name.$timestamp.$site->verification_key)) {
+                    return null;
+                }
+
+                return User::where('name', $name)->value('id');
+            }));
+
+        $this->register(VoteVerifier::for('gtop100.com')
+            ->requireKey('api_key')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $key = $request->input('pingbackkey');
+
+                if ($key !== $site->verification_key || $request->input('Successful') !== '0') {
+                    return null;
+                }
+
+                return $request->input('VoterIP');
             }));
     }
 
@@ -241,7 +263,7 @@ class VoteChecker
             return true;
         }
 
-        return $verification->verifyVote($site->url, $user, $requestIp, $site->verification_key);
+        return $verification->verifyVote($site, $user, $requestIp);
     }
 
     protected function register(VoteVerifier $verifier): void

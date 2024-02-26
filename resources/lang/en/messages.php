@@ -25,5 +25,7 @@ return [
         'delay' => 'You already voted, you can vote again in :time.',
     ],
 
+    'votes' => 'You have voted :count time this month.|You have voted :count times this month.',
+
     'success' => 'Your vote has been taken into account, you will soon receive the reward « :reward »!',
 ];

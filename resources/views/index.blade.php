@@ -75,6 +75,10 @@
 
                 </tbody>
             </table>
+
+            @auth
+                <p class="mt-3 mb-0">{{ trans_choice('vote::messages.votes', $userVotes) }}</p>
+            @endauth
         </div>
     </div>
 
