@@ -178,6 +178,14 @@ class VoteChecker
             })
             ->verifyByJson('date', true));
 
+        $this->register(VoteVerifier::for('pixlbay.io')
+            ->setApiUrl('https://api.pixlbay.io/v1/votes/username/{name}')
+            ->requireKey('api_key')
+            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
+                return $request->withToken($site->verification_key);
+            })
+            ->verifyByJson('canVote', false));
+        
         $this->register(VoteVerifier::for('mctop.su')
             ->requireKey('secret')
             ->verifyByPingback(function (Request $request, Site $site) {
