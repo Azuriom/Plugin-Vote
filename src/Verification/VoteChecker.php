@@ -184,7 +184,7 @@ class VoteChecker
             ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
                 return $request->withToken($site->verification_key);
             })
-            ->verifyByJson('canVote', 
+            ->verifyByJson('canVote', false));
 
         $this->register(VoteVerifier::for('mctop.su')
             ->requireKey('secret')
