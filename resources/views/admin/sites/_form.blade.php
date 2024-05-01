@@ -2,7 +2,7 @@
 
 @include('vote::admin.elements.select')
 
-<div class="row g-3">
+<div class="row gx-3">
     <div class="col-md-6 mb-3">
         <label class="form-label" for="nameInput">{{ trans('messages.fields.name') }}</label>
         <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameInput" name="name" value="{{ old('name', $site->name ?? '') }}" required>
@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<div class="row g-3">
+<div class="row gx-3">
     <div class="col-md-6 mb-3">
         <label class="form-label" for="delayInput">{{ trans('vote::admin.sites.delay') }}</label>
 

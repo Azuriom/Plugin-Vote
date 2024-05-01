@@ -82,7 +82,7 @@ class Site extends Model
     {
         $total = $this->rewards->sum('chances');
 
-        if ($total === 0) {
+        if ($total < 0.01) {
             return null;
         }
 

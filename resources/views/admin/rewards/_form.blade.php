@@ -2,7 +2,7 @@
 
 @include('vote::admin.elements.select')
 
-<div class="row g-3">
+<div class="row gx-3">
     <div class="col-md-4 mb-3">
         <label class="form-label" for="nameInput">{{ trans('messages.fields.name') }}</label>
         <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameInput" name="name" value="{{ old('name', $reward->name ?? '') }}" required>
@@ -16,7 +16,7 @@
         <label class="form-label" for="chancesInput">{{ trans('vote::messages.fields.chances') }}</label>
 
         <div class="input-group @error('chances') has-validation @enderror">
-            <input type="number" min="0" max="100" step="0.01" class="form-control @error('chances') is-invalid @enderror" id="chancesInput" name="chances" value="{{ old('chances', $reward->chances ?? '0') }}" required>
+            <input type="number" min="0.01" max="100" step="0.01" class="form-control @error('chances') is-invalid @enderror" id="chancesInput" name="chances" value="{{ old('chances', $reward->chances ?? '0') }}" required>
             <div class="input-group-text">%</div>
 
             @error('chances')

@@ -213,6 +213,20 @@ class VoteChecker
                 return User::where('name', $name)->value('id');
             }));
 
+        $this->register(VoteVerifier::for('hotmc.ru')
+            ->requireKey('secret')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $name = $request->input('nick');
+                $time = $request->input('time');
+                $signature = $request->input('sign');
+
+                if ($signature !== sha1($name.$time.$site->verification_key)) {
+                    return null;
+                }
+
+                return User::where('name', $name)->value('id');
+            }));
+
         $this->register(VoteVerifier::for('minecraftrating.ru')
             ->requireKey('secret')
             ->verifyByPingback(function (Request $request, Site $site) {
