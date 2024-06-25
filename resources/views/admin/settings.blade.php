@@ -26,7 +26,7 @@
                         <input type="checkbox" class="form-check-input" id="ipCompatibility" name="ip_compatibility" @if($ipCompatibility) checked @endif aria-describedby="ipCompatibilityLabel">
                         <label class="form-check-label" for="ipCompatibility">{{ trans('vote::admin.settings.ip_compatibility') }}</label>
                     </div>
-                    <small id="ipCompatibilityLabel" class="form-text">{{ trans('vote::admin.settings.ip_compatibility_info') }}</small>
+                    <div id="ipCompatibilityLabel" class="form-text">{{ trans('vote::admin.settings.ip_compatibility_info') }}</div>
                 </div>
 
                 <div class="mb-3">
@@ -34,7 +34,7 @@
 
                     @include('admin.elements.list-input', ['name' => 'commands', 'values' => $commands])
 
-                    <small class="form-text">@lang('vote::admin.rewards.commands')</small>
+                    <div class="form-text">@lang('vote::admin.rewards.commands')</div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">

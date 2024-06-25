@@ -5,7 +5,7 @@ namespace Azuriom\Plugin\Vote\Models;
 use Azuriom\Models\Traits\HasTablePrefix;
 use Azuriom\Models\Traits\Searchable;
 use Azuriom\Models\User;
-use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -66,9 +66,9 @@ class Vote extends Model
         return $this->belongsTo(Reward::class);
     }
 
-    public static function getTopVoters(Carbon $fromDate, Carbon $toDate = null)
+    public static function getTopVoters(DateTime $from, ?DateTime $to = null)
     {
-        $votes = static::getRawTopVoters($fromDate, $toDate);
+        $votes = static::getRawTopVoters($from, $to);
 
         $users = User::findMany($votes->pluck('user_id'))->keyBy('id');
 
@@ -82,10 +82,10 @@ class Vote extends Model
         });
     }
 
-    public static function getRawTopVoters(Carbon $fromDate, Carbon $toDate = null, int $max = null)
+    public static function getRawTopVoters(DateTime $from, ?DateTime $to = null, ?int $max = null)
     {
         return self::select(['user_id', DB::raw('count(*) as count')])
-            ->whereBetween('created_at', [$fromDate, $toDate ?? now()])
+            ->whereBetween('created_at', [$from, $to ?? now()])
             ->groupBy('user_id')
             ->orderByDesc('count')
             ->take($max ?? setting('vote.top-players-count', 10))

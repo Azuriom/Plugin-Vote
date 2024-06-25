@@ -20,8 +20,8 @@
         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
         @enderror
 
-        <small class="form-text">@lang('vote::admin.sites.variable')</small>
-        <small id="verificationStatusLabel" class="form-text text-info d-none"></small>
+        <div class="form-text">@lang('vote::admin.sites.variable')</div>
+        <div id="verificationStatusLabel" class="form-text text-info d-none"></div>
     </div>
 </div>
 

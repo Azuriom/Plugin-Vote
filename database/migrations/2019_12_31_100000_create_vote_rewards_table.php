@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('vote_rewards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->unsignedDecimal('chances');
-            $table->unsignedDecimal('money')->default(0);
+            $table->decimal('chances');
+            $table->decimal('money')->default(0);
             $table->text('commands')->nullable();
             $table->boolean('need_online')->default(false);
             $table->boolean('is_enabled')->default(true);

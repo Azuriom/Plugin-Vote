@@ -227,6 +227,24 @@ class VoteChecker
                 return User::where('name', $name)->value('id');
             }));
 
+        $this->register(VoteVerifier::for('mineserv.top')
+            ->requireKey('secret')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $name = $request->input('username');
+                $hashData = implode('.', [
+                    $request->input('project'),
+                    $site->verification_key,
+                    $request->input('timestamp'),
+                    $name,
+                ]);
+
+                if ($request->input('signature') !== hash('sha256', $hashData)) {
+                    return null;
+                }
+
+                return User::where('name', $name)->value('id');
+            }));
+
         $this->register(VoteVerifier::for('minecraftrating.ru')
             ->requireKey('secret')
             ->verifyByPingback(function (Request $request, Site $site) {
@@ -251,6 +269,25 @@ class VoteChecker
                 }
 
                 return $request->input('VoterIP');
+            }));
+
+        $this->register(VoteVerifier::for('xtremetop100.com')
+            ->requireKey('server_id')
+            ->verifyByPingback(function (Request $request) {
+                $name = $request->input('nick');
+                $ip = $request->input('votingip');
+
+                return $name ? User::where('name', $name)->value('id') : $ip;
+            }));
+
+        $this->register(VoteVerifier::for('arena-top100.com')
+            ->requireKey('secret')
+            ->verifyByPingback(function (Request $request, Site $site) {
+                $key = $request->input('secret');
+                $ip = $request->input('userip');
+                $voted = $request->int('voted');
+
+                return $key === $site->verification_key && $voted === 1 ? $ip : null;
             }));
     }
 

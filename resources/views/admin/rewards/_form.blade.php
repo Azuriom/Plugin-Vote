@@ -78,7 +78,7 @@
 
     @include('admin.elements.list-input', ['name' => 'commands', 'values' => $reward->commands ?? []])
 
-    <small class="form-text">@lang('vote::admin.rewards.commands')</small>
+    <div class="form-text">@lang('vote::admin.rewards.commands')</div>
 </div>
 
 @if($cron)
@@ -105,7 +105,7 @@
             </button>
         </div>
 
-        <small class="form-text">@lang('vote::admin.rewards.monthly_info')</small>
+        <div class="form-text">@lang('vote::admin.rewards.monthly_info')</div>
     </div>
 @else
     <div class="alert alert-info">

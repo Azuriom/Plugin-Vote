@@ -19,7 +19,7 @@ if (! function_exists('display_rewards')) {
     /**
      * Whether the rewards should be visible on the vote page.
      *
-     * @deprecated Use the $displayRewards variable in the view.
+     * @deprecated use the $displayRewards variable in the view
      */
     function display_rewards(): bool
     {
