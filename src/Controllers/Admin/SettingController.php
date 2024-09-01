@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Controllers\Admin;
 
 use Azuriom\Http\Controllers\Controller;
+use Azuriom\Models\ActionLog;
 use Azuriom\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -40,6 +41,8 @@ class SettingController extends Controller
             'vote.ipv4-v6-compatibility' => $request->has('ip_compatibility'),
             'vote.commands' => is_array($commands) ? json_encode(array_filter($commands)) : null,
         ]);
+
+        ActionLog::log('vote.settings.updated');
 
         return to_route('vote.admin.settings')
             ->with('success', trans('messages.status.success'));

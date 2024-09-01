@@ -44,6 +44,12 @@ class VoteServiceProvider extends BasePluginServiceProvider
             Site::class,
         ], 'vote::admin.logs');
 
+        ActionLog::registerLogs('vote.settings.updated', [
+            'icon' => 'hand-thumbs-up',
+            'color' => 'info',
+            'message' => 'vote::admin.logs.settings',
+        ]);
+
         if (method_exists($this, 'registerSchedule')) {
             $this->registerSchedule();
         }

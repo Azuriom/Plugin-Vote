@@ -85,5 +85,7 @@ return [
             'updated' => 'Mise à jour de la récompense de vote #:id',
             'deleted' => 'Suppression de la récompense de vote #:id',
         ],
+
+        'settings' => 'Mise à jour des paramètres de vote',
     ],
 ];

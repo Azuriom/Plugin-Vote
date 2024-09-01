@@ -8,6 +8,7 @@ use Azuriom\Plugin\Vote\Models\Site;
 use Azuriom\Plugin\Vote\Requests\SiteRequest;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class SiteController extends Controller
 {
@@ -37,7 +38,7 @@ class SiteController extends Controller
      */
     public function store(SiteRequest $request)
     {
-        $site = Site::create($request->validated());
+        $site = Site::create(Arr::except($request->validated(), 'rewards'));
 
         $site->rewards()->sync($request->input('rewards', []));
 
@@ -114,7 +115,7 @@ class SiteController extends Controller
      */
     public function update(SiteRequest $request, Site $site)
     {
-        $site->update($request->validated());
+        $site->update(Arr::except($request->validated(), 'rewards'));
 
         $site->rewards()->sync($request->input('rewards', []));
 

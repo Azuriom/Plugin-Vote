@@ -31,7 +31,7 @@ class VoteController extends Controller
             'user' => $request->user(),
             'request' => $request,
             'sites' => Site::enabled()->with('rewards')->get(),
-            'rewards' => Reward::orderByDesc('chances')->get(),
+            'rewards' => Reward::where('chances', '>', 0)->orderByDesc('chances')->get(),
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
             'userVotes' => $votesCount,
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),

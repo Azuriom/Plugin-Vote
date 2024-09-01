@@ -85,5 +85,7 @@ return [
             'updated' => 'Updated vote reward #:id',
             'deleted' => 'Deleted vote reward #:id',
         ],
+
+        'settings' => 'Updated vote settings',
     ],
 ];

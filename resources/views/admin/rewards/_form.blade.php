@@ -16,7 +16,7 @@
         <label class="form-label" for="chancesInput">{{ trans('vote::messages.fields.chances') }}</label>
 
         <div class="input-group @error('chances') has-validation @enderror">
-            <input type="number" min="0.01" max="100" step="0.01" class="form-control @error('chances') is-invalid @enderror" id="chancesInput" name="chances" value="{{ old('chances', $reward->chances ?? '0') }}" required>
+            <input type="number" min="0" max="100" step="0.01" class="form-control @error('chances') is-invalid @enderror" id="chancesInput" name="chances" value="{{ old('chances', $reward->chances ?? '0') }}" required>
             <div class="input-group-text">%</div>
 
             @error('chances')
