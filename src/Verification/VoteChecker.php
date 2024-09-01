@@ -224,7 +224,6 @@ class VoteChecker
                     return null;
                 }
 
-                echo 'ok';
                 return User::where('name', $name)->value('id');
             }));
 
