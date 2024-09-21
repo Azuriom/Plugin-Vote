@@ -87,6 +87,13 @@ class VoteVerifier
         return $this;
     }
 
+    public function retrieveKeyByCallback(Closure $callback): self
+    {
+        $this->retrieveKeyMethod = $callback;
+
+        return $this;
+    }
+
     public function requireKey(string $type): self
     {
         $this->retrieveKeyMethod = $type;

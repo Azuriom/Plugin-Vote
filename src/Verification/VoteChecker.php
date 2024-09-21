@@ -53,6 +53,11 @@ class VoteChecker
             ->retrieveKeyByRegex('/^serveur-minecraft\.fr\/[\w-]+\.(\d+)/')
             ->verifyByJson('status', 'Success'));
 
+        $this->register(VoteVerifier::for('serveur-minecraft.com')
+            ->setApiUrl('https://serveur-minecraft.com/api/1/vote/{server}/{ip}/json')
+            ->retrieveKeyByRegex('/^serveur-minecraft\.com\/(\d+)/')
+            ->verifyByJson('vote', '1'));
+
         $this->register(VoteVerifier::for('serveursminecraft.org')
             ->setApiUrl('https://www.serveursminecraft.org/sm_api/peutVoter.php?id={server}&ip={ip}')
             ->retrieveKeyByRegex('/^serveursminecraft\.org\/serveur\/(\d+)/')
@@ -109,10 +114,8 @@ class VoteChecker
             ->verifyByValue(1));
 
         $listForge = [
-            'gmod-servers.com',
-            'ark-servers.net',
-            'rust-servers.net',
-            'tf2-servers.com',
+            'gmod-servers.com', 'ark-servers.net', 'rust-servers.net',
+            'tf2-servers.com', '7daystodie-servers.com', 'unturned-servers.net',
             'counter-strike-servers.net',
         ];
 
@@ -185,6 +188,18 @@ class VoteChecker
                 return $request->withToken($site->verification_key);
             })
             ->verifyByJson('canVote', false));
+
+        $this->register(VoteVerifier::for('topg.org')
+            ->retrieveKeyByCallback(fn () => null) // No key required
+            ->verifyByPingback(function (Request $request) {
+                $topgIp = gethostbyname('monitor.topg.org');
+
+                if ($request->ip() !== $topgIp) {
+                    return null;
+                }
+
+                return User::where('name', $request->input('p_resp'))->value('id');
+            }));
 
         $this->register(VoteVerifier::for('mctop.su')
             ->requireKey('secret')

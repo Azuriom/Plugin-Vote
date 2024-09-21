@@ -33,7 +33,8 @@ class SiteRequest extends FormRequest
             'url' => ['required', 'string', 'url', 'max:150'],
             'rewards' => ['required', 'array'],
             'verification_key' => ['nullable', 'max:100'],
-            'vote_delay' => ['required', 'integer', 'min:0'],
+            'vote_delay' => ['required_with:reset_interval', 'nullable', 'integer', 'min:0'],
+            'vote_reset_at' => ['required_without:reset_interval', 'nullable', 'date_format:H\\:i'],
             'has_verification' => ['filled', 'boolean'],
             'is_enabled' => ['filled', 'boolean'],
         ];
@@ -50,6 +51,12 @@ class SiteRequest extends FormRequest
             $this->merge([
                 'url' => Str::replace('{player}', '(player_name)', $this->input('url')),
             ]);
+        }
+
+        if ($this->filled('reset_interval')) {
+            $this->merge(['vote_reset_at' => null]);
+        } else {
+            $this->merge(['vote_delay' => 0]);
         }
     }
 

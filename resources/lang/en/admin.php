@@ -27,7 +27,11 @@ return [
         'create' => 'Create site',
 
         'enable' => 'Enable the site',
+        'type' => 'Type of delay between votes',
+        'interval' => 'Fixed interval between votes',
+        'daily' => 'Specific time of day',
         'delay' => 'Delay between votes',
+        'time' => 'Time to vote again',
         'minutes' => 'minutes',
 
         'list' => 'Sites on which votes can be verified',

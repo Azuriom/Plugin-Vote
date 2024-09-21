@@ -100,7 +100,9 @@ class VoteController extends Controller
             ], 422);
         }
 
-        $next = now()->addMinutes($site->vote_delay);
+        $next = $site->vote_reset_at !== null
+            ? now()->next($site->vote_reset_at)
+            : now()->addMinutes($site->vote_delay);
         Cache::put('votes.site.'.$site->id.'.'.$request->ip(), $next, $next);
 
         $reward = $site->getRandomReward();

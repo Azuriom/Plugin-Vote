@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -21,6 +20,7 @@ use Illuminate\Support\Str;
  * @property string|null $verification_key
  * @property bool $has_verification
  * @property bool $is_enabled
+ * @property \Carbon\Carbon|null $vote_reset_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Illuminate\Support\Collection|\Azuriom\Plugin\Vote\Models\Reward[] $rewards
@@ -45,7 +45,7 @@ class Site extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'url', 'vote_delay', 'verification_key', 'has_verification', 'is_enabled',
+        'name', 'url', 'vote_delay', 'verification_key', 'has_verification', 'is_enabled', 'vote_reset_at',
     ];
 
     /**
@@ -107,10 +107,8 @@ class Site extends Model
             $ip = $ip->ip();
         }
 
-        // GTop100 votes resets at midnight GMT+1
-        $voteResetAtFixedTime = Str::contains($this->url, 'gtop100.com');
-        $voteTime = $voteResetAtFixedTime
-            ? now()->timezone('Europe/London')->startOfDay()
+        $voteTime = $this->vote_reset_at !== null
+            ? now()->previous($this->vote_reset_at)
             : now()->subMinutes($this->vote_delay);
 
         $lastVoteTime = $this->votes()
@@ -120,8 +118,8 @@ class Site extends Model
             ->value('created_at');
 
         if ($lastVoteTime !== null) {
-            return $voteResetAtFixedTime
-                ? now()->timezone('Europe/London')->endOfDay()
+            return $this->vote_reset_at !== null
+                ? $voteTime->addDay()
                 : $lastVoteTime->addMinutes($this->vote_delay);
         }
 

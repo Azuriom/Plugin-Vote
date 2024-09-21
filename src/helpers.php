@@ -30,7 +30,7 @@ if (! function_exists('display_rewards')) {
 if (! function_exists('vote_leaderboard')) {
     function vote_leaderboard()
     {
-        return Cache::remember('vote.leaderboard', now()->addMinutes(5), function () {
+        return Cache::remember('vote.leaderboard', now()->addMinute(), function () {
             return Vote::getTopVoters(now()->startOfMonth())->map(function ($value) {
                 return (object) $value;
             });

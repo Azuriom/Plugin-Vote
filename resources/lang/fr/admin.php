@@ -27,7 +27,11 @@ return [
         'create' => 'Créer un site',
 
         'enable' => 'Activer le site',
+        'type' => 'Type de délai entre les votes',
+        'interval' => 'Délai fixe entre les votes',
+        'daily' => 'Heure précise de la journée',
         'delay' => 'Délai entre chaque vote',
+        'time' => 'Heure pour voter à nouveau',
         'minutes' => 'minutes',
 
         'list' => 'Sites sur lesquels les votes peuvent être vérifiés',
