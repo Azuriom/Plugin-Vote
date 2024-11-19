@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Commands;
 
 use Azuriom\Models\User;
+use Azuriom\Notifications\AlertNotification;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\Vote;
 use Illuminate\Console\Command;
@@ -34,10 +35,9 @@ class MonthlyRewardsCommand extends Command
         $users = User::findMany($votes->pluck('user_id'))->keyBy('id');
 
         foreach ($votes as $index => $vote) {
-            $positions = $reward->monthly_rewards ?? [];
             $user = $users->get($vote->user_id);
             $targetRewards = $rewards->where(
-                fn (Reward $reward) => in_array($index + 1, $positions, true)
+                fn (Reward $reward) => in_array($index + 1, $reward->monthly_rewards ?? [], true)
             );
 
             if ($user === null) {
@@ -47,7 +47,14 @@ class MonthlyRewardsCommand extends Command
             foreach ($targetRewards as $reward) {
                 $reward->dispatch($user);
 
-                $this->info('Dispatching reward '.$reward->name.' to user #'.$user->id);
+                (new AlertNotification(trans('vote::messages.notifications.top', [
+                    'reward' => $reward->name,
+                    'position' => $index + 1,
+                ])))
+                    ->level('info')
+                    ->send($user);
+
+                $this->info('Dispatched reward '.$reward->name.' to user #'.$user->id);
             }
         }
     }

@@ -20,12 +20,16 @@ return [
     ],
 
     'errors' => [
-        'user' => 'Cet utilisateur n\'existe pas !',
+        'user' => 'Cet utilisateur n\'existe pas.',
         'site' => 'Aucun site de vote n\'est disponible pour le moment.',
-        'delay' => 'Vous avez déjà voté, vous pouvez voter à nouveau dans :time !',
+        'delay' => 'Vous avez déjà voté, vous pouvez voter à nouveau dans :time.',
     ],
 
     'votes' => 'Vous avez voté :count fois ce mois-ci.',
 
     'success' => 'Votre vote a été pris en compte, vous recevrez bientôt la récompense « :reward » !',
+
+    'notifications' => [
+        'top' => 'Félicitions, vous avez reçu « :reward » pour avoir été le meilleur voteur #:position du mois!',
+    ],
 ];
