@@ -77,6 +77,7 @@ class Vote extends Model
                 $position + 1 => (object) [
                     'user' => $users->get($vote->user_id),
                     'votes' => $vote->count,
+                    'position' => $position + 1,
                 ],
             ];
         });

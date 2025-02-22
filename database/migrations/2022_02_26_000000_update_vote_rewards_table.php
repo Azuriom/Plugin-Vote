@@ -40,6 +40,8 @@ return new class extends Migration
 
             $table->foreign('reward_id')->references('id')->on('vote_rewards')->cascadeOnDelete();
             $table->foreign('server_id')->references('id')->on('servers')->cascadeOnDelete();
+
+            $table->unique(['reward_id', 'server_id']);
         });
 
         foreach ($rewards as $reward) {

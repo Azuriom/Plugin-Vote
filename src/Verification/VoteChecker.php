@@ -127,7 +127,7 @@ class VoteChecker
         }
 
         $this->register(VoteVerifier::for('trackyserver.com')
-            ->setApiUrl('http://www.api.trackyserver.com/vote/?action=claim&key={server}&steamid={id}')
+            ->setApiUrl('https://api.trackyserver.com/vote/?action=claim&key={server}&steamid={id}')
             ->requireKey('api_key')
             ->verifyByValue(1));
 

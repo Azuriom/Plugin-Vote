@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $need_online
  * @property string[] $commands
  * @property int[] $monthly_rewards
+ * @property bool $single_server
  * @property bool $is_enabled
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -46,7 +47,8 @@ class Reward extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'image', 'chances', 'money', 'commands', 'monthly_rewards', 'need_online', 'is_enabled',
+        'name', 'image', 'chances', 'money', 'commands', 'monthly_rewards',
+        'need_online', 'single_server', 'is_enabled',
     ];
 
     /**
@@ -57,6 +59,8 @@ class Reward extends Model
     protected $casts = [
         'commands' => 'array',
         'monthly_rewards' => 'array',
+        'need_online' => 'boolean',
+        'single_server' => 'boolean',
         'is_enabled' => 'boolean',
     ];
 
@@ -84,7 +88,7 @@ class Reward extends Model
         return $this->belongsToMany(Server::class, 'vote_reward_server');
     }
 
-    public function dispatch(User|Vote $target): void
+    public function dispatch(User|Vote $target, ?array $servers = null): void
     {
         $user = $target instanceof User ? $target : $target->user;
         $siteName = $target instanceof Vote ? $target->site->name : '?';
@@ -107,7 +111,7 @@ class Reward extends Model
             '{reward}', '{site}',
         ], [$this->name, $siteName], $command), $commands);
 
-        foreach ($this->servers as $server) {
+        foreach ($servers ?? $this->servers as $server) {
             $server->bridge()->sendCommands($commands, $user, $this->need_online);
         }
     }

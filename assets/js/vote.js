@@ -158,21 +158,57 @@ function refreshVote(url) {
                 return;
             }
 
-            displayVoteAlert(response.data.message, 'success');
-
             document.getElementById('vote-card').classList.remove('voting');
 
-            voteDoneCallbacks.forEach(function (callback) {
-                callback();
-            });
+            if (response.data.status === 'select_server') {
+                showServerSelect(url, response.data.servers);
+                return;
+            }
 
-            setupVoteTimers(window.username);
+            rewardDelivered(response.data.message);
         }).catch(function (error) {
             document.getElementById('vote-card').classList.remove('voting');
 
             displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
         });
     }, 5000);
+}
+
+function rewardDelivered(message) {
+    displayVoteAlert(message, 'success');
+
+    voteDoneCallbacks.forEach(function (callback) {
+        callback();
+    });
+
+    setupVoteTimers(window.username);
+}
+
+function showServerSelect(baseURL, servers) {
+    const serverSelect = document.getElementById('server-select');
+
+    Object.entries(servers).forEach(function ([serverId, serverName]) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-primary';
+        button.innerText = serverName;
+
+        button.addEventListener('click', function () {
+            axios.post(baseURL + '/done', {
+                user: window.username,
+                server: serverId,
+            }).then(function (response) {
+                rewardDelivered(response.data.message);
+                serverSelect.innerHTML = '';
+            }).catch(function (error) {
+                displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+            });
+        });
+
+        serverSelect.appendChild(button);
+    })
+
+    toggleStep('server')
 }
 
 if (window.username) {

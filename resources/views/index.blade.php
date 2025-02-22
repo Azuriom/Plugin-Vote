@@ -46,6 +46,12 @@
             <div class="d-none" data-vote-step="3">
                 <p id="vote-result"></p>
             </div>
+
+            <div class="d-none" data-vote-step="server">
+                <p>{{ trans('vote::messages.server') }}</p>
+
+                <div id="server-select"></div>
+            </div>
         </div>
     </div>
 
@@ -123,7 +129,7 @@
         <script src="https://ipv6-adapter.com/api/v1/api.js" async defer></script>
     @endif
 
-    <script src="{{ plugin_asset('vote', 'js/vote.js') }}" defer></script>
+    <script src="{{ plugin_asset('vote', 'js/vote.js?v1') }}" defer></script>
     @auth
         <script>
             window.username  = '{{ $user->name }}';
@@ -133,6 +139,10 @@
 
 @push('styles')
     <style>
+        #vote-card .btn:not(:last-child) {
+            margin-right: 0.5rem;
+        }
+
         #vote-card .spinner-parent {
             display: none;
         }

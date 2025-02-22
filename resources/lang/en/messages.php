@@ -27,9 +27,11 @@ return [
 
     'votes' => 'You have voted :count time this month.|You have voted :count times this month.',
 
-    'success' => 'Your vote has been taken into account, you will soon receive the reward « :reward »!',
+    'server' => 'Choose the server on which to receive the reward.',
+
+    'success' => 'Your vote has been taken into account, you will soon receive the reward ":reward"!',
 
     'notifications' => [
-        'top' => 'Congratulations, you have received « :reward » for being the #:position top voter of the month!',
+        'top' => 'Congratulations, you have received ":reward" for being the #:position top voter of the month!',
     ],
 ];

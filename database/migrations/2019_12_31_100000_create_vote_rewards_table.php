@@ -28,6 +28,8 @@ return new class extends Migration
 
             $table->foreign('reward_id')->references('id')->on('vote_rewards')->cascadeOnDelete();
             $table->foreign('server_id')->references('id')->on('servers')->cascadeOnDelete();
+
+            $table->unique(['reward_id', 'server_id']);
         });
 
         Schema::create('vote_reward_site', function (Blueprint $table) {
@@ -36,6 +38,8 @@ return new class extends Migration
 
             $table->foreign('reward_id')->references('id')->on('vote_rewards')->cascadeOnDelete();
             $table->foreign('site_id')->references('id')->on('vote_sites')->cascadeOnDelete();
+
+            $table->unique(['reward_id', 'site_id']);
         });
     }
 

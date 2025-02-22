@@ -3,6 +3,7 @@
 namespace Azuriom\Plugin\Vote\Controllers;
 
 use Azuriom\Http\Controllers\Controller;
+use Azuriom\Models\Server;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\Site;
@@ -75,6 +76,14 @@ class VoteController extends Controller
 
         abort_if($user === null, 401);
 
+        $previousReward = $request->session()->has('vote.reward.'.$site->id)
+            ? Reward::find($request->session()->get('vote.reward.'.$site->id))
+            : null;
+
+        if ($previousReward !== null) {
+            return $this->selectServer($request, $user, $site, $previousReward);
+        }
+
         $nextVoteTime = $site->getNextVoteTime($user, $request->ip());
 
         if ($nextVoteTime !== null) {
@@ -100,14 +109,18 @@ class VoteController extends Controller
             ], 422);
         }
 
-        $next = $site->vote_reset_at !== null
-            ? now()->next($site->vote_reset_at)
-            : now()->addMinutes($site->vote_delay);
-        Cache::put('votes.site.'.$site->id.'.'.$request->ip(), $next, $next);
-
         $reward = $site->getRandomReward();
 
         if ($reward !== null) {
+            if ($reward->single_server) {
+                $request->session()->put('vote.reward.'.$site->id, $reward->id);
+
+                return response()->json([
+                    'status' => 'select_server',
+                    'servers' => $reward->servers->pluck('name', 'id'),
+                ]);
+            }
+
             $vote = $site->votes()->create([
                 'user_id' => $user->id,
                 'reward_id' => $reward->id,
@@ -115,6 +128,38 @@ class VoteController extends Controller
 
             $reward->dispatch($vote);
         }
+
+        $next = $site->vote_reset_at !== null
+            ? now()->next($site->vote_reset_at)
+            : now()->addMinutes($site->vote_delay);
+        Cache::put('votes.site.'.$site->id.'.'.$request->ip(), $next, $next);
+
+        return response()->json([
+            'message' => trans('vote::messages.success', [
+                'reward' => $reward?->name ?? trans('messages.unknown'),
+            ]),
+        ]);
+    }
+
+    private function selectServer(Request $request, User $user, Site $site, Reward $reward)
+    {
+        $server = Server::find($request->input('server'));
+
+        if ($server === null || ! $reward->servers->contains($server)) {
+            return response()->json([
+                'status' => 'select_server',
+                'servers' => $reward->servers->pluck('name', 'id'),
+            ]);
+        }
+
+        $request->session()->forget('vote.reward.'.$site->id);
+
+        $vote = $site->votes()->create([
+            'user_id' => $user->id,
+            'reward_id' => $reward->id,
+        ]);
+
+        $reward->dispatch($vote, [$server]);
 
         return response()->json([
             'message' => trans('vote::messages.success', [

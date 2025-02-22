@@ -27,9 +27,11 @@ return [
 
     'votes' => 'Vous avez voté :count fois ce mois-ci.',
 
-    'success' => 'Votre vote a été pris en compte, vous recevrez bientôt la récompense « :reward » !',
+    'server' => 'Choisissez le serveur sur lequel recevoir la récompense.',
+
+    'success' => 'Votre vote a été pris en compte, vous recevrez bientôt la récompense ":reward" !',
 
     'notifications' => [
-        'top' => 'Félicitions, vous avez reçu « :reward » pour avoir été le meilleur voteur #:position du mois!',
+        'top' => 'Félicitions, vous avez reçu ":reward" pour avoir été le meilleur voteur #:position du mois!',
     ],
 ];

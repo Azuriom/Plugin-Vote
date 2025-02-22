@@ -73,6 +73,11 @@
     <label class="form-check-label" for="needOnlineSwitch">{{ trans('vote::admin.rewards.require_online') }}</label>
 </div>
 
+<div class="mb-3 form-check form-switch">
+    <input type="checkbox" class="form-check-input" id="singleSwitch" name="single_server" @checked(old('single_server', $reward->single_server ?? false))>
+    <label class="form-check-label" for="singleSwitch">{{ trans('vote::admin.rewards.single_server') }}</label>
+</div>
+
 <div class="mb-3">
     <label class="form-label">{{ trans('vote::messages.fields.commands') }}</label>
 

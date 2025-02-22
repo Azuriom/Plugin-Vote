@@ -29,7 +29,7 @@ return [
         'enable' => 'Activer le site',
         'type' => 'Type de délai entre les votes',
         'interval' => 'Délai fixe entre les votes',
-        'daily' => 'Heure précise de la journée',
+        'daily' => 'Heure fixe de la journée',
         'delay' => 'Délai entre chaque vote',
         'time' => 'Heure pour voter à nouveau',
         'minutes' => 'minutes',
@@ -60,11 +60,12 @@ return [
 
         'require_online' => 'Exécuter les commandes lorsque l\'utilisateur est en ligne sur le serveur (uniquement disponible avec AzLink)',
         'enable' => 'Activer la récompense',
+        'single_server' => 'Laisser l\'utilisateur choisir le serveur pour recevoir la récompense',
 
         'commands' => 'Vous pouvez utiliser <code>{player}</code> pour utiliser le nom du joueur, <code>{reward}</code> pour le nom de la récompense et <code>{site}</code> pour le nom du site. Pour les jeux Steam, les variables <code>{steam_id}</code> et <code>{steam_id_32}</code> sont disponibles. La commande ne doit pas contenir de <code>/</code> au début.',
         'monthly' => 'Position du classement des utilisateurs à qui donner cette récompense à la fin du mois',
         'monthly_info' => 'Donner automatiquement, à la fin du mois, cette récompense aux utilisateurs aux positions indiquées dans le classement des meilleurs voteurs.',
-        'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois.',
+        'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois, voir la <a href="https://azuriom.com/fr/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> pour plus d\'informations.',
     ],
 
     'votes' => [

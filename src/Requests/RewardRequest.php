@@ -15,7 +15,7 @@ class RewardRequest extends FormRequest
      * @var array<int, string>
      */
     protected array $checkboxes = [
-        'need_online', 'is_enabled',
+        'need_online', 'single_server', 'is_enabled',
     ];
 
     /**
@@ -32,6 +32,7 @@ class RewardRequest extends FormRequest
             'chances' => ['required', 'numeric', 'between:0,100'],
             'money' => ['nullable', 'numeric', 'min:0'],
             'need_online' => ['filled', 'boolean'],
+            'single_server' => ['filled', 'boolean'],
             'commands' => ['sometimes', 'nullable', 'array'],
             'monthly_rewards' => ['sometimes', 'nullable', 'array'],
             'is_enabled' => ['filled', 'boolean'],
