@@ -178,7 +178,7 @@ class VoteVerifier
 
         Cache::put("vote.sites.{$this->siteDomain}.".$result, true, now()->addMinutes(5));
 
-        return response()->json(['status' => 'ok']);
+        return response('ok');
     }
 
     public function hasPingback(): bool
