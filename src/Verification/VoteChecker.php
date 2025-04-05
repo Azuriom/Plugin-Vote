@@ -63,33 +63,10 @@ class VoteChecker
             ->retrieveKeyByRegex('/^serveursminecraft\.org\/serveur\/(\d+)/')
             ->verifyByDifferentValue('true'));
 
-        $this->register(VoteVerifier::for('serveurs-minecraft.com')
-            ->setApiUrl('https://serveurs-minecraft.com/api.php?Classement={server}&ip={ip}')
-            ->retrieveKeyByRegex('/^serveurs-minecraft\.com\/serveur-minecraft\.php\?Classement=([^\/]+)/')
-            ->verifyByJson('lastVote.date', function ($lastVoteTime, $json) {
-                if (! $lastVoteTime) {
-                    return false;
-                }
-
-                $now = Carbon::parse(Arr::get($json, 'reqVote.date')) ?? now();
-
-                return Carbon::parse($lastVoteTime)->addMinutes(5)->isAfter($now) ? $lastVoteTime : false;
-            }));
-
         $this->register(VoteVerifier::for('liste-serveurs.fr')
             ->setApiUrl('https://www.liste-serveurs.fr/api/checkVote/{server}/{ip}')
             ->retrieveKeyByRegex('/^liste-serveurs\.fr\/[\w-]+\.(\d+)/')
             ->verifyByJson('success', true));
-
-        $this->register(VoteVerifier::for('serveur-top.fr')
-            ->setApiUrl('https://serveur-top.fr/api/checkVote/{server}/{ip}')
-            ->retrieveKeyByRegex('/^serveur-top\.fr\/[\w-]+\.(\d+)/')
-            ->verifyByJson('success', true));
-
-        $this->register(VoteVerifier::for('liste-minecraft-serveurs.com')
-            ->setApiUrl('https://www.liste-minecraft-serveurs.com/Api/Worker/id_server/{server}/ip/{ip}')
-            ->retrieveKeyByRegex('/^liste-minecraft-serveurs\.com\/Serveur\/(\d+)/')
-            ->verifyByJson('result', 202));
 
         $this->register(VoteVerifier::for('minecraft-italia.net')
             ->setApiUrl('https://minecraft-italia.net/lista/api/vote/server?serverId={server}')
@@ -180,14 +157,6 @@ class VoteChecker
                 return $request->withToken($site->verification_key);
             })
             ->verifyByJson('date', true));
-
-        $this->register(VoteVerifier::for('pixlbay.io')
-            ->setApiUrl('https://api.pixlbay.io/v1/votes/username/{name}')
-            ->requireKey('api_key')
-            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
-                return $request->withToken($site->verification_key);
-            })
-            ->verifyByJson('canVote', false));
 
         $this->register(VoteVerifier::for('topg.org')
             ->retrieveKeyByCallback(fn () => null) // No key required

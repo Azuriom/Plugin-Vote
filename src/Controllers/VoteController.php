@@ -76,20 +76,20 @@ class VoteController extends Controller
 
         abort_if($user === null, 401);
 
-        $previousReward = $request->session()->has('vote.reward.'.$site->id)
-            ? Reward::find($request->session()->get('vote.reward.'.$site->id))
-            : null;
-
-        if ($previousReward !== null) {
-            return $this->selectServer($request, $user, $site, $previousReward);
-        }
-
         $nextVoteTime = $site->getNextVoteTime($user, $request->ip());
 
         if ($nextVoteTime !== null) {
             return response()->json([
                 'message' => $this->formatTimeMessage($nextVoteTime),
             ], 422);
+        }
+
+        $previousReward = $request->session()->has('vote.reward.'.$site->id)
+            ? Reward::find($request->session()->get('vote.reward.'.$site->id))
+            : null;
+
+        if ($previousReward !== null) {
+            return $this->selectServer($request, $user, $site, $previousReward);
         }
 
         $voteChecker = app(VoteChecker::class);

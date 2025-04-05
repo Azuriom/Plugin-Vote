@@ -27,7 +27,7 @@ class RewardRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:50'],
-            'image' => ['nullable', 'image'],
+            'image' => ['nullable', 'image:allow_svg'],
             'servers.*' => ['required', 'exists:servers,id'],
             'chances' => ['required', 'numeric', 'between:0,100'],
             'money' => ['nullable', 'numeric', 'min:0'],

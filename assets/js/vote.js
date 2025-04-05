@@ -194,6 +194,8 @@ function showServerSelect(baseURL, servers) {
         button.innerText = serverName;
 
         button.addEventListener('click', function () {
+            document.getElementById('vote-card').classList.add('voting');
+
             axios.post(baseURL + '/done', {
                 user: window.username,
                 server: serverId,
@@ -202,6 +204,8 @@ function showServerSelect(baseURL, servers) {
                 serverSelect.innerHTML = '';
             }).catch(function (error) {
                 displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+            }).finally(function () {
+                document.getElementById('vote-card').classList.remove('voting');
             });
         });
 
