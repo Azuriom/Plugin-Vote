@@ -36,6 +36,7 @@ class VoteController extends Controller
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
             'userVotes' => $votesCount,
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
+            'forceAuth' => setting('vote.force-auth', false),
             'displayRewards' => (bool) setting('vote.display-rewards', true),
         ]);
     }

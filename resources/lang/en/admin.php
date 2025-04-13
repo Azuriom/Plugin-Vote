@@ -18,6 +18,8 @@ return [
         'display-rewards' => 'Show rewards in vote page',
         'ip_compatibility' => 'Enable IPv4/IPv6 compatibility',
         'ip_compatibility_info' => 'This option allows you to correct votes that are not verified on voting sites that don\'t accept IPv6 while your site does, or vice versa.',
+        'force_auth' => 'Force authentication',
+        'force_auth_info' => 'This option allows you to force authentication on the vote page (the user must be logged in to vote).',
         'commands' => 'Global commands',
     ],
 

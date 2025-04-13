@@ -30,6 +30,14 @@
                 </div>
 
                 <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="forceAuth" name="force_auth" @if($forceAuth) checked @endif aria-describedby="forceAuthLabel">
+                        <label class="form-check-label" for="forceAuth">{{ trans('vote::admin.settings.force_auth') }}</label>
+                    </div>
+                    <div id="forceAuthLabel" class="form-text">{{ trans('vote::admin.settings.force_auth_info') }}</div>
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label">{{ trans('vote::admin.settings.commands') }}</label>
 
                     @include('admin.elements.list-input', ['name' => 'commands', 'values' => $commands])

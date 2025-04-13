@@ -12,6 +12,7 @@
             </div>
 
             <div class="@auth d-none @endauth" data-vote-step="1">
+                @if(!$forceAuth)
                 <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
                     <div class="col-md-6 col-lg-4">
                         <div class="mb-3">
@@ -26,21 +27,28 @@
                         </button>
                     </div>
                 </form>
+                @else
+                <div class="alert alert-info" role="alert">
+                    {{ trans('vote::messages.errors.login_required') }}
+                </div>
+                @endif
             </div>
 
             <div class="@guest d-none @endguest h-100" data-vote-step="2">
-                @forelse($sites as $site)
-                    <a class="btn btn-primary" href="{{ $site->url }}" target="_blank" rel="noopener noreferrer"
-                       data-vote-id="{{ $site->id }}"
-                       data-vote-url="{{ route('vote.vote', $site) }}"
-                       @auth data-vote-time="{{ $site->getNextVoteTime($user, $request)?->valueOf() }}" @endauth>
-                        <span class="badge bg-secondary text-white vote-timer"></span> {{ $site->name }}
-                    </a>
-                @empty
-                    <div class="alert alert-warning" role="alert">
-                        {{ trans('vote::messages.errors.site') }}
-                    </div>
-                @endforelse
+                @if(!$forceAuth || auth()->check())
+                    @forelse($sites as $site)
+                        <a class="btn btn-primary" href="{{ $site->url }}" target="_blank" rel="noopener noreferrer"
+                           data-vote-id="{{ $site->id }}"
+                           data-vote-url="{{ route('vote.vote', $site) }}"
+                           @auth data-vote-time="{{ $site->getNextVoteTime($user, $request)?->valueOf() }}" @endauth>
+                            <span class="badge bg-secondary text-white vote-timer"></span> {{ $site->name }}
+                        </a>
+                    @empty
+                        <div class="alert alert-warning" role="alert">
+                            {{ trans('vote::messages.errors.site') }}
+                        </div>
+                    @endforelse
+                @endif
             </div>
 
             <div class="d-none" data-vote-step="3">

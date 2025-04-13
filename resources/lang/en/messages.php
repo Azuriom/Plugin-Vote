@@ -23,6 +23,7 @@ return [
         'user' => 'This user doesn\'t exist.',
         'site' => 'No voting site is available currently.',
         'delay' => 'You already voted, you can vote again in :time.',
+        'login_required' => 'You must be logged in to vote.',
     ],
 
     'votes' => 'You have voted :count time this month.|You have voted :count times this month.',
