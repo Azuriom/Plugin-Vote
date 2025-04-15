@@ -23,7 +23,7 @@ return [
         'user' => 'Cet utilisateur n\'existe pas.',
         'site' => 'Aucun site de vote n\'est disponible pour le moment.',
         'delay' => 'Vous avez déjà voté, vous pouvez voter à nouveau dans :time.',
-        'login_required' => 'Vous devez vous connecter pour pouvoir voter.',
+        'auth' => 'Vous devez être connecté pour pouvoir voter.',
     ],
 
     'votes' => 'Vous avez voté :count fois ce mois-ci.',

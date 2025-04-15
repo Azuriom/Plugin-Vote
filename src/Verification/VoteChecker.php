@@ -4,11 +4,9 @@ namespace Azuriom\Plugin\Vote\Verification;
 
 use Azuriom\Models\User;
 use Azuriom\Plugin\Vote\Models\Site;
-use Carbon\Carbon;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
