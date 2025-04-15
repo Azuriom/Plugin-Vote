@@ -12,20 +12,29 @@
             </div>
 
             <div class="@auth d-none @endauth" data-vote-step="1">
-                <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="mb-3">
-                            <input type="text" id="stepNameInput" name="name" class="form-control"
-                                   value="{{ $name }}"
-                                   placeholder="{{ trans('messages.fields.name') }}" required>
-                        </div>
+                @if(!$authRequired)
+                    <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="mb-3">
+                                <input type="text" id="stepNameInput" name="name" class="form-control"
+                                       value="{{ $name }}"
+                                       placeholder="{{ trans('messages.fields.name') }}" required>
+                            </div>
 
-                        <button type="submit" class="btn btn-primary">
-                            {{ trans('messages.actions.continue') }}
-                            <span class="d-none spinner-border spinner-border-sm load-spinner" role="status"></span>
-                        </button>
+                            <button type="submit" class="btn btn-primary">
+                                {{ trans('messages.actions.continue') }}
+                                <span class="d-none spinner-border spinner-border-sm load-spinner" role="status"></span>
+                            </button>
+                        </div>
+                    </form>
+                @else
+                    <div class="alert alert-info" role="status">
+                        <i class="bi bi-info-circle"></i> {{ trans('vote::messages.errors.auth') }}
                     </div>
-                </form>
+                    <a href="{{ route('login') }}" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right"></i> {{ trans('auth.login') }}
+                    </a>
+                @endif
             </div>
 
             <div class="@guest d-none @endguest h-100" data-vote-step="2">

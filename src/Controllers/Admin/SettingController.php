@@ -18,7 +18,9 @@ class SettingController extends Controller
 
         return view('vote::admin.settings', [
             'topPlayersCount' => setting('vote.top-players-count', 10),
+            'displayRewards' => setting('vote.display-rewards', true),
             'ipCompatibility' => setting('vote.ipv4-v6-compatibility', true),
+            'authRequired' => setting('vote.auth-required', false),
             'commands' => $commands ? json_decode($commands) : [],
         ]);
     }
@@ -39,6 +41,7 @@ class SettingController extends Controller
             'vote.top-players-count' => $validated['top-players-count'],
             'vote.display-rewards' => $request->has('display-rewards'),
             'vote.ipv4-v6-compatibility' => $request->has('ip_compatibility'),
+            'vote.auth-required' => $request->has('auth_required'),
             'vote.commands' => is_array($commands) ? json_encode(array_filter($commands)) : null,
         ]);
 

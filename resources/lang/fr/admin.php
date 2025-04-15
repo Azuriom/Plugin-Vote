@@ -18,6 +18,7 @@ return [
         'display-rewards' => 'Afficher les récompenses sur la page de vote',
         'ip_compatibility' => 'Activer la compatibilité IPv6',
         'ip_compatibility_info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
+        'auth_required' => 'Obliger les utilisateurs à être connectés pour voter',
         'commands' => 'Commandes globales',
     ],
 

@@ -36,12 +36,19 @@ class VoteController extends Controller
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
             'userVotes' => $votesCount,
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
+            'authRequired' => setting('vote.auth-required', false),
             'displayRewards' => (bool) setting('vote.display-rewards', true),
         ]);
     }
 
     public function verifyUser(Request $request, string $name)
     {
+        if (setting('vote.auth_required', false)) {
+            return response()->json([
+                'message' => trans('vote::messages.errors.auth'),
+            ], 422);
+        }
+
         $user = User::firstWhere('name', $name);
 
         if ($user === null) {

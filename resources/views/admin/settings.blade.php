@@ -16,17 +16,24 @@
 
                 <div class="mb-3">
                     <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="displayRewards" name="display-rewards" @checked(display_rewards())>
+                        <input type="checkbox" class="form-check-input" id="displayRewards" name="display-rewards" @checked($displayRewards)>
                         <label class="form-check-label" for="displayRewards">{{ trans('vote::admin.settings.display-rewards') }}</label>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="ipCompatibility" name="ip_compatibility" @if($ipCompatibility) checked @endif aria-describedby="ipCompatibilityLabel">
+                        <input type="checkbox" class="form-check-input" id="ipCompatibility" name="ip_compatibility" @checked($ipCompatibility) aria-describedby="ipCompatibilityLabel">
                         <label class="form-check-label" for="ipCompatibility">{{ trans('vote::admin.settings.ip_compatibility') }}</label>
                     </div>
                     <div id="ipCompatibilityLabel" class="form-text">{{ trans('vote::admin.settings.ip_compatibility_info') }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" id="authRequired" name="auth_required" @checked($authRequired)>
+                        <label class="form-check-label" for="authRequired">{{ trans('vote::admin.settings.auth_required') }}</label>
+                    </div>
                 </div>
 
                 <div class="mb-3">
