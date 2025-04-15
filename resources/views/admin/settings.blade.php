@@ -31,7 +31,7 @@
 
                 <div class="mb-3">
                     <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="authRequired" name="auth_required" @checked($authRequired) aria-describedby="forceAuthLabel">
+                        <input type="checkbox" class="form-check-input" id="authRequired" name="auth_required" @checked($authRequired)>
                         <label class="form-check-label" for="authRequired">{{ trans('vote::admin.settings.auth_required') }}</label>
                     </div>
                 </div>
