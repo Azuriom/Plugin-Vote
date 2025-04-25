@@ -138,7 +138,7 @@
         <script src="https://ipv6-adapter.com/api/v1/api.js" async defer></script>
     @endif
 
-    <script src="{{ plugin_asset('vote', 'js/vote.js?v2') }}" defer></script>
+    <script src="{{ plugin_asset('vote', 'js/vote.js?v3') }}" defer></script>
     @auth
         <script>
             window.username  = '{{ $user->name }}';

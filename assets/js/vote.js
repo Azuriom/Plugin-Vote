@@ -108,7 +108,7 @@ function setupVoteTimers(name) {
         loaderIcon.classList.remove('d-none');
     }
 
-    axios.get((voteNameForm ? voteNameForm.action : '/vote/verify-user') + '/' + name)
+    axios.get((voteNameForm ? voteNameForm.action : '/vote/user') + '/' + name)
         .then(function (response) {
             toggleStep(2);
 
