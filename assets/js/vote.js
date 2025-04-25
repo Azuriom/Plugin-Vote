@@ -98,13 +98,17 @@ function initVote() {
 }
 
 function setupVoteTimers(name) {
-    const loaderIcon = voteNameForm.querySelector('.load-spinner');
+    // If name from form is not provided, use the connected user name
+    if (!voteNameForm) {
+        name = window.username;
+    }
 
+    const loaderIcon = voteNameForm ? voteNameForm.querySelector('.load-spinner') : null;
     if (loaderIcon) {
         loaderIcon.classList.remove('d-none');
     }
 
-    axios.get(voteNameForm.action + '/' + name)
+    axios.get((voteNameForm ? voteNameForm.action : '/vote/verify-user') + '/' + name)
         .then(function (response) {
             toggleStep(2);
 
@@ -125,7 +129,14 @@ function setupVoteTimers(name) {
         .catch(function (error) {
             console.log(error);
 
-            displayVoteAlert(error.response.data.message, 'danger');
+            let message = 'Unknown error occurred.';
+            if (error.response && error.response.data && error.response.data.message) {
+                message = error.response.data.message;
+            } else if (error.message) {
+                message = error.message;
+            }
+
+            displayVoteAlert(message, 'danger');
         })
         .finally(function () {
             if (loaderIcon) {
@@ -168,8 +179,13 @@ function refreshVote(url) {
             rewardDelivered(response.data.message);
         }).catch(function (error) {
             document.getElementById('vote-card').classList.remove('voting');
-
-            displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+            let message = 'Unknown error occurred.';
+            if (error.response && error.response.data && error.response.data.message) {
+                message = error.response.data.message;
+            } else if (error.message) {
+                message = error.message;
+            }
+            displayVoteAlert(message, 'danger');
         });
     }, 5000);
 }
