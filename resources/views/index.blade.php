@@ -12,8 +12,8 @@
             </div>
 
             <div class="@auth d-none @endauth" data-vote-step="1">
-                @if(!$authRequired)
-                    <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
+                <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
+                    @if(!$authRequired)
                         <div class="col-md-6 col-lg-4">
                             <div class="mb-3">
                                 <input type="text" id="stepNameInput" name="name" class="form-control"
@@ -26,15 +26,17 @@
                                 <span class="d-none spinner-border spinner-border-sm load-spinner" role="status"></span>
                             </button>
                         </div>
-                    </form>
-                @else
-                    <div class="alert alert-info" role="status">
-                        <i class="bi bi-info-circle"></i> {{ trans('vote::messages.errors.auth') }}
-                    </div>
-                    <a href="{{ route('login') }}" class="btn btn-primary">
-                        <i class="bi bi-box-arrow-in-right"></i> {{ trans('auth.login') }}
-                    </a>
-                @endif
+                    @else
+                        <div class="col-md-6">
+                            <div class="alert alert-info" role="status">
+                                <i class="bi bi-info-circle"></i> {{ trans('vote::messages.errors.auth') }}
+                            </div>
+                            <a href="{{ route('login') }}" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right"></i> {{ trans('auth.login') }}
+                            </a>
+                        </div>
+                    @endif
+                </form>
             </div>
 
             <div class="@guest d-none @endguest h-100" data-vote-step="2">
@@ -141,7 +143,7 @@
     <script src="{{ plugin_asset('vote', 'js/vote.js?v3') }}" defer></script>
     @auth
         <script>
-            window.username  = '{{ $user->name }}';
+            window.username = '{{ $user->name }}';
         </script>
     @endauth
 @endpush
