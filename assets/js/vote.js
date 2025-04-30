@@ -17,6 +17,16 @@ function displayVoteAlert(message, level) {
     document.getElementById('status-message').innerHTML = '<div class="alert alert-' + level + '" role="alert">' + message + '</div>';
 }
 
+function catchVoteError(error) {
+    if (error.response && error.response.data && error.response.data.message) {
+        return error.response.data.message;
+    }
+
+    console.error(error);
+
+    return error.toString();
+}
+
 function getTimeDifference(date) {
     const difference = date - new Date().getTime();
     const hours = Math.floor(difference / (1000 * 60 * 60));
@@ -98,17 +108,13 @@ function initVote() {
 }
 
 function setupVoteTimers(name) {
-    // If name from form is not provided, use the connected user name
-    if (!voteNameForm) {
-        name = window.username;
-    }
+    const loaderIcon = voteNameForm.querySelector('.load-spinner');
 
-    const loaderIcon = voteNameForm ? voteNameForm.querySelector('.load-spinner') : null;
     if (loaderIcon) {
         loaderIcon.classList.remove('d-none');
     }
 
-    axios.get((voteNameForm ? voteNameForm.action : '/vote/user') + '/' + name)
+    axios.get(voteNameForm.action + '/' + name)
         .then(function (response) {
             toggleStep(2);
 
@@ -127,16 +133,7 @@ function setupVoteTimers(name) {
             initVote();
         })
         .catch(function (error) {
-            console.log(error);
-
-            let message = 'Unknown error occurred.';
-            if (error.response && error.response.data && error.response.data.message) {
-                message = error.response.data.message;
-            } else if (error.message) {
-                message = error.message;
-            }
-
-            displayVoteAlert(message, 'danger');
+            catchVoteError(error);
         })
         .finally(function () {
             if (loaderIcon) {
@@ -169,8 +166,6 @@ function refreshVote(url) {
                 return;
             }
 
-            document.getElementById('vote-card').classList.remove('voting');
-
             if (response.data.status === 'select_server') {
                 showServerSelect(url, response.data.servers);
                 return;
@@ -178,14 +173,9 @@ function refreshVote(url) {
 
             rewardDelivered(response.data.message);
         }).catch(function (error) {
+            catchVoteError(error);
+        }).finally(function () {
             document.getElementById('vote-card').classList.remove('voting');
-            let message = 'Unknown error occurred.';
-            if (error.response && error.response.data && error.response.data.message) {
-                message = error.response.data.message;
-            } else if (error.message) {
-                message = error.message;
-            }
-            displayVoteAlert(message, 'danger');
         });
     }, 5000);
 }
@@ -219,7 +209,7 @@ function showServerSelect(baseURL, servers) {
                 rewardDelivered(response.data.message);
                 serverSelect.innerHTML = '';
             }).catch(function (error) {
-                displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+                catchVoteError(error);
             }).finally(function () {
                 document.getElementById('vote-card').classList.remove('voting');
             });
