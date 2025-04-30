@@ -166,6 +166,8 @@ function refreshVote(url) {
                 return;
             }
 
+            document.getElementById('vote-card').classList.remove('voting');
+
             if (response.data.status === 'select_server') {
                 showServerSelect(url, response.data.servers);
                 return;
@@ -173,9 +175,9 @@ function refreshVote(url) {
 
             rewardDelivered(response.data.message);
         }).catch(function (error) {
-            catchVoteError(error);
-        }).finally(function () {
             document.getElementById('vote-card').classList.remove('voting');
+
+            catchVoteError(error);
         });
     }, 5000);
 }
