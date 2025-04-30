@@ -19,12 +19,13 @@ function displayVoteAlert(message, level) {
 
 function catchVoteError(error) {
     if (error.response && error.response.data && error.response.data.message) {
-        return error.response.data.message;
+        displayVoteAlert(error.response.data.message, 'danger');
+        return;
     }
 
     console.error(error);
 
-    return error.toString();
+    displayVoteAlert(error.toString(), 'danger');
 }
 
 function getTimeDifference(date) {
