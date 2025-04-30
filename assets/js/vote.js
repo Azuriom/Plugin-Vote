@@ -17,6 +17,17 @@ function displayVoteAlert(message, level) {
     document.getElementById('status-message').innerHTML = '<div class="alert alert-' + level + '" role="alert">' + message + '</div>';
 }
 
+function catchVoteError(error) {
+    if (error.response && error.response.data && error.response.data.message) {
+        displayVoteAlert(error.response.data.message, 'danger');
+        return;
+    }
+
+    console.error(error);
+
+    displayVoteAlert(error.toString(), 'danger');
+}
+
 function getTimeDifference(date) {
     const difference = date - new Date().getTime();
     const hours = Math.floor(difference / (1000 * 60 * 60));
@@ -123,9 +134,7 @@ function setupVoteTimers(name) {
             initVote();
         })
         .catch(function (error) {
-            console.log(error);
-
-            displayVoteAlert(error.response.data.message, 'danger');
+            catchVoteError(error);
         })
         .finally(function () {
             if (loaderIcon) {
@@ -169,7 +178,7 @@ function refreshVote(url) {
         }).catch(function (error) {
             document.getElementById('vote-card').classList.remove('voting');
 
-            displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+            catchVoteError(error);
         });
     }, 5000);
 }
@@ -203,7 +212,7 @@ function showServerSelect(baseURL, servers) {
                 rewardDelivered(response.data.message);
                 serverSelect.innerHTML = '';
             }).catch(function (error) {
-                displayVoteAlert(error.response.data.message ? error.response.data.message : error, 'danger');
+                catchVoteError(error);
             }).finally(function () {
                 document.getElementById('vote-card').classList.remove('voting');
             });
