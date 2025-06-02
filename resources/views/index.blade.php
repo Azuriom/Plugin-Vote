@@ -12,7 +12,7 @@
             </div>
 
             <div class="@auth d-none @endauth" data-vote-step="1">
-                <form class="row justify-content-center" action="{{ route('vote.verify-user', '') }}" id="voteNameForm">
+                <form class="row justify-content-center" action="{{ route('vote.verify-user', '/') }}" id="voteNameForm">
                     @if(!$authRequired)
                         <div class="col-md-6 col-lg-4">
                             <div class="mb-3">
