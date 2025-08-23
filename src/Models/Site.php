@@ -54,6 +54,7 @@ class Site extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'vote_delay' => 'integer',
         'need_online' => 'boolean',
         'has_verification' => 'boolean',
         'is_enabled' => 'boolean',
@@ -101,35 +102,32 @@ class Site extends Model
         return $this->rewards->first();
     }
 
-    public function getNextVoteTime(User $user, Request|string $ip): ?Carbon
+    public function getNextVoteTime(User $user, Request|string|null $ip = null): ?Carbon
     {
-        if ($ip instanceof Request) {
-            $ip = $ip->ip();
-        }
-
         $voteTime = $this->vote_reset_at !== null
             ? now()->previous($this->vote_reset_at)
             : now()->subMinutes($this->vote_delay);
 
-        $lastVoteTime = $this->votes()
-            ->where('user_id', $user->id)
-            ->where('created_at', '>', $voteTime)
-            ->latest()
-            ->value('created_at');
+        $lastVoteTime = self::allLastVoteTimes($user)[$this->id] ?? null;
 
-        if ($lastVoteTime !== null) {
+        if ($lastVoteTime?->isAfter($voteTime)) {
             return $this->vote_reset_at !== null
                 ? $voteTime->addDay()
                 : $lastVoteTime->addMinutes($this->vote_delay);
         }
 
-        $nextVoteTimeForIp = Cache::get('votes.site.'.$this->id.'.'.$ip);
-
-        if ($nextVoteTimeForIp === null || $nextVoteTimeForIp->isPast()) {
+        if ($ip === null) {
             return null;
         }
 
-        return $nextVoteTimeForIp;
+        $ip = $ip instanceof Request ? $ip->ip() : $ip;
+        $nextVoteTime = Cache::get('votes.site.'.$this->id.'.'.$ip);
+
+        if (! $nextVoteTime?->isFuture()) {
+            return null;
+        }
+
+        return $nextVoteTime;
     }
 
     /**
@@ -138,5 +136,27 @@ class Site extends Model
     public function scopeEnabled(Builder $query): void
     {
         $query->where('is_enabled', true);
+    }
+
+    public static function allLastVoteTimes(User $user): array
+    {
+        $cache = once(collect(...));
+
+        if ($cache->has($user->id)) {
+            return $cache->get($user->id);
+        }
+
+        $lastVoteTimes = static::withMax(
+            ['votes as last_voted_at' => fn ($q) => $q->where('user_id', $user->id)],
+            'created_at'
+        )
+            ->get()
+            ->pluck('last_voted_at', 'id')
+            ->map(fn (?string $date) => $date !== null ? Carbon::parse($date) : null)
+            ->all();
+
+        $cache->put($user->id, $lastVoteTimes);
+
+        return $lastVoteTimes;
     }
 }

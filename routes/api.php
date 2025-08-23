@@ -1,6 +1,7 @@
 <?php
 
 use Azuriom\Plugin\Vote\Controllers\Api\ApiController;
+use Azuriom\Plugin\Vote\Controllers\Api\VoteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/azlink', [VoteController::class, 'index'])->middleware('server.token');
 Route::any('/pingback/{site}', [ApiController::class, 'pingback'])->name('sites.pingback');
