@@ -124,7 +124,7 @@ class VoteChecker
         $this->register(VoteVerifier::for('server-pulse.net')
             ->setApiUrl('https://server-pulse.net/api/servers/{server}/vote-status/{ip}')
             ->requireKey('token')
-            ->verifyByJson('success', 200));
+            ->verifyByJson('success', true));
 
         $this->register(VoteVerifier::for('top-serveurs.net')
             ->setApiUrl('https://api.top-serveurs.net/v1/votes/check-ip?server_token={server}&ip={ip}')
