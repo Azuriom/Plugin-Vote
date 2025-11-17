@@ -121,8 +121,8 @@ class VoteChecker
             ->requireKey('api_key')
             ->verifyByJson('success', true));
 
-        $this->register(VoteVerifier::for('server-pulse.net')
-            ->setApiUrl('https://server-pulse.net/api/servers/{server}/vote-status/{ip}')
+        $this->register(VoteVerifier::for('serveur-prive-impulsion.net')
+            ->setApiUrl('https://serveur-prive-impulsion.net/api/servers/{server}/vote-status/{ip}')
             ->requireKey('token')
             ->verifyByJson('can_vote', false));
 
