@@ -88,6 +88,14 @@ class VoteChecker
             ->requireKey('api_key')
             ->verifyByValue(1));
 
+        $this->register(VoteVerifier::for('discordtop.net')
+            ->setApiUrl('https://api.discordtop.net/v7/check-vote?external_id={name}')
+            ->requireKey('api_key')
+            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
+                return $request->withToken($site->verification_key);
+            })
+            ->verifyByJson('has_voted', true));
+
         $listForge = [
             'gmod-servers.com', 'ark-servers.net', 'rust-servers.net',
             'tf2-servers.com', '7daystodie-servers.com', 'unturned-servers.net',
