@@ -92,6 +92,7 @@ class Reward extends Model
     {
         $user = $target instanceof User ? $target : $target->user;
         $siteName = $target instanceof Vote ? $target->site->name : '?';
+        $siteId = $target instanceof Vote ? $target->site->id : '0';
 
         if ($this->money > 0) {
             $user->addMoney($this->money);
@@ -108,8 +109,8 @@ class Reward extends Model
         }
 
         $commands = array_map(fn (string $command) => str_replace([
-            '{reward}', '{site}',
-        ], [$this->name, $siteName], $command), $commands);
+            '{reward}', '{reward_id}', '{site}', '{site_id}',
+        ], [$this->name, $this->id, $siteName, $siteId], $command), $commands);
 
         foreach ($servers ?? $this->servers as $server) {
             $server->bridge()->sendCommands($commands, $user, $this->need_online);

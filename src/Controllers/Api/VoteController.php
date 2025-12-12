@@ -50,6 +50,7 @@ class VoteController extends Controller
                 'name' => $site->name,
                 'url' => $site->url,
             ]),
+            'month_total' => Vote::where('created_at', '>', now()->startOfMonth())->count(),
         ]);
     }
 }
