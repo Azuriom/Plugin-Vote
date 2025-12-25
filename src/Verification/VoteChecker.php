@@ -96,6 +96,11 @@ class VoteChecker
             })
             ->verifyByJson('has_voted', true));
 
+        $this->register(VoteVerifier::for('hytale-servs.fr')
+            ->setApiUrl('https://hytale-servs.fr/api/v1/servers/vote-check?api_key={server}&player={name}')
+            ->requireKey('api_key')
+            ->verifyByJson('canClaim', true));
+
         $listForge = [
             'gmod-servers.com', 'ark-servers.net', 'rust-servers.net',
             'tf2-servers.com', '7daystodie-servers.com', 'unturned-servers.net',
