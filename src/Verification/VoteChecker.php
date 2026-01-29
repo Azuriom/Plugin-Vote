@@ -103,7 +103,7 @@ class VoteChecker
 
         $this->register(VoteVerifier::for('hytale-servers.best')
             ->setApiUrl('https://hytale-servers.best/api/vote-verification?server_id={server}&ip={ip}&duration=180')
-            ->requireKey('server_id')
+            ->retrieveKeyByRegex('/^hytale-servers\.best\/servers\/(\d+)/')
             ->verifyByValue(1));
 
         $listForge = [
