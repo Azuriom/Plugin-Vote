@@ -101,6 +101,11 @@ class VoteChecker
             ->requireKey('api_key')
             ->verifyByJson('canClaim', true));
 
+        $this->register(VoteVerifier::for('hytale-servers.best')
+            ->setApiUrl('https://hytale-servers.best/api/vote-verification?server_id={server}&ip={ip}&duration=180')
+            ->retrieveKeyByRegex('/^hytale-servers\.best\/(?:[a-z]{2}\/)?servers\/(\d+)/')
+            ->verifyByValue(1));
+
         $listForge = [
             'gmod-servers.com', 'ark-servers.net', 'rust-servers.net',
             'tf2-servers.com', '7daystodie-servers.com', 'unturned-servers.net',
