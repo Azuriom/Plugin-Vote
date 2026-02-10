@@ -149,6 +149,11 @@ class VoteChecker
             ->requireKey('token')
             ->verifyByJson('code', 200));
 
+        $this->register(VoteVerifier::for('serveur-hytale.gg')
+            ->setApiUrl('https://serveur-hytale.gg/api/v1/votes/check-ip?server_token={server}&ip={ip}&duration=15')
+            ->requireKey('token')
+            ->verifyByJson('code', 200));
+
         $this->register(VoteVerifier::for('top-games.net')
             ->setApiUrl('https://api.top-games.net/v1/votes/check-ip?server_token={server}&ip={ip}')
             ->requireKey('token')
