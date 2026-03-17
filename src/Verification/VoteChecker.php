@@ -73,6 +73,13 @@ class VoteChecker
                 return collect($response->json())->contains('username', $user->name);
             }));
 
+        $this->register(VoteVerifier::for('gamemonitoring.ru')
+            ->setApiUrl('https://api.gamemonitoring.ru/votes?server_id={server}')
+            ->retrieveKeyByRegex('/^gamemonitoring\.ru\/[\w\d-]+\/servers\/(\d+)/')
+            ->verifyByCallback(function (Response $response, User $user) {
+                return collect($response->json('response.items'))->contains('nickname', $user->name);
+            }));
+
         $this->register(VoteVerifier::for('minecraft-server.eu')
             ->setApiUrl('https://minecraft-server.eu/api/v1/?object=votes&element=claim&key={server}&username={name}')
             ->requireKey('api_key')
