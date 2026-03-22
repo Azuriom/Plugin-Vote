@@ -57,6 +57,31 @@ function updateVoteLink(link) {
 
 const voteDoneCallbacks = [];
 
+function updateGoalProgress(goalCurrent, goalTarget) {
+    const progressContainer = document.getElementById('vote-goal-progress');
+    if (!progressContainer || goalCurrent === null || goalTarget === null) {
+        return;
+    }
+
+    const progressBar = progressContainer.querySelector('.progress-bar');
+    const progressText = progressContainer.querySelector('.goal-progress-text');
+    if (!progressBar) return;
+
+    const percentage = goalTarget > 0 ? Math.min(100, Math.round((goalCurrent / goalTarget) * 100)) : 0;
+    progressBar.style.width = percentage + '%';
+    progressBar.setAttribute('aria-valuenow', goalCurrent);
+    progressBar.textContent = goalCurrent + ' / ' + goalTarget;
+
+    if (progressText) {
+        progressText.textContent = goalCurrent + ' / ' + goalTarget + ' votes';
+    }
+
+    if (goalCurrent >= goalTarget) {
+        progressBar.classList.remove('bg-success');
+        progressBar.classList.add('bg-warning');
+    }
+}
+
 function initVote() {
     document.querySelectorAll('[data-vote-url]').forEach(function (el) {
         const voteTime = el.dataset['voteTime'];
@@ -131,6 +156,10 @@ function setupVoteTimers(name) {
                 }
             }
 
+            if (response.data.goalCurrent !== undefined) {
+                updateGoalProgress(response.data.goalCurrent, response.data.goalTarget);
+            }
+
             initVote();
         })
         .catch(function (error) {
@@ -174,6 +203,10 @@ function refreshVote(url) {
                 return;
             }
 
+            if (response.data.goalCurrent !== undefined) {
+                updateGoalProgress(response.data.goalCurrent, response.data.goalTarget);
+            }
+
             rewardDelivered(response.data.message);
         }).catch(function (error) {
             document.getElementById('vote-card').classList.remove('voting');
@@ -209,6 +242,9 @@ function showServerSelect(baseURL, servers) {
                 user: window.username,
                 server: serverId,
             }).then(function (response) {
+                if (response.data.goalCurrent !== undefined) {
+                    updateGoalProgress(response.data.goalCurrent, response.data.goalTarget);
+                }
                 rewardDelivered(response.data.message);
                 serverSelect.innerHTML = '';
             }).catch(function (error) {

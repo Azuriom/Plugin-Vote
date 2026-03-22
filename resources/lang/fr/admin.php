@@ -20,6 +20,17 @@ return [
         'ip_compatibility_info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
         'auth_required' => 'Obliger les utilisateurs à être connectés sur le site pour voter',
         'commands' => 'Commandes globales',
+
+        'goal_section' => 'Objectif de votes',
+        'goal_enable' => 'Activer l\'objectif de votes',
+        'goal_target' => 'Nombre de votes à atteindre',
+        'goal_auto_reset' => 'Réinitialiser automatiquement le compteur lorsque l\'objectif est atteint',
+        'goal_commands' => 'Commandes à exécuter lorsque l\'objectif est atteint',
+        'goal_commands_info' => 'Ces commandes seront exécutées sur le serveur sélectionné lorsque l\'objectif de votes communautaire est atteint. La commande ne doit pas commencer par <code>/</code>.',
+        'goal_server' => 'Serveur',
+        'goal_current' => 'Progression actuelle',
+        'goal_reset' => 'Réinitialiser la progression',
+        'goal_reset_confirm' => 'Êtes-vous sûr de vouloir réinitialiser la progression de l\'objectif de votes ?',
     ],
 
     'sites' => [

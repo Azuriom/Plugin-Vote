@@ -66,6 +66,41 @@
         </div>
     </div>
 
+    <div id="status-message"></div>
+
+    @if($goalEnabled)
+        <div class="card mb-4" id="vote-goal-progress">
+            <div class="card-body">
+                <h2 class="card-title">
+                    {{ trans('vote::messages.sections.goal') }}
+                </h2>
+
+                @php
+                    $percentage = $goalTarget > 0 ? min(100, round(($goalCurrent / $goalTarget) * 100)) : 0;
+                    $isCompleted = $goalCurrent >= $goalTarget && $goalTarget > 0;
+                @endphp
+
+                <div class="progress mb-2" style="height: 30px;">
+                    <div class="progress-bar {{ $isCompleted ? 'bg-warning' : 'bg-success' }} progress-bar-striped progress-bar-animated"
+                         role="progressbar"
+                         style="width: {{ $percentage }}%"
+                         aria-valuenow="{{ $goalCurrent }}"
+                         aria-valuemin="0"
+                         aria-valuemax="{{ $goalTarget }}">
+                        {{ $goalCurrent }} / {{ $goalTarget }}
+                    </div>
+                </div>
+
+                <p class="text-center mb-0 goal-progress-text">
+                    @if($isCompleted)
+                        {{ trans('vote::messages.goal_completed') }}
+                    @else
+                        {{ trans('vote::messages.goal_progress', ['current' => $goalCurrent, 'target' => $goalTarget]) }}
+                    @endif
+                </p>
+            </div>
+        </div>
+    @endif
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">

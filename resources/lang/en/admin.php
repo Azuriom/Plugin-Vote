@@ -20,6 +20,17 @@ return [
         'ip_compatibility_info' => 'This option allows you to correct votes that are not verified on voting sites that don\'t accept IPv6 while your site does, or vice versa.',
         'auth_required' => 'Require users to be logged in to vote',
         'commands' => 'Global commands',
+
+        'goal_section' => 'Vote Goal',
+        'goal_enable' => 'Enable vote goal',
+        'goal_target' => 'Vote goal target',
+        'goal_auto_reset' => 'Automatically reset counter when goal is reached',
+        'goal_commands' => 'Commands to execute when goal is reached',
+        'goal_commands_info' => 'These commands will be executed on the selected server when the community vote goal is reached. The command must not start with <code>/</code>.',
+        'goal_server' => 'Server',
+        'goal_current' => 'Current progress',
+        'goal_reset' => 'Reset progress',
+        'goal_reset_confirm' => 'Are you sure you want to reset the vote goal progress?',
     ],
 
     'sites' => [
