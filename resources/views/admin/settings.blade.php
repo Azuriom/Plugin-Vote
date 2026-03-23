@@ -119,13 +119,12 @@
                         </button>
                     </div>
 
-                    <div class="form-text">@lang('vote::admin.rewards.commands')</div>
+                    <div class="form-text">@lang('vote::admin.settings.goal_commands_info')</div>
                 </div>
 
             </form>
 
-            <form action="{{ route('vote.admin.settings.reset-goal') }}" method="POST" id="resetGoalForm" 
-                  onsubmit="return confirm('{{ trans('vote::admin.settings.goal_reset_confirm') }}')">
+            <form action="{{ route('vote.admin.settings.reset-goal') }}" method="POST" id="resetGoalForm">
                 @csrf
             </form>
 

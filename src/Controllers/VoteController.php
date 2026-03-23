@@ -250,8 +250,10 @@ class VoteController extends Controller
 
         $servers = Server::whereIn('id', $serverIds)->get();
 
+        $globalUser = new User();
+
         foreach ($servers as $server) {
-            $server->bridge()->sendCommands($commands, $user, false);
+            $server->bridge()->sendCommands($commands, $globalUser, false);
         }
     }
 
