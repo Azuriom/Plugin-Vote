@@ -7,6 +7,7 @@ return [
         'vote' => 'Voter',
         'top' => 'Classement',
         'rewards' => 'Récompenses',
+        'goal' => 'Objectif de votes du mois',
     ],
 
     'fields' => [
@@ -31,6 +32,8 @@ return [
     'server' => 'Choisissez le serveur sur lequel recevoir la récompense.',
 
     'success' => 'Votre vote a été pris en compte, vous recevrez bientôt la récompense ":reward" !',
+
+    'goal' => ':current / :target votes',
 
     'notifications' => [
         'top' => 'Félicitions, vous avez reçu ":reward" pour avoir été le meilleur voteur #:position du mois!',

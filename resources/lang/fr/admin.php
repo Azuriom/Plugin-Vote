@@ -22,6 +22,16 @@ return [
         'commands' => 'Commandes globales',
     ],
 
+    'goal' => [
+        'enable' => 'Activer l\'objectif de votes du mois',
+        'target' => 'Nombre de votes à atteindre',
+        'auto_reset' => 'Réinitialiser automatiquement le compteur lorsque l\'objectif est atteint',
+        'votes' => 'votes',
+        'command' => 'Commande',
+        'commands' => 'Commandes à exécuter lorsque l\'objectif est atteint',
+        'commands_info' => 'Ces commandes seront exécutées sur le(s) serveur(s) sélectionné(s) lorsque l\'objectif de votes est atteint. La commande ne doit pas contenir de <code>/</code> au début.',
+    ],
+
     'sites' => [
         'title' => 'Sites',
         'edit' => 'Modifier le site :site',
@@ -63,7 +73,7 @@ return [
         'enable' => 'Activer la récompense',
         'single_server' => 'Laisser l\'utilisateur choisir le serveur pour recevoir la récompense',
 
-        'commands' => 'Vous pouvez utiliser <code>{player}</code> pour utiliser le nom du joueur, <code>{reward}</code> pour le nom de la récompense et <code>{site}</code> pour le nom du site. Pour les jeux Steam, les variables <code>{steam_id}</code> et <code>{steam_id_32}</code> sont disponibles. La commande ne doit pas contenir de <code>/</code> au début.',
+        'commands' => 'Les variables suivantes sont disponibles : :placeholders. La commande ne doit pas commencer par un <code>/</code>.',
         'monthly' => 'Position du classement des utilisateurs à qui donner cette récompense à la fin du mois',
         'monthly_info' => 'Donner automatiquement, à la fin du mois, cette récompense aux utilisateurs aux positions indiquées dans le classement des meilleurs voteurs.',
         'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois, voir la <a href="https://azuriom.com/fr/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> pour plus d\'informations.',

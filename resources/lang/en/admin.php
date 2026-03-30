@@ -22,6 +22,16 @@ return [
         'commands' => 'Global commands',
     ],
 
+    'goal' => [
+        'enable' => 'Enable monthly vote goal',
+        'target' => 'Vote goal target',
+        'auto_reset' => 'Automatically reset count when goal is reached',
+        'votes' => 'votes',
+        'command' => 'Command',
+        'commands' => 'Commands to execute when goal is reached',
+        'commands_info' => 'These commands will be executed on the selected servers when the vote goal is reached. The command must not start with <code>/</code>.',
+    ],
+
     'sites' => [
         'title' => 'Sites',
         'edit' => 'Edit site :site',
@@ -63,7 +73,7 @@ return [
         'enable' => 'Enable the reward',
         'single_server' => 'Let the user choose the server to receive the reward',
 
-        'commands' => 'You can use <code>{player}</code> to use the player name, <code>{reward}</code> for the reward name and <code>{site}</code> for the vote website. For Steam games, you can also use <code>{steam_id}</code> and <code>{steam_id_32}</code>. The command must not start with <code>/</code>.',
+        'commands' => 'The following placeholders are available: :placeholders. The command must not start with <code>/</code>.',
         'monthly' => 'Ranking of users to give this reward to at the end of the month',
         'monthly_info' => 'Automatically give this reward, at the end of the month, to the users at the given positions in the best voters ranking.',
         'cron' => 'You must set up CRON tasks to use automatic rewards at the end of the month, see the <a href="https://azuriom.com/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> for more information.',

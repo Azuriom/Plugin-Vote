@@ -57,6 +57,23 @@ function updateVoteLink(link) {
 
 const voteDoneCallbacks = [];
 
+function updateGoalProgress(goal) {
+    const progressContainer = document.getElementById('vote-goal');
+    if (!progressContainer || !goal || goal.target <= 0) {
+        return;
+    }
+
+    const progressBar = progressContainer.querySelector('.progress-bar');
+    const progressText = progressContainer.querySelector('#goal-text');
+
+    progressBar.style.width = Math.min(Math.round((goal.progress / goal.target) * 100), 100) + '%';
+    progressBar.setAttribute('aria-valuenow', goal.progress);
+
+    if (progressText) {
+        progressText.textContent = goal.text;
+    }
+}
+
 function initVote() {
     document.querySelectorAll('[data-vote-url]').forEach(function (el) {
         const voteTime = el.dataset['voteTime'];
@@ -131,6 +148,7 @@ function setupVoteTimers(name) {
                 }
             }
 
+            updateGoalProgress(response.data.goal);
             initVote();
         })
         .catch(function (error) {

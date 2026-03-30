@@ -7,6 +7,7 @@ return [
         'vote' => 'Vote',
         'top' => 'Top votes',
         'rewards' => 'Rewards',
+        'goal' => 'Monthly Vote Goal',
     ],
 
     'fields' => [
@@ -31,6 +32,8 @@ return [
     'server' => 'Choose the server on which to receive the reward.',
 
     'success' => 'Your vote has been taken into account, you will soon receive the reward ":reward"!',
+
+    'goal' => ':current / :target votes',
 
     'notifications' => [
         'top' => 'Congratulations, you have received ":reward" for being the #:position top voter of the month!',

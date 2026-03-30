@@ -26,6 +26,8 @@ class VoteController extends Controller
             ? User::where('game_id', $gameId)->value('name')
             : $request->input('user', '');
         $votesCount = $user !== null ? $this->getVotesCount($user) : -1;
+        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
 
         return view('vote::index', [
             'name' => $queryName,
@@ -38,6 +40,10 @@ class VoteController extends Controller
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
             'authRequired' => setting('vote.auth-required', false),
             'displayRewards' => (bool) setting('vote.display-rewards', true),
+            'goalEnabled' => $goalTarget > 0,
+            'goalTarget' => $goalTarget,
+            'goalPercentage' => $goalTarget > 0 ? round(($goalProgress / $goalTarget) * 100) : 0,
+            'goalProgress' => $goalProgress,
         ]);
     }
 
@@ -66,9 +72,17 @@ class VoteController extends Controller
                 ];
             });
 
+        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
+
         return response()->json([
             'sites' => $sites,
             'votes' => $this->getVotesCount($user),
+            'goal' => [
+                'target' => $goalTarget,
+                'progress' => $goalProgress,
+                'text' => trans('vote::messages.goal', ['current' => $goalProgress, 'target' => $goalTarget]),
+            ],
         ]);
     }
 
@@ -134,6 +148,8 @@ class VoteController extends Controller
             ]);
 
             $reward->dispatch($vote);
+
+            $this->processVoteGoal($user);
         }
 
         $next = $site->vote_reset_at !== null
@@ -168,6 +184,8 @@ class VoteController extends Controller
 
         $reward->dispatch($vote, [$server]);
 
+        $this->processVoteGoal($user);
+
         return response()->json([
             'message' => trans('vote::messages.success', [
                 'reward' => $reward?->name ?? trans('messages.unknown'),
@@ -175,7 +193,34 @@ class VoteController extends Controller
         ]);
     }
 
-    private function formatTimeMessage(Carbon $nextVoteTime)
+    private function processVoteGoal(User $user): void
+    {
+        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalCommands = setting('vote.goal.commands');
+
+        if ($goalTarget <= 0 || ! $goalCommands) {
+            return;
+        }
+
+        $commands = collect(json_decode($goalCommands, true));
+
+        if ($commands->isEmpty() || $this->getGoalProgress(true) !== $goalTarget) {
+            return;
+        }
+
+        $servers = Server::findMany($commands->pluck('server')->unique());
+
+        foreach ($servers as $server) {
+            $serverCommands = $commands->where('server', $server->id)
+                ->pluck('commands')
+                ->flatten()
+                ->all();
+
+            $server->bridge()->sendCommands($serverCommands, $user);
+        }
+    }
+
+    private function formatTimeMessage(Carbon $nextVoteTime): string
     {
         $time = $nextVoteTime->diffForHumans([
             'parts' => 2,
@@ -186,10 +231,30 @@ class VoteController extends Controller
         return trans('vote::messages.errors.delay', ['time' => $time]);
     }
 
-    private function getVotesCount(User $user)
+    private function getVotesCount(User $user): int
     {
         return Vote::where('user_id', $user->id)
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
+    }
+
+    private function getGoalProgress(bool $clearCache = false): int
+    {
+        if ($clearCache) {
+            Cache::forget('vote.goal_progress');
+        }
+
+        return Cache::remember('vote.goal_progress', now()->addMinutes(5), function () {
+            $count = Vote::where('created_at', '>=', now()->startOfMonth())->count();
+            $goalTarget = (int) setting('vote.goal.target', -1);
+
+            if ($count > 0 && setting('vote.goal.auto_reset', false)) {
+                $mod = $count % $goalTarget;
+
+                return $mod === 0 ? $goalTarget : $mod;
+            }
+
+            return $count;
+        });
     }
 }
