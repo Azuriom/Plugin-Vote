@@ -7,7 +7,7 @@ return [
         'vote' => 'Voter',
         'top' => 'Classement',
         'rewards' => 'Récompenses',
-        'goal' => 'Objectif de votes communautaire',
+        'goal' => 'Objectif de votes du mois',
     ],
 
     'fields' => [
@@ -33,8 +33,7 @@ return [
 
     'success' => 'Votre vote a été pris en compte, vous recevrez bientôt la récompense ":reward" !',
 
-    'goal_completed' => 'Objectif atteint !',
-    'goal_progress' => ':current / :target votes',
+    'goal' => ':current / :target votes',
 
     'notifications' => [
         'top' => 'Félicitions, vous avez reçu ":reward" pour avoir été le meilleur voteur #:position du mois!',

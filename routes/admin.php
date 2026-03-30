@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('can:vote.admin')->group(function () {
     Route::get('/settings', [SettingController::class, 'show'])->name('settings');
     Route::post('/settings', [SettingController::class, 'save'])->name('settings.save');
-    Route::post('/settings/reset-goal', [SettingController::class, 'resetGoal'])->name('settings.reset-goal');
 
     Route::get('sites/verification', [SiteController::class, 'verificationForUrl'])->name('sites.verification');
 

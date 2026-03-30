@@ -57,28 +57,20 @@ function updateVoteLink(link) {
 
 const voteDoneCallbacks = [];
 
-function updateGoalProgress(goalCurrent, goalTarget) {
-    const progressContainer = document.getElementById('vote-goal-progress');
-    if (!progressContainer || goalCurrent === null || goalTarget === null) {
+function updateGoalProgress(goal) {
+    const progressContainer = document.getElementById('vote-goal');
+    if (!progressContainer || !goal || goal.target <= 0) {
         return;
     }
 
     const progressBar = progressContainer.querySelector('.progress-bar');
-    const progressText = progressContainer.querySelector('.goal-progress-text');
-    if (!progressBar) return;
+    const progressText = progressContainer.querySelector('#goal-text');
 
-    const percentage = goalTarget > 0 ? Math.min(100, Math.round((goalCurrent / goalTarget) * 100)) : 0;
-    progressBar.style.width = percentage + '%';
-    progressBar.setAttribute('aria-valuenow', goalCurrent);
-    progressBar.textContent = goalCurrent + ' / ' + goalTarget;
+    progressBar.style.width = Math.min(Math.round((goal.progress / goal.target) * 100), 100) + '%';
+    progressBar.setAttribute('aria-valuenow', goal.progress);
 
     if (progressText) {
-        progressText.textContent = goalCurrent + ' / ' + goalTarget + ' votes';
-    }
-
-    if (goalCurrent >= goalTarget) {
-        progressBar.classList.remove('bg-success');
-        progressBar.classList.add('bg-warning');
+        progressText.textContent = goal.text;
     }
 }
 
@@ -156,10 +148,7 @@ function setupVoteTimers(name) {
                 }
             }
 
-            if (response.data.goalCurrent !== undefined) {
-                updateGoalProgress(response.data.goalCurrent, response.data.goalTarget);
-            }
-
+            updateGoalProgress(response.data.goal);
             initVote();
         })
         .catch(function (error) {
@@ -203,10 +192,6 @@ function refreshVote(url) {
                 return;
             }
 
-            if (response.data.goalCurrent !== undefined) {
-                updateGoalProgress(response.data.goalCurrent, response.data.goalTarget);
-            }
-
             rewardDelivered(response.data.message);
         }).catch(function (error) {
             document.getElementById('vote-card').classList.remove('voting');
@@ -242,9 +227,6 @@ function showServerSelect(baseURL, servers) {
                 user: window.username,
                 server: serverId,
             }).then(function (response) {
-                if (response.data.goalCurrent !== undefined) {
-                    updateGoalProgress(response.data.goalCurrent, response.data.goalTarget);
-                }
                 rewardDelivered(response.data.message);
                 serverSelect.innerHTML = '';
             }).catch(function (error) {

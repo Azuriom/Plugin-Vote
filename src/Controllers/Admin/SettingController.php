@@ -7,6 +7,7 @@ use Azuriom\Models\ActionLog;
 use Azuriom\Models\Server;
 use Azuriom\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -16,7 +17,8 @@ class SettingController extends Controller
     public function show()
     {
         $commands = setting('vote.commands');
-        $goalCommands = setting('vote.goal-commands');
+        $goalCommands = setting('vote.goal.commands');
+        $goalTarget = setting('vote.goal.target');
 
         return view('vote::admin.settings', [
             'topPlayersCount' => setting('vote.top-players-count', 10),
@@ -24,14 +26,11 @@ class SettingController extends Controller
             'ipCompatibility' => setting('vote.ipv4-v6-compatibility', true),
             'authRequired' => setting('vote.auth-required', false),
             'commands' => $commands ? json_decode($commands) : [],
-
-            'goalEnabled' => (bool) setting('vote.goal-enabled', false),
-            'goalTarget' => setting('vote.goal-target', 500),
-            'goalCurrent' => (int) setting('vote.goal-current', 0),
-            'goalAutoReset' => (bool) setting('vote.goal-auto-reset', false),
+            'goalEnabled' => $goalTarget > 0,
+            'goalTarget' => $goalTarget,
+            'goalAutoReset' => (bool) setting('vote.goal.auto_reset', false),
             'goalCommands' => $goalCommands ? json_decode($goalCommands) : [],
-            'goalServers' => setting('vote.goal-servers') ? json_decode(setting('vote.goal-servers')) : [],
-            'servers' => Server::executable()->get(),
+            'servers' => Server::executable()->get()->pluck('name', 'id'),
         ]);
     }
 
@@ -45,12 +44,11 @@ class SettingController extends Controller
             'commands' => ['sometimes', 'nullable', 'array'],
             'goal_target' => ['nullable', 'numeric', 'min:1'],
             'goal_commands' => ['sometimes', 'nullable', 'array'],
-            'goal_servers' => ['sometimes', 'nullable', 'array'],
         ]);
 
         $commands = $request->input('commands');
         $goalCommands = $request->input('goal_commands');
-        $goalServers = $request->input('goal_servers');
+        $goalEnabled = $request->filled('goal_enabled');
 
         Setting::updateSettings([
             'vote.top-players-count' => $validated['top-players-count'],
@@ -58,27 +56,13 @@ class SettingController extends Controller
             'vote.ipv4-v6-compatibility' => $request->has('ip_compatibility'),
             'vote.auth-required' => $request->has('auth_required'),
             'vote.commands' => is_array($commands) ? json_encode(array_filter($commands)) : null,
-
-            'vote.goal-enabled' => $request->has('goal_enabled'),
-            'vote.goal-target' => $validated['goal_target'] ?? 500,
-            'vote.goal-auto-reset' => $request->has('goal_auto_reset'),
-            'vote.goal-commands' => is_array($goalCommands) ? json_encode(array_filter($goalCommands)) : null,
-            'vote.goal-servers' => is_array($goalServers) ? json_encode(array_filter($goalServers)) : null,
+            'vote.goal.target' => $goalEnabled ? $validated['goal_target'] : null,
+            'vote.goal.auto_reset' => $goalEnabled ? $request->has('goal_auto_reset') : null,
+            'vote.goal.commands' => $goalEnabled && is_array($goalCommands) ? json_encode(array_filter($goalCommands)) : null,
         ]);
 
         ActionLog::log('vote.settings.updated');
-
-        return to_route('vote.admin.settings')
-            ->with('success', trans('messages.status.success'));
-    }
-
-    public function resetGoal()
-    {
-        Setting::updateSettings([
-            'vote.goal-current' => 0,
-        ]);
-
-        ActionLog::log('vote.settings.updated');
+        Cache::forget('vote.goal_progress');
 
         return to_route('vote.admin.settings')
             ->with('success', trans('messages.status.success'));

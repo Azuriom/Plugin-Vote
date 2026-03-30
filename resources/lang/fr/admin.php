@@ -20,16 +20,16 @@ return [
         'ip_compatibility_info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
         'auth_required' => 'Obliger les utilisateurs à être connectés sur le site pour voter',
         'commands' => 'Commandes globales',
+    ],
 
-        'goal_section' => 'Objectif de votes',
-        'goal_enable' => 'Activer l\'objectif de votes',
-        'goal_target' => 'Nombre de votes à atteindre',
-        'goal_auto_reset' => 'Réinitialiser automatiquement le compteur lorsque l\'objectif est atteint',
-        'goal_commands' => 'Commandes à exécuter lorsque l\'objectif est atteint',
-        'goal_commands_info' => 'Ces commandes seront exécutées sur le(s) serveur(s) sélectionné(s) lorsque l\'objectif de votes communautaire est atteint. La commande ne doit pas contenir de <code>/</code> au début.',
-        'goal_server' => 'Serveur',
-        'goal_current' => 'Progression actuelle',
-        'goal_reset' => 'Réinitialiser la progression',
+    'goal' => [
+        'enable' => 'Activer l\'objectif de vote',
+        'target' => 'Nombre de votes à atteindre',
+        'auto_reset' => 'Réinitialiser automatiquement le compteur lorsque l\'objectif est atteint',
+        'votes' => 'votes',
+        'command' => 'Commande',
+        'commands' => 'Commandes à exécuter lorsque l\'objectif est atteint',
+        'commands_info' => 'Ces commandes seront exécutées sur le(s) serveur(s) sélectionné(s) lorsque l\'objectif de votes communautaire est atteint. La commande ne doit pas contenir de <code>/</code> au début.',
     ],
 
     'sites' => [
@@ -73,7 +73,7 @@ return [
         'enable' => 'Activer la récompense',
         'single_server' => 'Laisser l\'utilisateur choisir le serveur pour recevoir la récompense',
 
-        'commands' => 'Vous pouvez utiliser <code>{player}</code> pour utiliser le nom du joueur, <code>{reward}</code> pour le nom de la récompense et <code>{site}</code> pour le nom du site. Pour les jeux Steam, les variables <code>{steam_id}</code> et <code>{steam_id_32}</code> sont disponibles. La commande ne doit pas contenir de <code>/</code> au début.',
+        'commands' => 'Les variables suivantes sont disponibles: :placeholders. La commande ne doit pas commencer par un <code>/</code>.',
         'monthly' => 'Position du classement des utilisateurs à qui donner cette récompense à la fin du mois',
         'monthly_info' => 'Donner automatiquement, à la fin du mois, cette récompense aux utilisateurs aux positions indiquées dans le classement des meilleurs voteurs.',
         'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois, voir la <a href="https://azuriom.com/fr/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> pour plus d\'informations.',

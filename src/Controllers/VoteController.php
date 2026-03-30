@@ -4,7 +4,6 @@ namespace Azuriom\Plugin\Vote\Controllers;
 
 use Azuriom\Http\Controllers\Controller;
 use Azuriom\Models\Server;
-use Azuriom\Models\Setting;
 use Azuriom\Models\User;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\Site;
@@ -27,8 +26,8 @@ class VoteController extends Controller
             ? User::where('game_id', $gameId)->value('name')
             : $request->input('user', '');
         $votesCount = $user !== null ? $this->getVotesCount($user) : -1;
-
-        $goalEnabled = (bool) setting('vote.goal-enabled', false);
+        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
 
         return view('vote::index', [
             'name' => $queryName,
@@ -41,10 +40,10 @@ class VoteController extends Controller
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
             'authRequired' => setting('vote.auth-required', false),
             'displayRewards' => (bool) setting('vote.display-rewards', true),
-
-            'goalEnabled' => $goalEnabled,
-            'goalTarget' => $goalEnabled ? (int) setting('vote.goal-target', 500) : 0,
-            'goalCurrent' => $goalEnabled ? (int) setting('vote.goal-current', 0) : 0,
+            'goalEnabled' => $goalTarget > 0,
+            'goalTarget' => $goalTarget,
+            'goalPercentage' => $goalTarget > 0 ? round(($goalProgress / $goalTarget) * 100, 2) : 0,
+            'goalProgress' => $goalProgress,
         ]);
     }
 
@@ -73,13 +72,17 @@ class VoteController extends Controller
                 ];
             });
 
-        $goalEnabled = (bool) setting('vote.goal-enabled', false);
+        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
 
         return response()->json([
             'sites' => $sites,
             'votes' => $this->getVotesCount($user),
-            'goalCurrent' => $goalEnabled ? (int) setting('vote.goal-current', 0) : null,
-            'goalTarget' => $goalEnabled ? (int) setting('vote.goal-target', 500) : null,
+            'goal' => [
+                'target' => $goalTarget,
+                'progress' => $goalProgress,
+                'text' => trans('vote::messages.goal', ['current' => $goalProgress, 'target' => $goalTarget]),
+            ],
         ]);
     }
 
@@ -145,23 +148,19 @@ class VoteController extends Controller
             ]);
 
             $reward->dispatch($vote);
-        }
 
-        $this->trackVoteGoal($user);
+            $this->processVoteGoal($user);
+        }
 
         $next = $site->vote_reset_at !== null
             ? now()->next($site->vote_reset_at)
             : now()->addMinutes($site->vote_delay);
         Cache::put('votes.site.'.$site->id.'.'.$request->ip(), $next, $next);
 
-        $goalEnabled = (bool) setting('vote.goal-enabled', false);
-
         return response()->json([
             'message' => trans('vote::messages.success', [
                 'reward' => $reward?->name ?? trans('messages.unknown'),
             ]),
-            'goalCurrent' => $goalEnabled ? (int) setting('vote.goal-current', 0) : null,
-            'goalTarget' => $goalEnabled ? (int) setting('vote.goal-target', 500) : null,
         ]);
     }
 
@@ -185,79 +184,43 @@ class VoteController extends Controller
 
         $reward->dispatch($vote, [$server]);
 
-        $this->trackVoteGoal($user);
-
-        $goalEnabled = (bool) setting('vote.goal-enabled', false);
+        $this->processVoteGoal($user);
 
         return response()->json([
             'message' => trans('vote::messages.success', [
                 'reward' => $reward?->name ?? trans('messages.unknown'),
             ]),
-            'goalCurrent' => $goalEnabled ? (int) setting('vote.goal-current', 0) : null,
-            'goalTarget' => $goalEnabled ? (int) setting('vote.goal-target', 500) : null,
         ]);
     }
 
-    private function trackVoteGoal(User $user): void
+    private function processVoteGoal(User $user): void
     {
-        if (! setting('vote.goal-enabled', false)) {
+        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalCommands = setting('vote.goal.commands');
+
+        if ($goalTarget <= 0 || ! $goalCommands) {
             return;
         }
 
-        $current = (int) setting('vote.goal-current', 0);
-        $target = (int) setting('vote.goal-target', 500);
+        $commands = collect(json_decode($goalCommands, true));
 
-        if ($current >= $target) {
+        if ($commands->isEmpty() || $this->getGoalProgress(true) !== $goalTarget) {
             return;
         }
 
-        $current++;
-
-        Setting::updateSettings([
-            'vote.goal-current' => $current,
-        ]);
-
-        if ($current >= $target) {
-            $this->dispatchGoalCommands($user);
-
-            if (setting('vote.goal-auto-reset', false)) {
-                Setting::updateSettings([
-                    'vote.goal-current' => 0,
-                ]);
-            }
-        }
-    }
-
-    private function dispatchGoalCommands(User $user): void
-    {
-        $goalCommandsJson = setting('vote.goal-commands');
-
-        if (! $goalCommandsJson) {
-            return;
-        }
-
-        $commands = json_decode($goalCommandsJson, true);
-
-        if (empty($commands)) {
-            return;
-        }
-
-        $serverIds = json_decode(setting('vote.goal-servers', '[]'), true);
-
-        if (empty($serverIds)) {
-            return;
-        }
-
-        $servers = Server::whereIn('id', $serverIds)->get();
-
-        $globalUser = new User();
+        $servers = Server::findMany($commands->pluck('server')->unique());
 
         foreach ($servers as $server) {
-            $server->bridge()->sendCommands($commands, $globalUser, false);
+            $serverCommands = $commands->where('server', $server->id)
+                ->pluck('commands')
+                ->flatten()
+                ->all();
+
+            $server->bridge()->sendCommands($serverCommands, $user);
         }
     }
 
-    private function formatTimeMessage(Carbon $nextVoteTime)
+    private function formatTimeMessage(Carbon $nextVoteTime): string
     {
         $time = $nextVoteTime->diffForHumans([
             'parts' => 2,
@@ -268,10 +231,30 @@ class VoteController extends Controller
         return trans('vote::messages.errors.delay', ['time' => $time]);
     }
 
-    private function getVotesCount(User $user)
+    private function getVotesCount(User $user): int
     {
         return Vote::where('user_id', $user->id)
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
+    }
+
+    private function getGoalProgress(bool $clearCache = false): int
+    {
+        if ($clearCache) {
+            Cache::forget('vote.goal_progress');
+        }
+
+        return Cache::remember('vote.goal_progress', now()->addMinutes(5), function () {
+            $count = Vote::where('created_at', '>=', now()->startOfMonth())->count();
+            $goalTarget = (int) setting('vote.goal.target', -1);
+
+            if ($count > 0 && setting('vote.goal.auto_reset', false)) {
+                $mod = $count % $goalTarget;
+
+                return $mod === 0 ? $goalTarget : $mod;
+            }
+
+            return $count;
+        });
     }
 }
