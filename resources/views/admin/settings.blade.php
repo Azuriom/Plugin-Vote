@@ -81,7 +81,9 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-save"></i> {{ trans('messages.actions.save') }}
                 </button>
+
             </form>
+
         </div>
     </div>
 @endsection

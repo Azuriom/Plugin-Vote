@@ -18,7 +18,7 @@ class SettingController extends Controller
     {
         $commands = setting('vote.commands');
         $goalCommands = setting('vote.goal.commands');
-        $goalTarget = setting('vote.goal.target');
+        $goalTarget = (int) setting('vote.goal.target', -1);
 
         return view('vote::admin.settings', [
             'topPlayersCount' => setting('vote.top-players-count', 10),

@@ -84,8 +84,7 @@
     @include('admin.elements.list-input', ['name' => 'commands', 'values' => $reward->commands ?? []])
 
     <div class="form-text">
-        {!! game()->trans('commands') !!}
-        @lang('vote::admin.rewards.commands', ['placeholders' => '<code>{reward}</code>, <code>{reward_id}</code>,  <code>{site}</code>,  <code>{site_id}</code>'])
+        {!! game()->trans('commands') !!} @lang('vote::admin.rewards.commands', ['placeholders' => '<code>{reward}</code>, <code>{reward_id}</code>,  <code>{site}</code>,  <code>{site_id}</code>'])
     </div>
 </div>
 

@@ -23,7 +23,7 @@ return [
     ],
 
     'goal' => [
-        'enable' => 'Enable vote goal',
+        'enable' => 'Enable monthly vote goal',
         'target' => 'Vote goal target',
         'auto_reset' => 'Automatically reset count when goal is reached',
         'votes' => 'votes',

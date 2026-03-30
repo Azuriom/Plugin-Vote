@@ -23,7 +23,7 @@ return [
     ],
 
     'goal' => [
-        'enable' => 'Activer l\'objectif de vote',
+        'enable' => 'Activer l\'objectif de votes du mois',
         'target' => 'Nombre de votes à atteindre',
         'auto_reset' => 'Réinitialiser automatiquement le compteur lorsque l\'objectif est atteint',
         'votes' => 'votes',

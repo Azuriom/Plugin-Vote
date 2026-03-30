@@ -42,7 +42,7 @@ class VoteController extends Controller
             'displayRewards' => (bool) setting('vote.display-rewards', true),
             'goalEnabled' => $goalTarget > 0,
             'goalTarget' => $goalTarget,
-            'goalPercentage' => $goalTarget > 0 ? round(($goalProgress / $goalTarget) * 100, 2) : 0,
+            'goalPercentage' => $goalTarget > 0 ? round(($goalProgress / $goalTarget) * 100) : 0,
             'goalProgress' => $goalProgress,
         ]);
     }
