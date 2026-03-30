@@ -29,7 +29,7 @@ return [
         'votes' => 'votes',
         'command' => 'Command',
         'commands' => 'Commands to execute when goal is reached',
-        'commands_info' => 'These commands will be executed on the selected servers when the community vote goal is reached. The command must not start with <code>/</code>.',
+        'commands_info' => 'These commands will be executed on the selected servers when the vote goal is reached. The command must not start with <code>/</code>.',
     ],
 
     'sites' => [

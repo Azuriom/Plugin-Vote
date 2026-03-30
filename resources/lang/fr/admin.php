@@ -29,7 +29,7 @@ return [
         'votes' => 'votes',
         'command' => 'Commande',
         'commands' => 'Commandes à exécuter lorsque l\'objectif est atteint',
-        'commands_info' => 'Ces commandes seront exécutées sur le(s) serveur(s) sélectionné(s) lorsque l\'objectif de votes communautaire est atteint. La commande ne doit pas contenir de <code>/</code> au début.',
+        'commands_info' => 'Ces commandes seront exécutées sur le(s) serveur(s) sélectionné(s) lorsque l\'objectif de votes est atteint. La commande ne doit pas contenir de <code>/</code> au début.',
     ],
 
     'sites' => [
@@ -73,7 +73,7 @@ return [
         'enable' => 'Activer la récompense',
         'single_server' => 'Laisser l\'utilisateur choisir le serveur pour recevoir la récompense',
 
-        'commands' => 'Les variables suivantes sont disponibles: :placeholders. La commande ne doit pas commencer par un <code>/</code>.',
+        'commands' => 'Les variables suivantes sont disponibles : :placeholders. La commande ne doit pas commencer par un <code>/</code>.',
         'monthly' => 'Position du classement des utilisateurs à qui donner cette récompense à la fin du mois',
         'monthly_info' => 'Donner automatiquement, à la fin du mois, cette récompense aux utilisateurs aux positions indiquées dans le classement des meilleurs voteurs.',
         'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois, voir la <a href="https://azuriom.com/fr/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> pour plus d\'informations.',
