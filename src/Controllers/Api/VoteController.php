@@ -51,6 +51,10 @@ class VoteController extends Controller
                 'url' => $site->url,
             ]),
             'month_total' => Vote::where('created_at', '>', now()->startOfMonth())->count(),
+            'goal' => [
+                'progress' => Vote::getGoalProgress(),
+                'target' => (int) setting('vote.goal.target', -1),
+            ],
         ]);
     }
 }

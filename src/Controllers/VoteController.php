@@ -27,7 +27,7 @@ class VoteController extends Controller
             : $request->input('user', '');
         $votesCount = $user !== null ? $this->getVotesCount($user) : -1;
         $goalTarget = (int) setting('vote.goal.target', -1);
-        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
+        $goalProgress = $goalTarget > 0 ? Vote::getGoalProgress() : 0;
 
         return view('vote::index', [
             'name' => $queryName,
@@ -73,7 +73,7 @@ class VoteController extends Controller
             });
 
         $goalTarget = (int) setting('vote.goal.target', -1);
-        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
+        $goalProgress = $goalTarget > 0 ? Vote::getGoalProgress() : 0;
 
         return response()->json([
             'sites' => $sites,
@@ -204,7 +204,7 @@ class VoteController extends Controller
 
         $commands = collect(json_decode($goalCommands, true));
 
-        if ($commands->isEmpty() || $this->getGoalProgress(true) !== $goalTarget) {
+        if ($commands->isEmpty() || Vote::getGoalProgress() !== $goalTarget) {
             return;
         }
 
@@ -236,25 +236,5 @@ class VoteController extends Controller
         return Vote::where('user_id', $user->id)
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
-    }
-
-    private function getGoalProgress(bool $clearCache = false): int
-    {
-        if ($clearCache) {
-            Cache::forget('vote.goal_progress');
-        }
-
-        return Cache::remember('vote.goal_progress', now()->addMinutes(5), function () {
-            $count = Vote::where('created_at', '>=', now()->startOfMonth())->count();
-            $goalTarget = (int) setting('vote.goal.target', -1);
-
-            if ($count > 0 && setting('vote.goal.auto_reset', false)) {
-                $mod = $count % $goalTarget;
-
-                return $mod === 0 ? $goalTarget : $mod;
-            }
-
-            return $count;
-        });
     }
 }

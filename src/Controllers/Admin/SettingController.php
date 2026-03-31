@@ -7,7 +7,6 @@ use Azuriom\Models\ActionLog;
 use Azuriom\Models\Server;
 use Azuriom\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -18,7 +17,7 @@ class SettingController extends Controller
     {
         $commands = setting('vote.commands');
         $goalCommands = setting('vote.goal.commands');
-        $goalTarget = (int) setting('vote.goal.target', -1);
+        $goalTarget = setting('vote.goal.target');
 
         return view('vote::admin.settings', [
             'topPlayersCount' => setting('vote.top-players-count', 10),
@@ -26,7 +25,7 @@ class SettingController extends Controller
             'ipCompatibility' => setting('vote.ipv4-v6-compatibility', true),
             'authRequired' => setting('vote.auth-required', false),
             'commands' => $commands ? json_decode($commands) : [],
-            'goalEnabled' => $goalTarget > 0,
+            'goalEnabled' => $goalTarget !== null && $goalTarget > 0,
             'goalTarget' => $goalTarget,
             'goalAutoReset' => (bool) setting('vote.goal.auto_reset', false),
             'goalCommands' => $goalCommands ? json_decode($goalCommands) : [],
@@ -62,7 +61,6 @@ class SettingController extends Controller
         ]);
 
         ActionLog::log('vote.settings.updated');
-        Cache::forget('vote.goal_progress');
 
         return to_route('vote.admin.settings')
             ->with('success', trans('messages.status.success'));
