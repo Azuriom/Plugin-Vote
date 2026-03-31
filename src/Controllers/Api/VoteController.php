@@ -81,4 +81,5 @@ class VoteController extends Controller
             return $count;
         });
     }
+	
 }
