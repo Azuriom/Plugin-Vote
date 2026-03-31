@@ -7,7 +7,6 @@ use Azuriom\Plugin\Vote\Models\Site;
 use Azuriom\Plugin\Vote\Models\User;
 use Azuriom\Plugin\Vote\Models\Vote;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class VoteController extends Controller
 {
@@ -43,9 +42,6 @@ class VoteController extends Controller
             'votes' => $vote->votes,
         ]);
 
-        $goalTarget = (int) setting('vote.goal.target', -1);
-        $goalProgress = $goalTarget > 0 ? $this->getGoalProgress() : 0;
-
         return response()->json([
             'users' => $users,
             'top_votes' => $topVotes,
@@ -55,31 +51,10 @@ class VoteController extends Controller
                 'url' => $site->url,
             ]),
             'month_total' => Vote::where('created_at', '>', now()->startOfMonth())->count(),
-            'goal' => $goalTarget > 0 ? [
-                'target' => $goalTarget,
-                'progress' => $goalProgress,
-            ] : null,
+            'goal' => [
+                'progress' => Vote::getGoalProgress(),
+                'target' => (int) setting('vote.goal.target', -1),
+            ],
         ]);
     }
-
-    private function getGoalProgress(bool $clearCache = false): int
-    {
-        if ($clearCache) {
-            Cache::forget('vote.goal_progress');
-        }
-
-        return Cache::remember('vote.goal_progress', now()->addMinutes(5), function () {
-            $count = Vote::where('created_at', '>=', now()->startOfMonth())->count();
-            $goalTarget = (int) setting('vote.goal.target', -1);
-
-            if ($count > 0 && setting('vote.goal.auto_reset', false)) {
-                $mod = $count % $goalTarget;
-
-                return $mod === 0 ? $goalTarget : $mod;
-            }
-
-            return $count;
-        });
-    }
-	
 }

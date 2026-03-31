@@ -7,6 +7,7 @@ use Azuriom\Models\Traits\Searchable;
 use Azuriom\Models\User;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -51,6 +52,11 @@ class Vote extends Model
         'site.*', 'reward.*', 'user.name',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(fn () => Cache::forget('vote.count.month'));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -91,5 +97,22 @@ class Vote extends Model
             ->orderByDesc('count')
             ->take($max ?? setting('vote.top-players-count', 10))
             ->get();
+    }
+
+    public static function getGoalProgress(): int
+    {
+        $count = Cache::remember('vote.count.month', now()->addMinutes(5), function () {
+            return self::where('created_at', '>', now()->startOfMonth())->count();
+        });
+
+        $goalTarget = (int) setting('vote.goal.target', -1);
+
+        if ($count > 0 && $goalTarget > 0 && setting('vote.goal.auto_reset', false)) {
+            $mod = $count % $goalTarget;
+
+            return $mod === 0 ? $goalTarget : $mod;
+        }
+
+        return $count;
     }
 }

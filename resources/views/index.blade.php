@@ -66,8 +66,6 @@
         </div>
     </div>
 
-    <div id="status-message"></div>
-
     @if($goalEnabled)
         <div class="card mb-4" id="vote-goal">
             <div class="card-body">
