@@ -54,7 +54,9 @@ class Vote extends Model
 
     protected static function booted(): void
     {
-        static::created(fn () => Cache::forget('vote.count.month'));
+        static::created(function () {
+            Cache::forget('vote.count.month');
+        });
     }
 
     public function user()
