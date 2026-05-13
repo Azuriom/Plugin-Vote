@@ -257,10 +257,21 @@ class VoteVerifier
             return null;
         }
 
-        try {
-            return Http::get('https://ipv6-adapter.com/api/v1/fetch?ip='.$requestIp)->json('ips');
-        } catch (Exception) {
-            return null;
+        $ips = [$requestIp];
+
+        // Map IPv4 <-> IPv4-mapped IPv6 locally so pingbacks still match
+        // when the inbound request and the remote vote site reach the user
+        // over different address families.
+        if (str_starts_with($requestIp, '::ffff:')) {
+            $unwrapped = substr($requestIp, 7);
+
+            if (filter_var($unwrapped, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                $ips[] = $unwrapped;
+            }
+        } elseif (filter_var($requestIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $ips[] = '::ffff:'.$requestIp;
         }
+
+        return array_values(array_unique($ips));
     }
 }
