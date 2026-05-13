@@ -161,7 +161,7 @@
 
 @push('scripts')
     @if($ipv6compatibility)
-        <script src="https://ipv6-adapter.com/api/v1/api.js" async defer></script>
+        <script src="{{ plugin_asset('vote', 'js/ipv6-adapter.js') }}" defer></script>
     @endif
 
     <script src="{{ plugin_asset('vote', 'js/vote.js?v3') }}" defer></script>
