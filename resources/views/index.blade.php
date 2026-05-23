@@ -160,16 +160,7 @@
 @endsection
 
 @push('scripts')
-    @if($ipv6compatibility)
-        <script src="https://ipv6-adapter.com/api/v1/api.js" async defer></script>
-    @endif
-
-    <script src="{{ plugin_asset('vote', 'js/vote.js?v3') }}" defer></script>
-    @auth
-        <script>
-            window.username = '{{ $user->name }}';
-        </script>
-    @endauth
+    @include('vote::partials.scripts')
 @endpush
 
 @push('styles')

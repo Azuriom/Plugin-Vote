@@ -23,6 +23,7 @@ class SettingController extends Controller
             'topPlayersCount' => setting('vote.top-players-count', 10),
             'displayRewards' => setting('vote.display-rewards', true),
             'ipCompatibility' => setting('vote.ipv4-v6-compatibility', true),
+            'ipAdapter' => setting('vote.ip-adapter', 'ipv6-adapter'),
             'authRequired' => setting('vote.auth-required', false),
             'commands' => $commands ? json_decode($commands) : [],
             'goalEnabled' => $goalTarget !== null && $goalTarget > 0,
@@ -40,6 +41,7 @@ class SettingController extends Controller
     {
         $validated = $this->validate($request, [
             'top-players-count' => ['numeric', 'min:1'],
+            'ip_adapter' => ['sometimes', 'nullable', 'in:ipv6-adapter,ipify'],
             'commands' => ['sometimes', 'nullable', 'array'],
             'goal_target' => ['nullable', 'numeric', 'min:1'],
             'goal_commands' => ['sometimes', 'nullable', 'array'],
@@ -49,10 +51,15 @@ class SettingController extends Controller
         $goalCommands = $request->input('goal_commands');
         $goalEnabled = $request->filled('goal_enabled');
 
+        $ipCompatibility = $request->has('ip_compatibility');
+
         Setting::updateSettings([
             'vote.top-players-count' => $validated['top-players-count'],
             'vote.display-rewards' => $request->has('display-rewards'),
-            'vote.ipv4-v6-compatibility' => $request->has('ip_compatibility'),
+            'vote.ipv4-v6-compatibility' => $ipCompatibility,
+            'vote.ip-adapter' => $ipCompatibility
+                ? ($validated['ip_adapter'] ?? 'ipv6-adapter')
+                : null,
             'vote.auth-required' => $request->has('auth_required'),
             'vote.commands' => is_array($commands) ? json_encode(array_filter($commands)) : null,
             'vote.goal.target' => $goalEnabled ? $validated['goal_target'] : null,

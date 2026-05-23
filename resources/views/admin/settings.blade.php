@@ -23,12 +23,28 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3" v-scope="{ ipCompat: voteIpCompatEnabled }">
                     <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" id="ipCompatibility" name="ip_compatibility" @checked($ipCompatibility) aria-describedby="ipCompatibilityLabel">
+                        <input type="checkbox" class="form-check-input" id="ipCompatibility" name="ip_compatibility" v-model="ipCompat" @checked($ipCompatibility) aria-describedby="ipCompatibilityLabel">
                         <label class="form-check-label" for="ipCompatibility">{{ trans('vote::admin.settings.ip_compatibility') }}</label>
                     </div>
                     <div id="ipCompatibilityLabel" class="form-text">{{ trans('vote::admin.settings.ip_compatibility_info') }}</div>
+
+                    <div v-if="ipCompat" class="card card-body mt-2">
+                        <label class="form-label">{{ trans('vote::admin.settings.ip_adapter') }}</label>
+
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="ipAdapterIpv6Adapter" name="ip_adapter" value="ipv6-adapter" @checked($ipAdapter === 'ipv6-adapter')>
+                            <label class="form-check-label" for="ipAdapterIpv6Adapter">{{ trans('vote::admin.settings.ip_adapter_ipv6_adapter') }}</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="ipAdapterIpify" name="ip_adapter" value="ipify" @checked($ipAdapter === 'ipify')>
+                            <label class="form-check-label" for="ipAdapterIpify">{{ trans('vote::admin.settings.ip_adapter_ipify') }}</label>
+                        </div>
+
+                        <div class="form-text">{{ trans('vote::admin.settings.ip_adapter_info') }}</div>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -92,6 +108,7 @@
     <script>
         const voteCommandsList = @json(old('goal_commands', $goalCommands ?? []));
         const voteGoalEnabled = {{ old('goal_enabled', $goalEnabled) ? 'true' : 'false' }};
+        const voteIpCompatEnabled = {{ old('ip_compatibility', $ipCompatibility) ? 'true' : 'false' }};
 
         if (!voteGoalEnabled && !voteCommandsList.length) {
             voteCommandsList.push({ commands: [''], server: 0 });

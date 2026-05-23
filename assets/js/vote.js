@@ -1,3 +1,39 @@
+// ipify uses two hostnames (A-only / AAAA-only) so the browser is forced to use
+// each transport, revealing the matching IP. Sent with each vote POST below.
+let voteClientIpv4 = null;
+let voteClientIpv6 = null;
+
+(function setupIpifyAdapter() {
+    if (typeof window === 'undefined' || window.voteIpAdapter !== 'ipify') {
+        return;
+    }
+
+    function discover(url, assign) {
+        fetch(url, { credentials: 'omit', cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+                if (d && typeof d.ip === 'string' && d.ip.length > 0) {
+                    assign(d.ip);
+                }
+            })
+            .catch(function () {});
+    }
+
+    discover('https://api.ipify.org?format=json', function (ip) { voteClientIpv4 = ip; });
+    discover('https://api6.ipify.org?format=json', function (ip) { voteClientIpv6 = ip; });
+})();
+
+function votePayload(extra) {
+    return Object.assign(
+        {
+            user: window.username,
+            client_ip4: voteClientIpv4,
+            client_ip6: voteClientIpv6,
+        },
+        extra || {},
+    );
+}
+
 function toggleStep(step) {
     document.querySelectorAll('[data-vote-step]').forEach(function (el) {
         el.classList.add('d-none');
@@ -177,9 +213,7 @@ if (voteNameForm) {
 
 function refreshVote(url) {
     setTimeout(function () {
-        axios.post(url + '/done', {
-            user: window.username,
-        }).then(function (response) {
+        axios.post(url + '/done', votePayload()).then(function (response) {
             if (response.data.status === 'pending') {
                 refreshVote(url);
                 return;
@@ -223,10 +257,7 @@ function showServerSelect(baseURL, servers) {
         button.addEventListener('click', function () {
             document.getElementById('vote-card').classList.add('voting');
 
-            axios.post(baseURL + '/done', {
-                user: window.username,
-                server: serverId,
-            }).then(function (response) {
+            axios.post(baseURL + '/done', votePayload({ server: serverId })).then(function (response) {
                 rewardDelivered(response.data.message);
                 serverSelect.innerHTML = '';
             }).catch(function (error) {

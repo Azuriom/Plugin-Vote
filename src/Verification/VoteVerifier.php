@@ -257,10 +257,50 @@ class VoteVerifier
             return null;
         }
 
+        if (setting('vote.ip-adapter', 'ipv6-adapter') === 'ipify') {
+            return $this->getRequestIpsFromRequestPayload($requestIp);
+        }
+
         try {
             return Http::get('https://ipv6-adapter.com/api/v1/fetch?ip='.$requestIp)->json('ips');
         } catch (Exception) {
             return null;
         }
+    }
+
+    /**
+     * Read the player's IPv4 and IPv6 from the POST payload sent by vote.js
+     * after it queried ipify.org from the player's browser. Returns the request
+     * IP plus any valid public IP found in the payload, deduplicated. Returns
+     * null when no extra IP could be read so the caller falls back to the
+     * original request IP.
+     */
+    protected function getRequestIpsFromRequestPayload(string $requestIp): ?array
+    {
+        $ips = [$requestIp];
+
+        $request = request();
+
+        foreach (['client_ip4', 'client_ip6'] as $field) {
+            $value = $request->input($field);
+
+            if (! is_string($value) || $value === '') {
+                continue;
+            }
+
+            $valid = filter_var(
+                $value,
+                FILTER_VALIDATE_IP,
+                FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE,
+            );
+
+            if ($valid !== false) {
+                $ips[] = $valid;
+            }
+        }
+
+        $ips = array_values(array_unique($ips));
+
+        return count($ips) > 1 ? $ips : null;
     }
 }
