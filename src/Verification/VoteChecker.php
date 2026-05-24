@@ -183,13 +183,28 @@ class VoteChecker
                 return $response->body() === '1';
             }));
 
-        $this->register(VoteVerifier::for('playbase.pro')
-            ->setApiUrl('https://playbase.pro/api/vote/{server}/{ip}')
-            ->retrieveKeyByRegex('/\/(\d+)-/')
-            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
-                return $request->withToken($site->verification_key);
-            })
-            ->verifyByJson('date', true));
+        $this->register(VoteVerifier::for("playbase.pro")
+            ->requireKey("api_key")
+            ->verifyByCallback(function (User $user, Site $site, array $ips) {
+                preg_match("/\/(\d+)-/", $site->url, $matches);
+                $serverId = $matches[1] ?? null;
+
+                if ($serverId === null) {
+                    return true;
+                }
+
+                foreach ($ips as $ip) {
+                    $apiUrl = "https://playbase.pro/api/vote/{$serverId}/{$ip}";
+
+                    $response = Http::withToken($site->verification_key)->asJson()->get($apiUrl);
+
+                    if ($response->json("date")) {
+                        return true;
+                    }
+                }
+
+                return false;
+        }));
 
         $this->register(VoteVerifier::for('topg.org')
             ->retrieveKeyByCallback(fn () => null) // No key required
