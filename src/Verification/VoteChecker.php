@@ -190,7 +190,7 @@ class VoteChecker
                 $serverId = $matches[1] ?? null;
 
                 if ($serverId === null) {
-                    return true;
+                    return false;
                 }
 
                 foreach ($ips as $ip) {
