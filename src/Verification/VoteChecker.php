@@ -201,6 +201,7 @@ class VoteChecker
                         return true;
                     }
                 }
+
                 return false;
             }));
 
