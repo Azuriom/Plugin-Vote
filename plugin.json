@@ -1,8 +1,8 @@
 {
     "id": "vote",
     "name": "Vote",
-    "description": "A vote plugin to reward players when they vote.",
-    "version": "1.2.8",
+    "description": "Grow your community by rewarding users who vote for your server on external listing platforms.",
+    "version": "1.2.9",
     "url": "https://market.azuriom.com/resources/2",
     "authors": [
         "Azuriom"
