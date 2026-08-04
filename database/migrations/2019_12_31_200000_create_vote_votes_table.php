@@ -15,10 +15,11 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('site_id');
-            $table->unsignedInteger('reward_id');
+            $table->unsignedInteger('reward_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('reward_id')->references('id')->on('vote_rewards')->nullOnDelete();
 
             $table->index('created_at');
         });

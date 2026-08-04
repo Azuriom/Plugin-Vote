@@ -350,6 +350,7 @@ class VoteChecker
         $verification = $this->getVerificationForSite($host);
 
         if ($verification === null) {
+            // Return true for site without verification (nothing to verify)
             return true;
         }
 

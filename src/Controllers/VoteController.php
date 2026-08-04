@@ -11,6 +11,8 @@ use Azuriom\Plugin\Vote\Models\Vote;
 use Azuriom\Plugin\Vote\Verification\VoteChecker;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -49,10 +51,10 @@ class VoteController extends Controller
 
     public function verifyUser(Request $request, string $name)
     {
-        if (setting('vote.auth_required', false)) {
+        if (setting('vote.auth-required', false)) {
             return response()->json([
                 'message' => trans('vote::messages.errors.auth'),
-            ], 422);
+            ], 401);
         }
 
         $user = User::firstWhere('name', $name);
@@ -93,7 +95,13 @@ class VoteController extends Controller
 
     public function done(Request $request, Site $site)
     {
-        $user = $request->user() ?? User::firstWhere('name', $request->input('user'));
+        abort_unless($site->is_enabled, 404);
+
+        $user = $request->user();
+
+        if ($user === null && ! setting('vote.auth-required', false)) {
+            $user = User::firstWhere('name', $request->input('user'));
+        }
 
         abort_if($user === null, 401);
 
@@ -102,7 +110,7 @@ class VoteController extends Controller
         if ($nextVoteTime !== null) {
             return response()->json([
                 'message' => $this->formatTimeMessage($nextVoteTime),
-            ], 422);
+            ], 419);
         }
 
         $previousReward = $request->session()->has('vote.reward.'.$site->id)
@@ -121,50 +129,21 @@ class VoteController extends Controller
             ]);
         }
 
-        // Check again because sometimes API can be really slow...
-        $nextVoteTime = $site->getNextVoteTime($user, $request->ip());
-
-        if ($nextVoteTime !== null) {
-            return response()->json([
-                'message' => $this->formatTimeMessage($nextVoteTime),
-            ], 422);
-        }
-
         $reward = $site->getRandomReward();
 
-        if ($reward !== null) {
-            if ($reward->single_server) {
-                $request->session()->put('vote.reward.'.$site->id, $reward->id);
+        if ($reward?->single_server) {
+            $request->session()->put('vote.reward.'.$site->id, $reward->id);
 
-                return response()->json([
-                    'status' => 'select_server',
-                    'servers' => $reward->servers->pluck('name', 'id'),
-                ]);
-            }
-
-            $vote = $site->votes()->create([
-                'user_id' => $user->id,
-                'reward_id' => $reward->id,
+            return response()->json([
+                'status' => 'select_server',
+                'servers' => $reward->servers->pluck('name', 'id'),
             ]);
-
-            $reward->dispatch($vote);
-
-            $this->processVoteGoal($user);
         }
 
-        $next = $site->vote_reset_at !== null
-            ? now()->next($site->vote_reset_at)
-            : now()->addMinutes($site->vote_delay);
-        Cache::put('votes.site.'.$site->id.'.'.$request->ip(), $next, $next);
-
-        return response()->json([
-            'message' => trans('vote::messages.success', [
-                'reward' => $reward?->name ?? trans('messages.unknown'),
-            ]),
-        ]);
+        return $this->finalizeVote($request, $user, $site, $reward);
     }
 
-    private function selectServer(Request $request, User $user, Site $site, Reward $reward)
+    private function selectServer(Request $request, User $user, Site $site, Reward $reward): JsonResponse
     {
         $server = Server::find($request->input('server'));
 
@@ -177,14 +156,54 @@ class VoteController extends Controller
 
         $request->session()->forget('vote.reward.'.$site->id);
 
-        $vote = $site->votes()->create([
-            'user_id' => $user->id,
-            'reward_id' => $reward->id,
-        ]);
+        return $this->finalizeVote($request, $user, $site, $reward, $server);
+    }
 
-        $reward->dispatch($vote, [$server]);
+    private function finalizeVote(Request $request, User $user, Site $site, ?Reward $reward, ?Server $server = null)
+    {
+        $lockKey = "votes.site.{$site->id}.user.{$user->id}";
 
-        $this->processVoteGoal($user);
+        try {
+            // Release abandoned locks after 10 seconds and wait up to 5 seconds for another request to finish
+            $result = Cache::lock($lockKey, 10)->block(5, function () use ($request, $user, $site, $reward) {
+                $nextVoteTime = $site->getFreshNextVoteTime($user, $request->ip());
+
+                if ($nextVoteTime !== null) {
+                    return $nextVoteTime;
+                }
+
+                $vote = $reward !== null
+                    ? $site->votes()->create(['user_id' => $user->id, 'reward_id' => $reward->id])
+                    : null;
+
+                $next = $site->vote_reset_at !== null
+                    ? now()->next($site->vote_reset_at)
+                    : now()->addMinutes($site->vote_delay);
+                Cache::put("votes.site.{$site->id}.{$request->ip()}", $next, $next);
+
+                return $vote;
+            });
+        } catch (LockTimeoutException) {
+            return response()->json([
+                'status' => 'pending',
+            ]);
+        }
+
+        if ($result instanceof Carbon) {
+            return response()->json([
+                'message' => $this->formatTimeMessage($result),
+            ], 419);
+        }
+
+        if ($result instanceof Vote && $reward !== null) {
+            if ($server !== null) {
+                $reward->dispatch($result, [$server]);
+            } else {
+                $reward->dispatch($result);
+            }
+
+            $this->processVoteGoal($user);
+        }
 
         return response()->json([
             'message' => trans('vote::messages.success', [

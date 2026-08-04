@@ -30,7 +30,7 @@ class SiteRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:50'],
-            'url' => ['required', 'string', 'url', 'max:150'],
+            'url' => ['required', 'string', 'url:http,https', 'max:150'],
             'rewards' => ['required', 'array'],
             'verification_key' => ['nullable', 'max:100'],
             'vote_delay' => ['required_with:reset_interval', 'nullable', 'integer', 'min:0'],

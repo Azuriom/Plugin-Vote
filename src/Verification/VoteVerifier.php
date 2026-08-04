@@ -186,6 +186,15 @@ class VoteVerifier
         return $this->pingbackCallback !== null;
     }
 
+    /**
+     * Determine whether the user (or their IP address depending on the site's
+     * verification method) has voted on the specified site.
+     *
+     * Verification is fail open: this method returns true if the request times out
+     * or throws an HTTP-related exception. Because voting is a benign action,
+     * accepting an unverified vote is preferable when the verification API is
+     * temporarily unreachable (and the normal vote cooldown still applies).
+     */
     public function verifyVote(Site $site, User $user, string $ip = ''): bool
     {
         $retrieveKeyMethod = $this->retrieveKeyMethod;

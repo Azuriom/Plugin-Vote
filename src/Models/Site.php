@@ -104,11 +104,28 @@ class Site extends Model
 
     public function getNextVoteTime(User $user, Request|string|null $ip = null): ?Carbon
     {
+        return $this->calculateNextVoteTime(
+            self::allLastVoteTimes($user)[$this->id] ?? null,
+            $ip,
+        );
+    }
+
+    public function getFreshNextVoteTime(User $user, Request|string|null $ip = null): ?Carbon
+    {
+        $lastVoteTime = $this->votes()
+            ->where('user_id', $user->id)
+            ->max('created_at');
+
+        return $this->calculateNextVoteTime(
+            $lastVoteTime !== null ? Carbon::parse($lastVoteTime) : null, $ip,
+        );
+    }
+
+    private function calculateNextVoteTime(?Carbon $lastVoteTime, Request|string|null $ip): ?Carbon
+    {
         $voteTime = $this->vote_reset_at !== null
             ? now()->previous($this->vote_reset_at)
             : now()->subMinutes($this->vote_delay);
-
-        $lastVoteTime = self::allLastVoteTimes($user)[$this->id] ?? null;
 
         if ($lastVoteTime?->isAfter($voteTime)) {
             return $this->vote_reset_at !== null
