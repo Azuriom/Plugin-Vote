@@ -10,11 +10,18 @@ function toggleStep(step) {
 }
 
 function clearVoteAlert() {
-    document.getElementById('status-message').innerHTML = '';
+    document.getElementById('status-message').textContent = '';
 }
 
 function displayVoteAlert(message, level) {
-    document.getElementById('status-message').innerHTML = '<div class="alert alert-' + level + '" role="alert">' + message + '</div>';
+    const statusMessage = document.getElementById('status-message');
+    const alert = document.createElement('div');
+
+    alert.classList.add('alert', 'alert-' + level);
+    alert.setAttribute('role', 'alert');
+    alert.textContent = message;
+
+    statusMessage.replaceChildren(alert);
 }
 
 function catchVoteError(error) {
