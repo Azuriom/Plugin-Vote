@@ -10,7 +10,7 @@ function toggleStep(step) {
 }
 
 function clearVoteAlert() {
-    document.getElementById('status-message').textContent = '';
+    document.getElementById('status-message').replaceChildren();
 }
 
 function displayVoteAlert(message, level) {
