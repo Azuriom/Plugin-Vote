@@ -51,13 +51,16 @@ class VoteController extends Controller
 
     public function verifyUser(Request $request, string $name)
     {
-        if (setting('vote.auth-required', false)) {
+        $user = $request->user();
+
+        if ($user === null && setting('vote.auth-required', false)) {
             return response()->json([
                 'message' => trans('vote::messages.errors.auth'),
             ], 401);
         }
 
-        $user = User::firstWhere('name', $name);
+        // Find user by name only if user is not currently authenticated.
+        $user ??= User::firstWhere('name', $name);
 
         if ($user === null) {
             return response()->json([
