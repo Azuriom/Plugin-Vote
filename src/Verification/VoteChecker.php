@@ -21,11 +21,6 @@ class VoteChecker
 
     public function __construct()
     {
-        $this->register(VoteVerifier::for('serveurly.com')
-            ->setApiUrl('https://serveurly.com/api/v1/votes/check?token={server}&username={name}&ip={ip}')
-            ->requireKey('token')
-            ->verifyByJson('data.has_voted', true));
-
         $this->register(VoteVerifier::for('serveurliste.com')
             ->setApiUrl('https://serveurliste.com/api/vote?ip_address={ip}&api_token={server}')
             ->requireKey('api_key')
@@ -155,6 +150,11 @@ class VoteChecker
             ->setApiUrl('https://serveur-prive-impulsion.net/api/servers/{server}/vote-status/{ip}')
             ->requireKey('token')
             ->verifyByJson('can_vote', false));
+
+        $this->register(VoteVerifier::for('serveurly.com')
+            ->setApiUrl('https://serveurly.com/api/v1/votes/check?token={server}&username={name}&ip={ip}')
+            ->requireKey('token')
+            ->verifyByJson('data.has_voted', true));
 
         $this->register(VoteVerifier::for('top-serveurs.net')
             ->setApiUrl('https://api.top-serveurs.net/v1/votes/check-ip?server_token={server}&ip={ip}')
