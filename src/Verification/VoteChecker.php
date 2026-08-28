@@ -151,6 +151,11 @@ class VoteChecker
             ->requireKey('token')
             ->verifyByJson('can_vote', false));
 
+        $this->register(VoteVerifier::for('serveurly.com')
+            ->setApiUrl('https://serveurly.com/api/v1/votes/check?token={server}&username={name}&ip={ip}')
+            ->requireKey('token')
+            ->verifyByJson('data.has_voted', true));
+
         $this->register(VoteVerifier::for('top-serveurs.net')
             ->setApiUrl('https://api.top-serveurs.net/v1/votes/check-ip?server_token={server}&ip={ip}')
             ->requireKey('token')
