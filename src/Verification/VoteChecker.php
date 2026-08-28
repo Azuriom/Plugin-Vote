@@ -21,6 +21,11 @@ class VoteChecker
 
     public function __construct()
     {
+        $this->register(VoteVerifier::for('serveurly.com')
+            ->setApiUrl('https://serveurly.com/api/v1/votes/check?token={server}&username={name}&ip={ip}')
+            ->requireKey('token')
+            ->verifyByJson('data.has_voted', true));
+
         $this->register(VoteVerifier::for('serveurliste.com')
             ->setApiUrl('https://serveurliste.com/api/vote?ip_address={ip}&api_token={server}')
             ->requireKey('api_key')
