@@ -95,6 +95,11 @@ class VoteChecker
             ->requireKey('api_key')
             ->verifyByValue(1));
 
+        $this->register(VoteVerifier::for('minecraft.fr')
+            ->setApiUrl('https://minecraft.fr/wp-json/serveursmc/v1/votes/{name}?api_key={server}')
+            ->requireKey('api_key')
+            ->verifyByJson('has_voted', true));
+
         $this->register(VoteVerifier::for('discordtop.net')
             ->setApiUrl('https://api.discordtop.net/v7/check-vote?external_id={name}')
             ->requireKey('api_key')
