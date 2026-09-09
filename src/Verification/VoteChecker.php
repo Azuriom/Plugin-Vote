@@ -330,6 +330,11 @@ class VoteChecker
 
                 return $key === $site->verification_key && $voted === 1 ? $ip : null;
             }));
+
+        $this->register(VoteVerifier::for('playerpicked.com')
+            ->setApiUrl('https://playerpicked.com/api/vote/check?server={server}&ip={ip}&name={name}')
+            ->retrieveKeyByRegex('/^playerpicked\.com\/servers\/([\w-]+)/')
+            ->verifyByJson('has_voted', true));
     }
 
     public function hasVerificationForSite(string $domain): bool
