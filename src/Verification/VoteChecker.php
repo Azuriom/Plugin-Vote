@@ -56,6 +56,14 @@ class VoteChecker
             ->retrieveKeyByRegex('/^serveur-minecraft\.com\/(\d+)/')
             ->verifyByJson('vote', '1'));
 
+        $this->register(VoteVerifier::for('minecraft-serveurs.com')
+            ->setApiUrl('https://minecraft-serveurs.com/api/v1/vote-check?ip={ip}&name={name}')
+            ->requireKey('api_key')
+            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
+                return $request->withToken($site->verification_key);
+            })
+            ->verifyByJson('voted', true));
+
         $this->register(VoteVerifier::for('serveursminecraft.org')
             ->setApiUrl('https://www.serveursminecraft.org/sm_api/peutVoter.php?id={server}&ip={ip}')
             ->retrieveKeyByRegex('/^serveursminecraft\.org\/serveur\/(\d+)/')
