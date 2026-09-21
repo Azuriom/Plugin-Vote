@@ -343,6 +343,14 @@ class VoteChecker
             ->setApiUrl('https://playerpicked.com/api/vote/check?server={server}&ip={ip}&name={name}')
             ->retrieveKeyByRegex('/^playerpicked\.com\/servers\/([\w-]+)/')
             ->verifyByJson('has_voted', true));
+
+        $this->register(VoteVerifier::for('voxelrank.com')
+            ->setApiUrl('https://voxelrank.com/api/v1/votes/check?username={name}')
+            ->requireKey('api_key')
+            ->transformRequest(function (PendingRequest $request, User $user, Site $site) {
+                return $request->withHeader('X-Api-Key', $site->verification_key);
+            })
+            ->verifyByJson('voted_recently', true));
     }
 
     public function hasVerificationForSite(string $domain): bool
