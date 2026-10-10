@@ -351,6 +351,11 @@ class VoteChecker
                 return $request->withHeader('X-Api-Key', $site->verification_key);
             })
             ->verifyByJson('voted_recently', true));
+
+        $this->register(VoteVerifier::for('vote-serveur.fr')
+            ->setApiUrl('https://vote-serveur.fr/api/v1/votes/check?token={server}&ip={ip}&name={name}')
+            ->requireKey('token')
+            ->verifyByJson('voted', true));
     }
 
     public function hasVerificationForSite(string $domain): bool
