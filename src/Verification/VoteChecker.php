@@ -121,6 +121,11 @@ class VoteChecker
             ->requireKey('api_key')
             ->verifyByJson('canClaim', true));
 
+        $this->register(VoteVerifier::for('ads2be.com')
+            ->setApiUrl('https://ads2be.com/api/v1/check?token={server}&player={name}')
+            ->requireKey('api_key')
+            ->verifyByJson('voted', true));
+
         $this->register(VoteVerifier::for('hytale-servers.best')
             ->setApiUrl('https://hytale-servers.best/api/vote-verification?server_id={server}&ip={ip}&duration=180')
             ->retrieveKeyByRegex('/^hytale-servers\.best\/(?:[a-z]{2}\/)?servers\/(\d+)/')
