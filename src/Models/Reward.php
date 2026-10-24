@@ -93,6 +93,9 @@ class Reward extends Model
         $user = $target instanceof User ? $target : $target->user;
         $siteName = $target instanceof Vote ? $target->site->name : '?';
         $siteId = $target instanceof Vote ? $target->site->id : '0';
+        $votes = Vote::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->count();
 
         if ($this->money > 0) {
             $user->addMoney($this->money);
@@ -109,8 +112,8 @@ class Reward extends Model
         }
 
         $commands = array_map(fn (string $command) => str_replace([
-            '{reward}', '{reward_id}', '{site}', '{site_id}',
-        ], [$this->name, $this->id, $siteName, $siteId], $command), $commands);
+            '{reward}', '{reward_id}', '{site}', '{site_id}', '{votes}',
+        ], [$this->name, $this->id, $siteName, $siteId, $votes], $command), $commands);
 
         foreach ($servers ?? $this->servers as $server) {
             $server->bridge()->sendCommands($commands, $user, $this->need_online);
