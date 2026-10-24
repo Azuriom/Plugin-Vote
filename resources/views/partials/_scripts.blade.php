@@ -5,6 +5,6 @@
 <script src="{{ plugin_asset('vote', 'js/vote.js?v3') }}" defer></script>
 @auth
     <script>
-        window.username = '{{ $user->name }}';
+        window.username = @json($user->name);
     </script>
 @endauth

@@ -132,7 +132,7 @@ class VoteVerifier
         return $this;
     }
 
-    public function verifyByValue(string $value): self
+    public function verifyByValue(mixed $value): self
     {
         $this->verificationMethod = function (Response $response) use ($value) {
             return $response->body() === $value;
@@ -167,7 +167,14 @@ class VoteVerifier
 
     public function executePingbackCallback(Request $request)
     {
-        $sites = Site::where('url', 'LIKE', '%'.$this->siteDomain.'/%')->get();
+        if ($this->pingbackCallback === null) {
+            return response()->noContent(404);
+        }
+
+        // Exact host match filter: a substring match would let "topg.org" accept "mytopg.org"
+        $sites = Site::where('url', 'LIKE', '%'.$this->siteDomain.'%')
+            ->get()
+            ->filter(fn (Site $site) => Site::hostFromUrl($site->url) === $this->siteDomain);
 
         $result = $sites->map(fn (Site $site) => ($this->pingbackCallback)($request, $site))
             ->first(fn ($result) => $result !== null);
@@ -204,6 +211,7 @@ class VoteVerifier
             ? $site->verification_key
             : $retrieveKeyMethod($site->url);
 
+        // Fail open on purpose: so an unverifiable vote is accepted rather than blocking the user
         if ($key === null) {
             return true;
         }
@@ -223,10 +231,13 @@ class VoteVerifier
                 $url = str_replace([
                     '{server}', '{ip}', '{id}', '{name}',
                 ], [
-                    $key, $userIp, $user->game_id, $user->name,
+                    rawurlencode($key),
+                    rawurlencode($userIp),
+                    rawurlencode($user->game_id ?? ''),
+                    rawurlencode($user->name),
                 ], $this->apiUrl);
 
-                $request = Http::asJson();
+                $request = Http::asJson()->timeout(5);
 
                 if ($this->transformRequest !== null) {
                     $request = ($this->transformRequest)($request, $user, $site);
@@ -267,7 +278,9 @@ class VoteVerifier
         }
 
         try {
-            return Http::get('https://ipv6-adapter.com/api/v1/fetch?ip='.$requestIp)->json('ips');
+            return Http::timeout(5)
+                ->get('https://ipv6-adapter.com/api/v1/fetch?ip='.rawurlencode($requestIp))
+                ->json('ips');
         } catch (Exception) {
             return null;
         }

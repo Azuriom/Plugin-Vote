@@ -35,8 +35,8 @@ class VoteController extends Controller
             'name' => $queryName,
             'user' => $request->user(),
             'request' => $request,
-            'sites' => Site::enabled()->with('rewards')->get(),
-            'rewards' => Reward::where('chances', '>', 0)->orderByDesc('chances')->get(),
+            'sites' => Site::enabled()->get(),
+            'rewards' => Reward::enabled()->where('chances', '>', 0)->orderByDesc('chances')->get(),
             'votes' => Vote::getTopVoters(now()->startOfMonth()),
             'userVotes' => $votesCount,
             'ipv6compatibility' => setting('vote.ipv4-v6-compatibility', true),
@@ -69,7 +69,6 @@ class VoteController extends Controller
         }
 
         $sites = Site::enabled()
-            ->with('rewards')
             ->get()
             ->mapWithKeys(function (Site $site) use ($user, $request) {
                 return [

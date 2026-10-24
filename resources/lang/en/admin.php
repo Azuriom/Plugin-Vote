@@ -74,9 +74,10 @@ return [
         'single_server' => 'Let the user choose the server to receive the reward',
 
         'commands' => 'The following placeholders are available: :placeholders. The command must not start with <code>/</code>.',
+        'weight_info' => 'Relative weight of this reward. Its chance of being drawn is its weight divided by the total weight of rewards.',
         'monthly' => 'Ranking of users to give this reward to at the end of the month',
         'monthly_info' => 'Automatically give this reward, at the end of the month, to the users at the given positions in the best voters ranking.',
-        'cron' => 'You must set up CRON tasks to use automatic rewards at the end of the month, see the <a href="https://azuriom.com/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> for more information.',
+        'cron' => 'You must set up CRON tasks to use automatic rewards at the end of the month, see the <a href="https://azuriom.com/docs/installation" target="_blank" rel="noopener noreferrer">documentation</a> for more information.',
     ],
 
     'votes' => [

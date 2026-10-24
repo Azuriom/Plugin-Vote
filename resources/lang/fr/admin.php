@@ -17,7 +17,7 @@ return [
         'count' => 'Nombre de joueurs dans le classement',
         'display-rewards' => 'Afficher les récompenses sur la page de vote',
         'ip_compatibility' => 'Activer la compatibilité IPv6',
-        'ip_compatibility_info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote n\'acceptent pas l\'IPv6 alors que votre site oui, ou inversement.',
+        'ip_compatibility_info' => 'Cette option permet de corriger les votes qui ne se vérifient pas sur les sites de vote qui n\'acceptent pas l\'IPv6 alors que votre site l\'accepte, ou inversement.',
         'auth_required' => 'Obliger les utilisateurs à être connectés sur le site pour voter',
         'commands' => 'Commandes globales',
     ],
@@ -57,7 +57,7 @@ return [
             'input' => 'Les votes sur ce site seront vérifiés quand le champ ci-dessous est rempli.',
 
             'pingback' => 'URL de pingback: :url',
-            'secret' => 'Clé secrete',
+            'secret' => 'Clé secrète',
             'server_id' => 'ID du serveur',
             'token' => 'Token',
             'api_key' => 'Clé d\'API',
@@ -74,9 +74,10 @@ return [
         'single_server' => 'Laisser l\'utilisateur choisir le serveur pour recevoir la récompense',
 
         'commands' => 'Les variables suivantes sont disponibles : :placeholders. La commande ne doit pas commencer par un <code>/</code>.',
+        'weight_info' => 'Poids relatif de cette récompense. Sa probabilité d\'être tirée est son poids divisé par le poids total de toutes les récompenses.',
         'monthly' => 'Position du classement des utilisateurs à qui donner cette récompense à la fin du mois',
-        'monthly_info' => 'Donner automatiquement, à la fin du mois, cette récompense aux utilisateurs aux positions indiquées dans le classement des meilleurs voteurs.',
-        'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois, voir la <a href="https://azuriom.com/fr/docs/installation" target="_blank" rel="noopener norefferer">documentation</a> pour plus d\'informations.',
+        'monthly_info' => 'Donner automatiquement, à la fin du mois, cette récompense aux utilisateurs aux positions indiquées dans le classement des meilleurs votants.',
+        'cron' => 'Vous devez configurer les tâches CRON pour pouvoir utiliser les récompenses automatiques à la fin du mois, voir la <a href="https://azuriom.com/fr/docs/installation" target="_blank" rel="noopener noreferrer">documentation</a> pour plus d\'informations.',
     ],
 
     'votes' => [

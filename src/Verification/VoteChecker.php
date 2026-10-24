@@ -8,7 +8,6 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class VoteChecker
 {
@@ -40,16 +39,6 @@ class VoteChecker
             ->setApiUrl('https://www.serveurs-minecraft.org/api/is_valid_vote.php?id={server}&ip={ip}&duration=5&format=json')
             ->retrieveKeyByRegex('/^serveurs-minecraft\.org\/vote\.php\?id=(\d+)/')
             ->verifyByJson('votes', '1'));
-
-        $this->register(VoteVerifier::for('serveurs-mc.net')
-            ->setApiUrl('https://serveurs-mc.net/api/hasVote/{server}/{ip}/10')
-            ->retrieveKeyByRegex('/^serveurs-mc\.net\/serveur\/(\d+)/')
-            ->verifyByJson('hasVote', true));
-
-        $this->register(VoteVerifier::for('serveur-minecraft.fr')
-            ->setApiUrl('https://serveur-minecraft.fr/api-{server}_{ip}.json')
-            ->retrieveKeyByRegex('/^serveur-minecraft\.fr\/[\w-]+\.(\d+)/')
-            ->verifyByJson('status', 'Success'));
 
         $this->register(VoteVerifier::for('serveur-minecraft.com')
             ->setApiUrl('https://serveur-minecraft.com/api/1/vote/{server}/{ip}/json')
@@ -116,11 +105,6 @@ class VoteChecker
             })
             ->verifyByJson('has_voted', true));
 
-        $this->register(VoteVerifier::for('hytale-servs.fr')
-            ->setApiUrl('https://hytale-servs.fr/api/v1/servers/vote-check?api_key={server}&player={name}')
-            ->requireKey('api_key')
-            ->verifyByJson('canClaim', true));
-
         $this->register(VoteVerifier::for('hytale-servers.best')
             ->setApiUrl('https://hytale-servers.best/api/vote-verification?server_id={server}&ip={ip}&duration=180')
             ->retrieveKeyByRegex('/^hytale-servers\.best\/(?:[a-z]{2}\/)?servers\/(\d+)/')
@@ -144,25 +128,10 @@ class VoteChecker
             ->requireKey('api_key')
             ->verifyByValue(1));
 
-        $this->register(VoteVerifier::for('topminecraft.click')
-            ->setApiUrl('https://api.topminecraft.click/vote/v1/{server}/{ip}')
-            ->requireKey('api_key')
-            ->verifyByJson('has_vote', true));
-
-        $this->register(VoteVerifier::for('topminecraft.io')
-            ->setApiUrl('https://topminecraft.io/api/vote/{server}/{ip}')
-            ->requireKey('api_key')
-            ->verifyByJson('status', 'success'));
-
         $this->register(VoteVerifier::for('serveur-prive.net')
             ->setApiUrl('https://serveur-prive.net/api/v1/servers/{server}/votes/{ip}')
             ->requireKey('api_key')
             ->verifyByJson('success', true));
-
-        $this->register(VoteVerifier::for('serveur-prive-impulsion.net')
-            ->setApiUrl('https://serveur-prive-impulsion.net/api/servers/{server}/vote-status/{ip}')
-            ->requireKey('token')
-            ->verifyByJson('can_vote', false));
 
         $this->register(VoteVerifier::for('serveurly.com')
             ->setApiUrl('https://serveurly.com/api/v1/votes/check?token={server}&username={name}&ip={ip}')
@@ -171,11 +140,6 @@ class VoteChecker
 
         $this->register(VoteVerifier::for('top-serveurs.net')
             ->setApiUrl('https://api.top-serveurs.net/v1/votes/check-ip?server_token={server}&ip={ip}')
-            ->requireKey('token')
-            ->verifyByJson('code', 200));
-
-        $this->register(VoteVerifier::for('serveur-hytale.gg')
-            ->setApiUrl('https://serveur-hytale.gg/api/v1/votes/check-ip?server_token={server}&ip={ip}&duration=15')
             ->requireKey('token')
             ->verifyByJson('code', 200));
 
@@ -192,7 +156,7 @@ class VoteChecker
         $this->register(VoteVerifier::for('minecraft-server.net')
             ->requireKey('api_key')
             ->verifyByCallback(function (User $user, Site $site) {
-                $response = Http::post('https://minecraft-server.net/api/', [
+                $response = Http::timeout(5)->post('https://minecraft-server.net/api/', [
                     'action' => 'checkVote',
                     'key' => $site->verification_key,
                     'player' => $user->name,
@@ -212,8 +176,9 @@ class VoteChecker
                 }
 
                 foreach ($ips as $ip) {
-                    $response = Http::withToken($site->verification_key)
-                        ->get("https://playbase.pro/api/vote/{$serverId}/{$ip}");
+                    $response = Http::timeout(5)
+                        ->withToken($site->verification_key)
+                        ->get('https://playbase.pro/api/vote/'.rawurlencode($serverId).'/'.rawurlencode($ip));
 
                     if ($response->json('date')) {
                         return true;
@@ -224,7 +189,7 @@ class VoteChecker
             }));
 
         $this->register(VoteVerifier::for('topg.org')
-            ->retrieveKeyByCallback(fn () => null) // No key required
+            ->retrieveKeyByCallback(fn () => '') // No key required
             ->verifyByPingback(function (Request $request) {
                 $topgIp = gethostbyname('monitor.topg.org');
 
@@ -372,7 +337,7 @@ class VoteChecker
      */
     public function verifyVote(Site $site, User $user, string $requestIp): bool
     {
-        $host = $this->parseHostFromUrl($site->url);
+        $host = Site::hostFromUrl($site->url);
 
         if ($host === null) {
             return true;
@@ -391,23 +356,6 @@ class VoteChecker
     protected function register(VoteVerifier $verifier): void
     {
         $this->sites[$verifier->getSiteDomain()] = $verifier;
-    }
-
-    public function parseHostFromUrl(string $rawUrl): ?string
-    {
-        $url = parse_url($rawUrl);
-
-        if ($url === false || ! array_key_exists('host', $url)) {
-            return null;
-        }
-
-        $host = $url['host'];
-
-        if (Str::startsWith($host, 'www.')) {
-            $host = substr($host, 4);
-        }
-
-        return $host;
     }
 
     /**

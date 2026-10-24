@@ -68,7 +68,7 @@ class VoteServiceProvider extends BasePluginServiceProvider
     /**
      * Returns the routes that should be able to be added to the navbar.
      *
-     * @return array<string, string
+     * @return array<string, string>
      */
     protected function routeDescriptions(): array
     {

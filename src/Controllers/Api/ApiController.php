@@ -10,8 +10,12 @@ class ApiController extends Controller
 {
     public function pingback(Request $request, string $site)
     {
-        $checker = app(VoteChecker::class);
+        $verifier = app(VoteChecker::class)->getVerificationForSite($site);
 
-        return $checker->getVerificationForSite($site)->executePingbackCallback($request);
+        if ($verifier === null || ! $verifier->hasPingback()) {
+            return response()->noContent(404);
+        }
+
+        return $verifier->executePingbackCallback($request);
     }
 }

@@ -30,7 +30,7 @@
                                     {{ trans('messages.none') }}
                                 @endif
                             </td>
-                            <td>{{ $reward->chances }} %</td>
+                            <td>{{ $reward->chances }}</td>
                             <td>
                                 <span class="badge bg-{{ $reward->is_enabled ? 'success' : 'danger' }}">
                                     {{ trans_bool($reward->is_enabled) }}

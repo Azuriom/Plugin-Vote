@@ -68,7 +68,7 @@ class SiteController extends Controller
 
         $checker = app(VoteChecker::class);
 
-        $host = $checker->parseHostFromUrl($voteUrl);
+        $host = Site::hostFromUrl($voteUrl);
 
         if ($host === null) {
             return response()->json(['message' => 'Invalid URL'], 422);

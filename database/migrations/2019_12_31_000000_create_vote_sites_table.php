@@ -11,10 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('vote_votes');
-        Schema::dropIfExists('vote_reward_site');
-        Schema::dropIfExists('vote_rewards');
-        Schema::dropIfExists('vote_sites');
 
         Schema::create('vote_sites', function (Blueprint $table) {
             $table->increments('id');

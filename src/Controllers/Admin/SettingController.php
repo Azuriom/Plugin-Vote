@@ -54,7 +54,7 @@ class SettingController extends Controller
             'vote.display-rewards' => $request->has('display-rewards'),
             'vote.ipv4-v6-compatibility' => $request->has('ip_compatibility'),
             'vote.auth-required' => $request->has('auth_required'),
-            'vote.commands' => is_array($commands) ? json_encode(array_filter($commands)) : null,
+            'vote.commands' => is_array($commands) ? json_encode(array_values(array_filter($commands))) : null,
             'vote.goal.target' => $goalEnabled ? $validated['goal_target'] : null,
             'vote.goal.auto_reset' => $goalEnabled ? $request->has('goal_auto_reset') : null,
             'vote.goal.commands' => $goalEnabled && is_array($goalCommands) ? json_encode(array_filter($goalCommands)) : null,

@@ -54,10 +54,6 @@
                 @endforelse
             </div>
 
-            <div class="d-none" data-vote-step="3">
-                <p id="vote-result"></p>
-            </div>
-
             <div class="d-none" data-vote-step="server">
                 <p>{{ trans('vote::messages.server') }}</p>
 
@@ -147,7 +143,7 @@
                                 @endif
                                 {{ $reward->name }}
                             </th>
-                            <td>{{ $reward->chances }} %</td>
+                            <td>{{ $reward->chances }}</td>
                         </tr>
                     @endforeach
 

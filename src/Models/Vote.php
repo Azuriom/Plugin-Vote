@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
  * @property int $user_id
  * @property int $site_id
  * @property int $reward_id
- * @property bool $is_enabled
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Azuriom\Models\User $user
@@ -97,6 +96,7 @@ class Vote extends Model
             ->whereBetween('created_at', [$from, $to ?? now()])
             ->groupBy('user_id')
             ->orderByDesc('count')
+            ->orderBy('user_id') // Deterministic tie-break
             ->take($max ?? setting('vote.top-players-count', 10))
             ->get();
     }

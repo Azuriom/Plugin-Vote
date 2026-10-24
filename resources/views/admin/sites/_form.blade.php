@@ -18,7 +18,7 @@
 
         <select class="form-select @error('rewards') is-invalid @enderror" id="rewardSelect" name="rewards[]" multiple required>
             @foreach($rewards as $reward)
-                <option value="{{ $reward->id }}" @selected(isset($site) && $site->rewards->contains($reward) ?? false)>
+                <option value="{{ $reward->id }}" @selected(isset($site) && $site->rewards->contains($reward))>
                     {{ $reward->name }}
                 </option>
             @endforeach
@@ -56,7 +56,7 @@
 
     <div class="mb-3 d-none" id="keyGroup">
         <label id="keyLabel" for="keyInput">{{ trans('vote::admin.sites.verifications.title') }}</label>
-        <input type="text" min="0" class="form-control @error('verification_key') is-invalid @enderror" id="keyInput" name="verification_key" value="{{ old('verification_key', $site->verification_key ?? '') }}">
+        <input type="text" class="form-control @error('verification_key') is-invalid @enderror" id="keyInput" name="verification_key" value="{{ old('verification_key', $site->verification_key ?? '') }}">
 
         @error('verification_key')
         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>

@@ -11,7 +11,7 @@ return [
     ],
 
     'fields' => [
-        'chances' => 'Chances',
+        'chances' => 'Weight',
         'commands' => 'Commands',
         'reward' => 'Reward',
         'rewards' => 'Rewards',

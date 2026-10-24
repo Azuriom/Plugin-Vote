@@ -22,6 +22,8 @@ return new class extends Migration
             $table->foreign('reward_id')->references('id')->on('vote_rewards')->nullOnDelete();
 
             $table->index('created_at');
+            $table->index(['user_id', 'created_at']);
+            $table->index(['site_id', 'user_id', 'created_at']);
         });
     }
 

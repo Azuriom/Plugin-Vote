@@ -96,11 +96,11 @@ function initVote() {
 
             voteDoneCallbacks.push(function () {
                 clearInterval(timer);
-            })
+            });
         }
 
         if (url.includes('{player}')) {
-            el.setAttribute('href', url.replace('{player}', window.username));
+            el.setAttribute('href', url.replace('{player}', encodeURIComponent(window.username)));
         }
 
         const clickListener = function (ev) {
@@ -128,7 +128,7 @@ function initVote() {
         voteDoneCallbacks.push(function () {
             el.removeEventListener('click', clickListener);
             el.removeEventListener('auxclick', clickListener);
-        })
+        });
     });
 }
 
@@ -139,7 +139,7 @@ function setupVoteTimers(name) {
         loaderIcon.classList.remove('d-none');
     }
 
-    axios.get(voteNameForm.action + '/' + name)
+    axios.get(voteNameForm.action + '/' + encodeURIComponent(name))
         .then(function (response) {
             toggleStep(2);
 
@@ -211,7 +211,8 @@ function refreshVote(url) {
 function rewardDelivered(message) {
     displayVoteAlert(message, 'success');
 
-    voteDoneCallbacks.forEach(function (callback) {
+    // Run and clear the callbacks, so listeners from earlier lookups don't pile up
+    voteDoneCallbacks.splice(0).forEach(function (callback) {
         callback();
     });
 
@@ -244,9 +245,9 @@ function showServerSelect(baseURL, servers) {
         });
 
         serverSelect.appendChild(button);
-    })
+    });
 
-    toggleStep('server')
+    toggleStep('server');
 }
 
 if (window.username) {

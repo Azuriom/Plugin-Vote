@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -55,7 +56,6 @@ class Site extends Model
      */
     protected $casts = [
         'vote_delay' => 'integer',
-        'need_online' => 'boolean',
         'has_verification' => 'boolean',
         'is_enabled' => 'boolean',
     ];
@@ -81,25 +81,27 @@ class Site extends Model
 
     public function getRandomReward(): ?Reward
     {
-        $total = $this->rewards->sum('chances');
+        $rewards = $this->rewards()->enabled()->where('chances', '>', 0)->get();
 
-        if ($total < 0.01) {
+        // Chances have two decimals: multiply by 100 to avoid float rounding issues
+        $total = (int) round($rewards->sum('chances') * 100);
+
+        if ($total <= 0) {
             return null;
         }
 
-        // Multiply to support decimal chances
-        $random = random_int(1, $total * 1000);
+        $random = random_int(1, $total);
         $sum = 0;
 
-        foreach ($this->rewards as $reward) {
-            $sum += $reward->chances * 1000;
+        foreach ($rewards as $reward) {
+            $sum += (int) round($reward->chances * 100);
 
             if ($sum >= $random) {
                 return $reward;
             }
         }
 
-        return $this->rewards->first();
+        return $rewards->last();
     }
 
     public function getNextVoteTime(User $user, Request|string|null $ip = null): ?Carbon
@@ -155,9 +157,25 @@ class Site extends Model
         $query->where('is_enabled', true);
     }
 
+    /**
+     * Get the host of a site URL, without the "www." prefix, or null if the URL has none.
+     */
+    public static function hostFromUrl(string $url): ?string
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+
+        if (! is_string($host)) {
+            return null;
+        }
+
+        $host = strtolower($host);
+
+        return Str::startsWith($host, 'www.') ? substr($host, 4) : $host;
+    }
+
     public static function allLastVoteTimes(User $user): array
     {
-        $cache = once(collect(...));
+        $cache = once(fn () => collect());
 
         if ($cache->has($user->id)) {
             return $cache->get($user->id);

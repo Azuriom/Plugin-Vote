@@ -16,13 +16,13 @@
         <label class="form-label" for="chancesInput">{{ trans('vote::messages.fields.chances') }}</label>
 
         <div class="input-group @error('chances') has-validation @enderror">
-            <input type="number" min="0" max="100" step="0.01" class="form-control @error('chances') is-invalid @enderror" id="chancesInput" name="chances" value="{{ old('chances', $reward->chances ?? '0') }}" required>
-            <div class="input-group-text">%</div>
+            <input type="number" min="0" step="0.01" class="form-control @error('chances') is-invalid @enderror" id="chancesInput" name="chances" value="{{ old('chances', $reward->chances ?? '0') }}" required>
 
             @error('chances')
             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
             @enderror
         </div>
+        <div class="form-text">@lang('vote::admin.rewards.weight_info')</div>
     </div>
 
     <div class="col-md-4 mb-3">
@@ -98,7 +98,7 @@
                     <span class="input-group-text">
                         #
                     </span>
-                    <input type="number" class="form-control" name="monthly_rewards[]" v-model="rewards[index]" :value="value" min="1" max="50">
+                    <input type="number" class="form-control" name="monthly_rewards[]" v-model="rewards[index]" :value="value" min="1" max="100">
                     <button @click="rewards.splice(index, 1)" class="btn btn-outline-danger" type="button">
                         <i class="bi bi-x-lg"></i>
                     </button>

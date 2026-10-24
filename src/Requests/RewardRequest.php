@@ -29,12 +29,13 @@ class RewardRequest extends FormRequest
             'name' => ['required', 'string', 'max:50'],
             'image' => ['nullable', 'image:allow_svg'],
             'servers.*' => ['required', 'exists:servers,id'],
-            'chances' => ['required', 'numeric', 'between:0,100'],
+            'chances' => ['required', 'numeric', 'min:0'],
             'money' => ['nullable', 'numeric', 'min:0'],
             'need_online' => ['filled', 'boolean'],
             'single_server' => ['filled', 'boolean'],
             'commands' => ['sometimes', 'nullable', 'array'],
             'monthly_rewards' => ['sometimes', 'nullable', 'array'],
+            'monthly_rewards.*' => ['integer', 'between:1,100'],
             'is_enabled' => ['filled', 'boolean'],
         ];
     }
@@ -53,7 +54,7 @@ class RewardRequest extends FormRequest
         $rewards = array_filter($this->input('monthly_rewards', []));
 
         $this->merge([
-            'commands' => array_filter($this->input('commands', [])),
+            'commands' => array_values(array_filter($this->input('commands', []))),
             'monthly_rewards' => array_map(fn ($val) => (int) $val, $rewards),
         ]);
     }

@@ -12,6 +12,10 @@ class VoteController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'usernames' => ['nullable', 'string', 'max:1000'],
+        ]);
+
         $sites = Site::enabled()->get();
         $topVotes = Vote::getTopVoters(now()->startOfMonth())->values();
         $users = User::withCount([

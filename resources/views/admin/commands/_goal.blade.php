@@ -3,10 +3,10 @@
         <div class="card-body">
             <div class="row gx-3">
                 <div class="col-md-8">
-                    <label class="form-label" :for="'commandInput' + i">{{ trans('vote::admin.goal.command') }}</label>
+                    <label class="form-label" :for="'commandInput' + i + '-0'">{{ trans('vote::admin.goal.command') }}</label>
 
                     <div class="input-group mb-1" v-for="(cmd, j) in command.commands">
-                        <input type="text" class="form-control" :id="'commandInput' + i" :name="`goal_commands[${i}][commands][${j}]`" v-model.trim="command.commands[j]" required>
+                        <input type="text" class="form-control" :id="'commandInput' + i + '-' + j" :name="`goal_commands[${i}][commands][${j}]`" v-model.trim="command.commands[j]" required>
 
                         <button type="button" v-if="j == command.commands.length - 1" class="btn btn-success" @click="command.commands.push('')" title="{{ trans('messages.actions.add') }}">
                             <i class="bi bi-plus-lg"></i>
@@ -33,9 +33,6 @@
                         @endforeach
                     </select>
 
-                    @error('servers')
-                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                    @enderror
                 </div>
             </div>
         </div>

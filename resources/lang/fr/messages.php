@@ -11,7 +11,7 @@ return [
     ],
 
     'fields' => [
-        'chances' => 'Chances',
+        'chances' => 'Poids',
         'commands' => 'Commandes',
         'reward' => 'Récompense',
         'rewards' => 'Récompenses',
@@ -36,6 +36,6 @@ return [
     'goal' => ':current / :target votes',
 
     'notifications' => [
-        'top' => 'Félicitions, vous avez reçu ":reward" pour avoir été le meilleur voteur #:position du mois!',
+        'top' => 'Félicitations, vous avez reçu ":reward" pour avoir été le meilleur votant #:position du mois !',
     ],
 ];

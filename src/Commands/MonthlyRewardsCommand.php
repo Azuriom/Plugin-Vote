@@ -7,6 +7,7 @@ use Azuriom\Notifications\AlertNotification;
 use Azuriom\Plugin\Vote\Models\Reward;
 use Azuriom\Plugin\Vote\Models\Vote;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class MonthlyRewardsCommand extends Command
 {
@@ -29,7 +30,9 @@ class MonthlyRewardsCommand extends Command
      */
     public function handle(): void
     {
-        $rewards = Reward::all();
+        Cache::forget('vote.count.month');
+
+        $rewards = Reward::enabled()->get();
         $now = now()->subHour();
         $votes = Vote::getRawTopVoters($now->clone()->startOfMonth(), $now->endOfMonth(), 100);
         $users = User::findMany($votes->pluck('user_id'))->keyBy('id');

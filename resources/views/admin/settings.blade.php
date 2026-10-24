@@ -13,7 +13,7 @@
 
                 <div class="mb-3">
                     <label class="form-label" for="topPlayersCount">{{ trans('vote::admin.settings.count') }}</label>
-                    <input type="number" class="form-control" id="topPlayersCount" name="top-players-count" min="5" max="100" value="{{ old('top-players-count', $topPlayersCount) }}" required="required">
+                    <input type="number" class="form-control" id="topPlayersCount" name="top-players-count" min="1" max="100" value="{{ old('top-players-count', $topPlayersCount) }}" required="required">
                 </div>
 
                 <div class="mb-3">

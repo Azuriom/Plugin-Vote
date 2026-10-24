@@ -101,7 +101,7 @@ class Reward extends Model
         $commands = $this->commands ?? [];
 
         if ($globalCommands = setting('vote.commands')) {
-            $commands = array_merge($commands, json_decode($globalCommands));
+            $commands = array_merge($commands, json_decode($globalCommands, true) ?? []);
         }
 
         if (empty($commands)) {
