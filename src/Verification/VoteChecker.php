@@ -148,6 +148,11 @@ class VoteChecker
             ->requireKey('token')
             ->verifyByJson('code', 200));
 
+        $this->register(VoteVerifier::for('nightvote.fr')
+            ->setApiUrl('https://nightvote.fr/api/vote/json/{server}/{ip}')
+            ->requireKey('token')
+            ->verifyByJson('status', 1));
+
         $this->register(VoteVerifier::for('liste-serveurs-minecraft.org')
             ->setApiUrl('https://api.liste-serveurs-minecraft.org/vote/vote_verification.php?server_id={server}&ip={ip}&duration=5')
             ->requireKey('server_id')
