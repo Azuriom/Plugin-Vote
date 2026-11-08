@@ -21,7 +21,7 @@ return [
     ],
 
     'errors' => [
-        'user' => 'Cet utilisateur n\'existe pas.',
+        'user' => 'Vous devez avoir un compte pour pouvoir voter.',
         'site' => 'Aucun site de vote n\'est disponible pour le moment.',
         'delay' => 'Vous avez déjà voté, vous pouvez voter à nouveau dans :time.',
         'auth' => 'Vous devez être connecté sur le site pour pouvoir voter.',
