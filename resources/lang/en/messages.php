@@ -21,7 +21,7 @@ return [
     ],
 
     'errors' => [
-        'user' => 'You must have an account to be able to vote.',
+        'user' => 'You need an account to vote.',
         'site' => 'No voting site is available currently.',
         'delay' => 'You already voted, you can vote again in :time.',
         'auth' => 'You must be logged in to vote.',
